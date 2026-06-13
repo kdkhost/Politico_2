@@ -85,7 +85,7 @@ class ContatoController extends Controller
             \Illuminate\Support\Facades\Log::warning('Falha ao enviar notificação de contato por e-mail: ' . $e->getMessage());
         }
 
-        return redirect()->route('site.contato.index')
+        return redirect()->route('site.contato')
             ->with('success', 'Mensagem enviada com sucesso! Entraremos em contato em breve.');
     }
 }

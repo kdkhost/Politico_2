@@ -117,8 +117,8 @@ class NewsletterController extends Controller
             return;
         }
 
-        $confirmUrl = route('site.newsletter.confirmar', $subscriber->token);
-        $cancelUrl = route('site.newsletter.cancelar', $subscriber->token);
+        $confirmUrl = route('site.newsletter.confirm', $subscriber->token);
+        $cancelUrl = route('site.newsletter.cancel', $subscriber->token);
 
         \Illuminate\Support\Facades\Mail::send('emails.newsletter-confirmation', [
             'subscriber' => $subscriber,
