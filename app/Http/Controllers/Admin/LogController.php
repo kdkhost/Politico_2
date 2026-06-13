@@ -59,6 +59,10 @@ class LogController extends Controller
         try {
             $log = \App\Models\Log::with('user:id,name')->findOrFail($id);
 
+            if (!request()->expectsJson() && !request()->ajax()) {
+                return view('admin.logs.show', compact('log'));
+            }
+
             return response()->json(['status' => 'success', 'data' => $log]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Log não encontrado.'], 404);

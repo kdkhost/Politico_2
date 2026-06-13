@@ -1,6 +1,6 @@
 {
   "resources/css/admin/admin.css": {
-    "file": "assets/admin-BYIGPq13.css",
+    "file": "assets/admin-DHTw19Wg.css",
     "name": "admin",
     "names": [
       "admin.css"
@@ -18,7 +18,7 @@
     "isEntry": true
   },
   "resources/js/admin/admin.js": {
-    "file": "assets/admin-ilGyvOVx.js",
+    "file": "assets/admin-CM12v3pe.js",
     "name": "admin",
     "src": "resources/js/admin/admin.js",
     "isEntry": true,

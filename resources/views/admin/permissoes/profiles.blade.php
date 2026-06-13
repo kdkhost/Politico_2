@@ -130,9 +130,9 @@
             $.ajax({
                 url: url,
                 method: 'POST',
-                data: $(this).serialize() + (id ? '&_method=PUT' : ''),
+                data: $(this).serialize(),
                 success: function(res) {
-                    if (res.success) {
+                    if (res.success || res.status === 'success') {
                         toastr.success(res.message || 'Perfil salvo!');
                         $('#profileModal').modal('hide');
                         setTimeout(function() { location.reload(); }, 1000);

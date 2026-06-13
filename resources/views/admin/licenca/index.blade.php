@@ -1,14 +1,4 @@
-@extends('admin.layouts.master')
-
-@section('title', 'Licenca Index - ' . config('app.name'))
-
-@section('content')
-<div class="card">
-    <div class="card-header">
-        <h3 class="card-title">Licenca Index</h3>
-    </div>
-    <div class="card-body">
-        <p>Conteúdo da página <strong>admin.licenca.index</strong> em desenvolvimento.</p>
-    </div>
-</div>
-@endsection
+@php
+    header('Location: ' . route('admin.license.index'), true, 302);
+    exit;
+@endphp

@@ -20,8 +20,9 @@
                         <i class="fas fa-folder-open me-1"></i>Todos os Arquivos
                     </a>
                     @foreach($folders ?? [] as $folder)
-                        <a href="#" class="list-group-item list-group-item-action folder-item" data-folder="{{ $folder }}">
-                            <i class="fas fa-folder me-1"></i>{{ $folder }}
+                        @php($folderName = is_array($folder) ? ($folder['pasta'] ?? '') : $folder)
+                        <a href="#" class="list-group-item list-group-item-action folder-item" data-folder="{{ $folderName }}">
+                            <i class="fas fa-folder me-1"></i>{{ $folderName ?: 'Sem pasta' }}
                         </a>
                     @endforeach
                 </div>
@@ -42,11 +43,11 @@
                     <label for="fileTypeFilter" class="form-label">Tipo</label>
                     <select id="fileTypeFilter" class="form-select">
                         <option value="">Todos</option>
-                        <option value="image">Imagens</option>
+                        <option value="imagem">Imagens</option>
                         <option value="video">Vídeos</option>
-                        <option value="document">Documentos</option>
+                        <option value="documento">Documentos</option>
                         <option value="audio">Áudio</option>
-                        <option value="other">Outros</option>
+                        <option value="outro">Outros</option>
                     </select>
                 </div>
                 <div class="mb-3">
@@ -175,8 +176,8 @@
 
         $.get('{{ route("admin.media.data") }}', {
             page: page,
-            folder: currentFolder,
-            type: currentType,
+            pasta: currentFolder,
+            tipo: currentType,
             date: currentDate
         }, function(res) {
             $('#mediaLoading').addClass('d-none');
@@ -284,7 +285,7 @@
                 formData.append('files[]', files[i]);
             }
             $.ajax({
-                url: '{{ route("admin.media.upload") }}',
+                url: '{{ route("admin.media.upload-multiple") }}',
                 method: 'POST',
                 data: formData,
                 processData: false,

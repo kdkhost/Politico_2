@@ -94,7 +94,7 @@ class PageController extends Controller
                 'status' => 'success',
                 'message' => 'Página criada com sucesso.',
                 'data' => $page,
-                'redirect' => route('admin.paginas.edit', $page->id),
+                'redirect' => route('admin.pages.edit', $page->id),
             ]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao criar página: ' . $e->getMessage()], 500);

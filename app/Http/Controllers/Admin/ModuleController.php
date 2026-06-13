@@ -25,6 +25,13 @@ class ModuleController extends Controller
         return view('admin.modulos.index', compact('modules'));
     }
 
+    public function edit(int $id)
+    {
+        $module = Module::findOrFail($id);
+
+        return view('admin.modulos.edit', compact('module'));
+    }
+
     public function list(Request $request)
     {
         try {

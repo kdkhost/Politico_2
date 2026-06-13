@@ -115,7 +115,6 @@ class VisitaController extends Controller
             }
 
             $handle = fopen($path, 'w+b');
-            fputs($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
             fputcsv($handle, ['IP', 'URL', 'Página', 'Dispositivo', 'Navegador', 'SO', 'Referenciador', 'Data/Hora', 'Único', 'Bot'], ';');
 
             foreach ($visits->items() as $visit) {

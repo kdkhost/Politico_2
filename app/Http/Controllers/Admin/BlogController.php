@@ -186,6 +186,11 @@ class BlogController extends Controller
     {
         try {
             $post = Post::with(['category', 'tags', 'author'])->findOrFail($id);
+
+            if (!request()->expectsJson() && !request()->ajax()) {
+                return view('admin.blog.show', compact('post'));
+            }
+
             return response()->json([
                 'status' => 'success',
                 'data' => $post,

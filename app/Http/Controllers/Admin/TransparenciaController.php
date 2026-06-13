@@ -93,6 +93,11 @@ class TransparenciaController extends Controller
     {
         try {
             $item = $this->transparenciaService->getItemDetails($id);
+
+            if (!request()->expectsJson() && !request()->ajax()) {
+                return view('admin.transparencia.show', compact('item'));
+            }
+
             return response()->json([
                 'status' => 'success',
                 'data' => $item,

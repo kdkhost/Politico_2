@@ -197,6 +197,11 @@ class MenuController extends Controller
     {
         try {
             $menu = Menu::with('items')->findOrFail($id);
+
+            if (!request()->expectsJson() && !request()->ajax()) {
+                return view('admin.menus.show', compact('menu'));
+            }
+
             return response()->json([
                 'status' => 'success',
                 'data' => $menu,

@@ -91,6 +91,11 @@ class FinanceiroService
         return $transaction->fresh();
     }
 
+    public function getTransactionById(int $id): FinancialTransaction
+    {
+        return FinancialTransaction::with(['category:id,nome,slug,tipo', 'user:id,name'])->findOrFail($id);
+    }
+
     public function deleteTransaction(int $id): bool
     {
         return (bool) FinancialTransaction::findOrFail($id)->delete();

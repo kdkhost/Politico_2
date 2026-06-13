@@ -31,6 +31,11 @@ class UserController extends Controller
     {
         try {
             $user = User::with('profile')->findOrFail($id);
+
+            if (!request()->expectsJson() && !request()->ajax()) {
+                return view('admin.usuarios.show', compact('user'));
+            }
+
             return response()->json([
                 'status' => 'success',
                 'data' => $user,
@@ -108,7 +113,7 @@ class UserController extends Controller
                 'status' => 'success',
                 'message' => 'Usuário criado com sucesso.',
                 'data' => $user,
-                'redirect' => route('admin.usuarios.edit', $user->id),
+                'redirect' => route('admin.users.edit', $user->id),
             ]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao criar usuário: ' . $e->getMessage()], 500);

@@ -114,11 +114,11 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="menu_name" class="form-label">Nome <span class="text-danger">*</span></label>
-                        <input type="text" id="menu_name" name="name" class="form-control" placeholder="Ex: Menu Principal" required>
+                        <input type="text" id="menu_name" name="nome" class="form-control" placeholder="Ex: Menu Principal" required>
                     </div>
                     <div class="mb-3">
                         <label for="menu_location" class="form-label">Localização</label>
-                        <select id="menu_location" name="location" class="form-select">
+                        <select id="menu_location" name="localizacao" class="form-select">
                             <option value="header">Cabeçalho</option>
                             <option value="footer">Rodapé</option>
                             <option value="sidebar">Sidebar</option>
@@ -128,7 +128,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="menu_description" class="form-label">Descrição</label>
-                        <textarea id="menu_description" name="description" class="form-control" rows="2"></textarea>
+                        <textarea id="menu_description" name="descricao" class="form-control" rows="2"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -154,7 +154,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="item_label" class="form-label">Texto do Link <span class="text-danger">*</span></label>
-                        <input type="text" id="item_label" name="label" class="form-control" placeholder="Ex: Home" required>
+                        <input type="text" id="item_label" name="titulo" class="form-control" placeholder="Ex: Home" required>
                     </div>
                     <div class="mb-3">
                         <label for="item_url" class="form-label">URL <span class="text-danger">*</span></label>
@@ -164,7 +164,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="item_icon" class="form-label">Ícone (Font Awesome)</label>
-                                <input type="text" id="item_icon" name="icon" class="form-control" placeholder="fas fa-home">
+                                <input type="text" id="item_icon" name="icone" class="form-control" placeholder="fas fa-home">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -182,7 +182,7 @@
                         <select id="item_parent" name="parent_id" class="form-select">
                             <option value="">Nenhum (nível principal)</option>
                             @foreach($menuItems ?? [] as $item)
-                                <option value="{{ $item->id }}">{{ $item->label }}</option>
+                                <option value="{{ $item->id }}">{{ $item->titulo ?? $item->label }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -190,12 +190,13 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="item_order" class="form-label">Ordem</label>
-                                <input type="number" id="item_order" name="order" class="form-control" value="0">
+                                <input type="number" id="item_order" name="ordem" class="form-control" value="0">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <div class="form-check form-switch mt-4">
+                                    <input type="hidden" name="active" value="0">
                                     <input type="checkbox" id="item_active" name="active" class="form-check-input" value="1" checked>
                                     <label for="item_active" class="form-check-label">Ativo</label>
                                 </div>
@@ -251,10 +252,11 @@
             e.stopPropagation();
             var id = $(this).data('id');
             $.get('{{ route("admin.menus.show", ":id") }}'.replace(':id', id), function(data) {
-                $('#menu_id').val(data.id);
-                $('#menu_name').val(data.name);
-                $('#menu_location').val(data.location);
-                $('#menu_description').val(data.description);
+                var menu = data.data || data;
+                $('#menu_id').val(menu.id);
+                $('#menu_name').val(menu.nome || menu.name || '');
+                $('#menu_location').val(menu.localizacao || menu.location || '');
+                $('#menu_description').val(menu.descricao || menu.description || '');
                 $('#menuModalLabel').text('Editar Menu');
                 $('#menuModal').modal('show');
             });
@@ -279,9 +281,9 @@
             $.ajax({
                 url: url,
                 method: 'POST',
-                data: $(this).serialize() + (id ? '&_method=PUT' : ''),
+                data: $(this).serialize(),
                 success: function(res) {
-                    if (res.success) {
+                    if (res.success || res.status === 'success') {
                         toastr.success('Menu salvo!');
                         $('#menuModal').modal('hide');
                         setTimeout(function() { location.reload(); }, 1000);
@@ -296,16 +298,17 @@
         $(document).on('click', '.btn-edit-item', function() {
             var id = $(this).data('id');
             $.get('{{ route("admin.menus.item.show", ":id") }}'.replace(':id', id), function(data) {
-                $('#item_id').val(data.id);
-                $('#item_label').val(data.label);
-                $('#item_url').val(data.url);
-                $('#item_icon').val(data.icon);
-                $('#item_target').val(data.target);
-                $('#item_parent').val(data.parent_id);
-                $('#item_order').val(data.order);
-                $('#item_active').prop('checked', data.active);
+                var item = data.data || data;
+                $('#item_id').val(item.id);
+                $('#item_label').val(item.titulo || item.label || '');
+                $('#item_url').val(item.url || '');
+                $('#item_icon').val(item.icone || item.icon || '');
+                $('#item_target').val(item.target || '_self');
+                $('#item_parent').val(item.parent_id || '');
+                $('#item_order').val(item.ordem || item.order || 0);
+                $('#item_active').prop('checked', !!item.active);
                 $('#menuItemModalLabel').text('Editar Item');
-                $('#btnDeleteItem').removeClass('d-none').data('id', data.id);
+                $('#btnDeleteItem').removeClass('d-none').data('id', item.id);
                 $('#menuItemModal').modal('show');
             });
         });
@@ -336,9 +339,9 @@
             $.ajax({
                 url: url,
                 method: 'POST',
-                data: $(this).serialize() + (id ? '&_method=PUT' : ''),
+                data: $(this).serialize(),
                 success: function(res) {
-                    if (res.success) {
+                    if (res.success || res.status === 'success') {
                         toastr.success('Item salvo!');
                         $('#menuItemModal').modal('hide');
                         setTimeout(function() { location.reload(); }, 1000);

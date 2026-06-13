@@ -83,7 +83,6 @@ class NewsletterController extends Controller
             }
 
             $handle = fopen($path, 'w+b');
-            fputs($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
             fputcsv($handle, ['Email', 'Nome', 'Data de Inscrição'], ';');
 
             foreach ($subscribers as $sub) {

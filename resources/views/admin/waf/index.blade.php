@@ -169,7 +169,7 @@
                 method: 'POST',
                 data: { _token: '{{ csrf_token() }}' },
                 success: function(res) {
-                    if (res.success) {
+                    if (res.success || res.status === 'success') {
                         toastr.success(res.message || 'WAF alterado!');
                         setTimeout(function() { location.reload(); }, 1000);
                     } else {
@@ -194,7 +194,7 @@
                 method: 'POST',
                 data: $(this).serialize(),
                 success: function(res) {
-                    if (res.success) {
+                    if (res.success || res.status === 'success') {
                         toastr.success(res.message || 'Configurações salvas!');
                     } else {
                         toastr.error(res.message || 'Erro ao salvar.');
@@ -217,7 +217,7 @@
                 method: 'POST',
                 data: { _token: '{{ csrf_token() }}', ip: ip },
                 success: function(res) {
-                    if (res.success) {
+                    if (res.success || res.status === 'success') {
                         toastr.success('IP desbloqueado: ' + ip);
                         row.fadeOut(function() { $(this).remove(); });
                     }

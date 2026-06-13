@@ -24,7 +24,7 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">Grupo</label>
-                <select name="group_id" class="form-select">
+                <select name="permission_group_id" class="form-select" required>
                     <option value="">Selecione</option>
                     @foreach($groups as $id => $nome)
                         <option value="{{ $id }}">{{ $nome }}</option>

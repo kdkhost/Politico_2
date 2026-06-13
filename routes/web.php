@@ -152,12 +152,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{id}/editar', [App\Http\Controllers\Admin\PermissionController::class, 'edit'])->name('edit');
             Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\PermissionController::class, 'update'])->name('update');
             Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\PermissionController::class, 'destroy'])->name('destroy');
-            Route::get('/grupos', [App\Http\Controllers\Admin\PermissionController::class, 'getByGroup'])->name('grupos');
+            Route::get('/grupos/{groupId?}', [App\Http\Controllers\Admin\PermissionController::class, 'getByGroup'])->name('grupos');
 
             // Profiles
             Route::get('/perfis', [App\Http\Controllers\Admin\ProfileController::class, 'index'])->name('profiles');
             Route::get('/perfis/listar', [App\Http\Controllers\Admin\ProfileController::class, 'list'])->name('profiles.list');
+            Route::get('/perfis/criar', [App\Http\Controllers\Admin\ProfileController::class, 'create'])->name('profiles.create');
             Route::post('/perfis/criar', [App\Http\Controllers\Admin\ProfileController::class, 'store'])->name('profiles.store');
+            Route::get('/perfis/{id}/editar', [App\Http\Controllers\Admin\ProfileController::class, 'edit'])->name('profiles.edit');
             Route::get('/perfis/{id}', [App\Http\Controllers\Admin\ProfileController::class, 'show'])->name('profiles.show');
             Route::post('/perfis/{id}/atualizar', [App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('profiles.update');
             Route::delete('/perfis/{id}/excluir', [App\Http\Controllers\Admin\ProfileController::class, 'destroy'])->name('profiles.destroy');
@@ -170,7 +172,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/profile/{id}/excluir', [App\Http\Controllers\Admin\ProfileController::class, 'destroy'])->name('profile.delete');
 
             // Permissions AJAX routes
-            Route::get('/get', [App\Http\Controllers\Admin\PermissionController::class, 'getByGroup'])->name('get');
+            Route::get('/get/{groupId?}', [App\Http\Controllers\Admin\PermissionController::class, 'getByGroup'])->name('get');
             Route::post('/salvar', [App\Http\Controllers\Admin\PermissionController::class, 'store'])->name('save');
         });
 
@@ -197,14 +199,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
             // Categories
             Route::get('/categorias', [App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('categories');
             Route::get('/categorias/listar', [App\Http\Controllers\Admin\CategoryController::class, 'list'])->name('categories.list');
+            Route::get('/categorias/criar', [App\Http\Controllers\Admin\CategoryController::class, 'create'])->name('categories.create');
             Route::post('/categorias/criar', [App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('categories.store');
+            Route::get('/categorias/{id}/editar', [App\Http\Controllers\Admin\CategoryController::class, 'edit'])->name('categories.edit');
             Route::post('/categorias/{id}/atualizar', [App\Http\Controllers\Admin\CategoryController::class, 'update'])->name('categories.update');
             Route::delete('/categorias/{id}/excluir', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])->name('categories.destroy');
 
             // Tags
             Route::get('/tags', [App\Http\Controllers\Admin\TagController::class, 'index'])->name('tags');
             Route::get('/tags/listar', [App\Http\Controllers\Admin\TagController::class, 'list'])->name('tags.list');
+            Route::get('/tags/criar', [App\Http\Controllers\Admin\TagController::class, 'create'])->name('tags.create');
             Route::post('/tags/criar', [App\Http\Controllers\Admin\TagController::class, 'store'])->name('tags.store');
+            Route::get('/tags/{id}/editar', [App\Http\Controllers\Admin\TagController::class, 'edit'])->name('tags.edit');
             Route::post('/tags/{id}/atualizar', [App\Http\Controllers\Admin\TagController::class, 'update'])->name('tags.update');
             Route::delete('/tags/{id}/excluir', [App\Http\Controllers\Admin\TagController::class, 'destroy'])->name('tags.destroy');
 
@@ -237,6 +243,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\EventController::class, 'index'])->name('index');
             Route::get('/eventos', [App\Http\Controllers\Admin\EventController::class, 'list'])->name('list');
             Route::get('/data', [App\Http\Controllers\Admin\EventController::class, 'list'])->name('data');
+            Route::get('/criar', [App\Http\Controllers\Admin\EventController::class, 'create'])->name('create');
             Route::post('/criar', [App\Http\Controllers\Admin\EventController::class, 'store'])->name('store');
             Route::get('/{id}', [App\Http\Controllers\Admin\EventController::class, 'show'])->name('show');
             Route::get('/{id}/editar', [App\Http\Controllers\Admin\EventController::class, 'edit'])->name('edit');
@@ -254,6 +261,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/criar', [App\Http\Controllers\Admin\FinanceiroController::class, 'create'])->name('create');
             Route::get('/resumo', [App\Http\Controllers\Admin\FinanceiroController::class, 'getSummary'])->name('summary');
             Route::get('/exportar', [App\Http\Controllers\Admin\FinanceiroController::class, 'export'])->name('export');
+            Route::post('/categorias/criar', [App\Http\Controllers\Admin\FinanceiroController::class, 'storeCategory'])->name('categorias.store');
+            Route::post('/categorias/{id}/atualizar', [App\Http\Controllers\Admin\FinanceiroController::class, 'updateCategory'])->name('categorias.update');
+            Route::delete('/categorias/{id}/excluir', [App\Http\Controllers\Admin\FinanceiroController::class, 'destroyCategory'])->name('categorias.destroy');
+            Route::get('/{id}/editar', [App\Http\Controllers\Admin\FinanceiroController::class, 'edit'])->name('edit');
             Route::get('/{id}', [App\Http\Controllers\Admin\FinanceiroController::class, 'show'])->name('show');
             Route::post('/criar', [App\Http\Controllers\Admin\FinanceiroController::class, 'store'])->name('store');
             Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\FinanceiroController::class, 'update'])->name('update');
@@ -267,6 +278,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/data', [App\Http\Controllers\Admin\TransparenciaController::class, 'list'])->name('data');
             Route::get('/criar', [App\Http\Controllers\Admin\TransparenciaController::class, 'create'])->name('create');
             Route::get('/exportar', [App\Http\Controllers\Admin\TransparenciaController::class, 'export'])->name('export');
+            Route::get('/{id}/editar', [App\Http\Controllers\Admin\TransparenciaController::class, 'edit'])->name('edit');
             Route::get('/{id}', [App\Http\Controllers\Admin\TransparenciaController::class, 'show'])->name('show');
             Route::post('/criar', [App\Http\Controllers\Admin\TransparenciaController::class, 'store'])->name('store');
             Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\TransparenciaController::class, 'update'])->name('update');
@@ -330,6 +342,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/listar', [App\Http\Controllers\Admin\BackupController::class, 'list'])->name('list');
             Route::post('/configurar', [App\Http\Controllers\Admin\BackupController::class, 'saveConfig'])->name('config.save');
             Route::post('/restaurar', [App\Http\Controllers\Admin\BackupController::class, 'restore'])->name('restore');
+            Route::get('/criar', [App\Http\Controllers\Admin\BackupController::class, 'createForm'])->name('create.form');
             Route::post('/criar', [App\Http\Controllers\Admin\BackupController::class, 'create'])->name('create');
             Route::get('/{id}/download', [App\Http\Controllers\Admin\BackupController::class, 'download'])->name('download');
             Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\BackupController::class, 'destroy'])->name('delete');
@@ -372,6 +385,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Modulos
         Route::prefix('modulos')->name('modules.')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\ModuleController::class, 'index'])->name('index');
+            Route::get('/{id}/editar', [App\Http\Controllers\Admin\ModuleController::class, 'edit'])->name('edit');
             Route::post('/{id}/alternar', [App\Http\Controllers\Admin\ModuleController::class, 'toggle'])->name('toggle');
             Route::post('/{id}/configurar', [App\Http\Controllers\Admin\ModuleController::class, 'config'])->name('config');
             Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\ModuleController::class, 'update'])->name('update');
@@ -390,7 +404,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::prefix('hashtags')->name('hashtags.')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\HashtagController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\HashtagController::class, 'list'])->name('list');
+            Route::get('/criar', [App\Http\Controllers\Admin\HashtagController::class, 'create'])->name('create');
             Route::post('/criar', [App\Http\Controllers\Admin\HashtagController::class, 'store'])->name('store');
+            Route::get('/{id}/editar', [App\Http\Controllers\Admin\HashtagController::class, 'edit'])->name('edit');
             Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\HashtagController::class, 'update'])->name('update');
             Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\HashtagController::class, 'destroy'])->name('destroy');
             Route::get('/buscar', [App\Http\Controllers\Admin\HashtagController::class, 'search'])->name('search');

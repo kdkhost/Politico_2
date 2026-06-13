@@ -208,7 +208,6 @@ class TransparenciaService
             }
 
             $handle = fopen($path, 'w+b');
-            fputs($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
             fputcsv($handle, ['ID', 'Título', 'Tipo', 'Categoria', 'Valor', 'Fornecedor', 'Documento', 'Data Publicação', 'Status'], ';');
 
             foreach ($items as $item) {

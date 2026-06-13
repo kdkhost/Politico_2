@@ -16,6 +16,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Permissions\Permission;
 use App\Models\Permissions\PermissionGroup;
+use App\Models\Permissions\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -23,7 +24,15 @@ class PermissionController extends Controller
 {
     public function index()
     {
-        return view('admin.permissoes.index');
+        $profiles = Profile::withCount('users')
+            ->orderBy('nivel', 'desc')
+            ->orderBy('nome')
+            ->paginate(config('sistema.pagination_per_page', 15));
+        $permissionGroups = PermissionGroup::with(['permissions' => function ($query) {
+            $query->orderBy('nome');
+        }])->orderBy('nome')->get()->toArray();
+
+        return view('admin.perfis.index', compact('profiles', 'permissionGroups'));
     }
 
     public function list(Request $request)
@@ -61,6 +70,10 @@ class PermissionController extends Controller
     public function store(Request $request)
     {
         try {
+            $request->merge([
+                'permission_group_id' => $request->input('permission_group_id', $request->input('group_id')),
+            ]);
+
             $validated = $request->validate([
                 'permission_group_id' => 'required|exists:permission_groups,id',
                 'nome' => 'required|string|max:255',
@@ -76,6 +89,7 @@ class PermissionController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'success' => true,
                 'message' => 'Permissão criada com sucesso.',
                 'data' => $permission,
                 'reload' => true,
@@ -95,6 +109,10 @@ class PermissionController extends Controller
     public function update(Request $request, int $id)
     {
         try {
+            $request->merge([
+                'permission_group_id' => $request->input('permission_group_id', $request->input('group_id')),
+            ]);
+
             $validated = $request->validate([
                 'permission_group_id' => 'required|exists:permission_groups,id',
                 'nome' => 'required|string|max:255',
@@ -111,6 +129,7 @@ class PermissionController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'success' => true,
                 'message' => 'Permissão atualizada com sucesso.',
                 'data' => $permission->fresh()->load('group'),
             ]);
@@ -132,14 +151,34 @@ class PermissionController extends Controller
         }
     }
 
-    public function getByGroup(int $groupId)
+    public function getByGroup(Request $request, ?int $groupId = null)
     {
         try {
-            $permissoes = Permission::where('permission_group_id', $groupId)
-                ->orderBy('nome')
-                ->get(['id', 'nome', 'slug']);
+            $groupId = $groupId ?: (int) $request->input('group_id');
 
-            return response()->json(['status' => 'success', 'data' => $permissoes]);
+            $query = Permission::with('group:id,nome,slug,modulo');
+
+            if ($groupId > 0) {
+                $query->where('permission_group_id', $groupId);
+            }
+
+            $permissoes = $query
+                ->orderBy('nome')
+                ->get(['id', 'permission_group_id', 'nome', 'slug', 'descricao']);
+
+            return response()->json([
+                'status' => 'success',
+                'success' => true,
+                'data' => $permissoes,
+                'permissions' => $permissoes->map(fn (Permission $permission): array => [
+                    'id' => $permission->id,
+                    'name' => $permission->slug,
+                    'label' => $permission->nome,
+                    'description' => $permission->descricao,
+                    'group' => $permission->group?->nome,
+                    'group_slug' => $permission->group?->slug,
+                ])->values(),
+            ]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao buscar permissões do grupo.'], 500);
         }

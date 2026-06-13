@@ -18,6 +18,7 @@ use App\Models\FinancialCategory;
 use App\Services\Financeiro\FinanceiroService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Str;
 
 class FinanceiroController extends Controller
 {
@@ -66,6 +67,8 @@ class FinanceiroController extends Controller
     public function store(Request $request)
     {
         try {
+            $this->normalizeMoneyPayload($request);
+
             $validated = $request->validate([
                 'tipo' => 'required|in:receita,despesa',
                 'categoria_id' => 'nullable|exists:financial_categories,id',
@@ -108,6 +111,8 @@ class FinanceiroController extends Controller
     public function update(Request $request, int $id)
     {
         try {
+            $this->normalizeMoneyPayload($request);
+
             $validated = $request->validate([
                 'tipo' => 'required|in:receita,despesa',
                 'categoria_id' => 'nullable|exists:financial_categories,id',
@@ -190,7 +195,6 @@ class FinanceiroController extends Controller
                 }
 
                 $handle = fopen($path, 'w+b');
-                fputs($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
                 fputcsv($handle, ['ID', 'Tipo', 'Descrição', 'Valor', 'Vencimento', 'Pagamento', 'Forma', 'Status', 'Categoria'], ';');
 
                 foreach ($transactions->items() as $t) {
@@ -222,6 +226,11 @@ class FinanceiroController extends Controller
     {
         try {
             $transaction = $this->financeiroService->getTransactionById($id);
+
+            if (!request()->expectsJson() && !request()->ajax()) {
+                return view('admin.financeiro.show', compact('transaction'));
+            }
+
             return response()->json([
                 'status' => 'success',
                 'data' => $transaction,
@@ -235,6 +244,11 @@ class FinanceiroController extends Controller
     {
         try {
             $categories = FinancialCategory::orderBy('nome')->get();
+
+            if (!request()->expectsJson() && !request()->ajax()) {
+                return view('admin.financeiro.categorias', compact('categories'));
+            }
+
             return response()->json([
                 'status' => 'success',
                 'data' => $categories,
@@ -242,5 +256,94 @@ class FinanceiroController extends Controller
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao carregar categorias.'], 500);
         }
+    }
+
+    public function storeCategory(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'nome' => 'required|string|max:255',
+                'slug' => 'nullable|string|max:255|unique:financial_categories,slug',
+                'tipo' => 'required|in:receita,despesa',
+                'descricao' => 'nullable|string|max:500',
+            ]);
+
+            $validated['slug'] = $validated['slug'] ?? Str::slug($validated['nome']);
+            $category = FinancialCategory::create($validated);
+
+            return response()->json([
+                'status' => 'success',
+                'success' => true,
+                'message' => 'Categoria financeira criada com sucesso.',
+                'data' => $category,
+                'reload' => true,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => 'Erro ao criar categoria: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function updateCategory(Request $request, int $id)
+    {
+        try {
+            $category = FinancialCategory::findOrFail($id);
+
+            $validated = $request->validate([
+                'nome' => 'required|string|max:255',
+                'slug' => 'nullable|string|max:255|unique:financial_categories,slug,' . $id,
+                'tipo' => 'required|in:receita,despesa',
+                'descricao' => 'nullable|string|max:500',
+            ]);
+
+            $validated['slug'] = $validated['slug'] ?? Str::slug($validated['nome']);
+            $category->update($validated);
+
+            return response()->json([
+                'status' => 'success',
+                'success' => true,
+                'message' => 'Categoria financeira atualizada com sucesso.',
+                'data' => $category->fresh(),
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => 'Erro ao atualizar categoria: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function destroyCategory(int $id)
+    {
+        try {
+            $category = FinancialCategory::withCount('transactions')->findOrFail($id);
+
+            if ($category->transactions_count > 0) {
+                return response()->json(['status' => 'error', 'message' => 'Categoria possui transações vinculadas.'], 422);
+            }
+
+            $category->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'success' => true,
+                'message' => 'Categoria financeira excluída com sucesso.',
+                'reload' => true,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => 'Erro ao excluir categoria.'], 500);
+        }
+    }
+
+    protected function normalizeMoneyPayload(Request $request): void
+    {
+        if (!$request->filled('valor')) {
+            return;
+        }
+
+        $value = (string) $request->input('valor');
+
+        if (str_contains($value, ',')) {
+            $value = str_replace('.', '', $value);
+            $value = str_replace(',', '.', $value);
+        }
+
+        $request->merge(['valor' => $value]);
     }
 }

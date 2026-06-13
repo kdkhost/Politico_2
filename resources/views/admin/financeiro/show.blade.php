@@ -1,44 +1,39 @@
 @extends('admin.layouts.master')
 
-@section('title', ucfirst($title ?? 'Listagem'))
-@section('breadcrumb', [
-    ['title' => ucfirst($title ?? 'Listagem'), 'url' => '']
-])
+@section('title', 'Detalhes Financeiros - ' . config('app.name'))
+@section('page_title', 'Detalhes da Transação')
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('admin.financeiro.index') }}">Financeiro</a></li>
+    <li class="breadcrumb-item active">Detalhes</li>
+@endsection
 
 @section('content')
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{ ucfirst($title ?? 'Listagem') }}</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">{{ ucfirst($title ?? 'Listagem') }}</li>
-                </ol>
-            </div>
+@php($transaction = $transaction ?? $item ?? null)
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ $transaction->descricao ?? 'Transação' }}</h3>
+        <div class="card-tools">
+            @if($transaction)
+                <a href="{{ route('admin.financeiro.edit', $transaction->id) }}" class="btn btn-primary btn-sm"><i class="fas fa-edit me-1"></i>Editar</a>
+            @endif
+            <a href="{{ route('admin.financeiro.index') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Voltar</a>
         </div>
     </div>
-</div>
-
-<div class="content">
-    <div class="container-fluid">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">{{ ucfirst($title ?? 'Listagem') }}</h3>
-                <div class="card-tools">
-                    @if(isset($createRoute))
-                    <a href="{{ route($createRoute) }}" class="btn btn-sm btn-primary">
-                        <i class="fas fa-plus"></i> Novo
-                    </a>
-                    @endif
-                </div>
-            </div>
-            <div class="card-body">
-                <p>Conteúdo da listagem será implementado aqui.</p>
-            </div>
-        </div>
+    <div class="card-body">
+        @if($transaction)
+            <table class="table">
+                <tr><th>Tipo</th><td><span class="badge bg-{{ $transaction->tipo === 'receita' ? 'success' : 'danger' }}">{{ ucfirst($transaction->tipo) }}</span></td></tr>
+                <tr><th>Valor</th><td>{{ 'R$ ' . number_format((float) $transaction->valor, 2, ',', '.') }}</td></tr>
+                <tr><th>Status</th><td><span class="badge bg-info">{{ ucfirst($transaction->status) }}</span></td></tr>
+                <tr><th>Categoria</th><td>{{ $transaction->category->nome ?? '-' }}</td></tr>
+                <tr><th>Vencimento</th><td>{{ $transaction->data_vencimento?->format('d/m/Y') ?? '-' }}</td></tr>
+                <tr><th>Pagamento</th><td>{{ $transaction->data_pagamento?->format('d/m/Y') ?? '-' }}</td></tr>
+                <tr><th>Forma</th><td>{{ $transaction->forma_pagamento ?: '-' }}</td></tr>
+                <tr><th>Observações</th><td>{{ $transaction->observacoes ?: '-' }}</td></tr>
+            </table>
+        @else
+            <div class="alert alert-warning">Transação não encontrada.</div>
+        @endif
     </div>
 </div>
 @endsection

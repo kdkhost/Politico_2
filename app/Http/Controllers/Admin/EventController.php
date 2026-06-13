@@ -28,6 +28,11 @@ class EventController extends Controller
         return view('admin.agenda.index');
     }
 
+    public function create()
+    {
+        return view('admin.agenda.create');
+    }
+
     public function list(Request $request)
     {
         try {
@@ -36,7 +41,11 @@ class EventController extends Controller
 
             $events = $this->agendaService->getEventsByDateRange($start, $end);
 
-            $formatted = array_map(function ($event) {
+            if ($request->filled('category_id')) {
+                $events = array_values(array_filter($events, fn (array $event): bool => (string) ($event['categoria_id'] ?? '') === (string) $request->input('category_id')));
+            }
+
+            $formatted = array_map(function (array $event): array {
                 return [
                     'id' => $event['id'],
                     'title' => $event['titulo'],
@@ -49,13 +58,13 @@ class EventController extends Controller
                     'local' => $event['local'] ?? '',
                     'tipo' => $event['tipo'] ?? '',
                     'publicado' => (bool) ($event['publicado'] ?? false),
-                    'url' => route('admin.eventos.show', $event['id']),
+                    'url' => route('admin.agenda.show', $event['id']),
                 ];
             }, $events);
 
             return response()->json($formatted);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao listar eventos: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao listar eventos: ' . $e->getMessage()], 500);
         }
     }
 
@@ -64,15 +73,21 @@ class EventController extends Controller
         try {
             $event = $this->agendaService->getEventDetails($id);
 
-            return response()->json(['status' => 'success', 'data' => $event]);
+            if (!request()->expectsJson() && !request()->ajax()) {
+                return view('admin.agenda.show', compact('event'));
+            }
+
+            return response()->json(['status' => 'success', 'success' => true, 'data' => $event]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Evento não encontrado.'], 404);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Evento nao encontrado.'], 404);
         }
     }
 
     public function store(Request $request)
     {
         try {
+            $request->merge($this->normalizeEventPayload($request, true));
+
             $validated = $request->validate([
                 'titulo' => 'required|string|max:255',
                 'descricao' => 'nullable|string',
@@ -92,17 +107,20 @@ class EventController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'success' => true,
                 'message' => 'Evento criado com sucesso.',
                 'data' => $event,
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao criar evento: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao criar evento: ' . $e->getMessage()], 500);
         }
     }
 
     public function update(Request $request, int $id)
     {
         try {
+            $request->merge($this->normalizeEventPayload($request));
+
             $validated = $request->validate([
                 'titulo' => 'required|string|max:255',
                 'descricao' => 'nullable|string',
@@ -122,18 +140,20 @@ class EventController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'success' => true,
                 'message' => 'Evento atualizado com sucesso.',
                 'data' => $event,
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao atualizar evento: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao atualizar evento: ' . $e->getMessage()], 500);
         }
     }
 
     public function edit(int $id)
     {
         try {
-            $event = $this->agendaService->getEventById($id);
+            $event = $this->agendaService->getEventDetails($id);
+
             return view('admin.agenda.edit', compact('event'));
         } catch (\Throwable $e) {
             return redirect()->route('admin.agenda.index')->with('error', 'Erro ao carregar evento.');
@@ -145,15 +165,22 @@ class EventController extends Controller
         try {
             $this->agendaService->deleteEvent($id);
 
-            return response()->json(['status' => 'success', 'message' => 'Evento excluído com sucesso.', 'reload' => true]);
+            return response()->json([
+                'status' => 'success',
+                'success' => true,
+                'message' => 'Evento excluido com sucesso.',
+                'reload' => true,
+            ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao excluir evento.'], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao excluir evento.'], 500);
         }
     }
 
     public function dragUpdate(Request $request, int $id)
     {
         try {
+            $request->merge($this->normalizeEventPayload($request));
+
             $validated = $request->validate([
                 'data_inicio' => 'required|date',
                 'data_fim' => 'required|date|after_or_equal:data_inicio',
@@ -164,11 +191,49 @@ class EventController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'success' => true,
                 'message' => 'Evento atualizado com sucesso.',
                 'data' => $event,
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao atualizar data do evento: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao atualizar data do evento: ' . $e->getMessage()], 500);
         }
+    }
+
+    protected function normalizeEventPayload(Request $request, bool $creating = false): array
+    {
+        $data = $request->all();
+        $aliases = [
+            'title' => 'titulo',
+            'description' => 'descricao',
+            'location' => 'local',
+            'start' => 'data_inicio',
+            'end' => 'data_fim',
+            'color' => 'cor',
+            'category_id' => 'categoria_id',
+            'external_link' => 'link_externo',
+        ];
+
+        foreach ($aliases as $source => $target) {
+            if (!array_key_exists($target, $data) && $request->filled($source)) {
+                $data[$target] = $request->input($source);
+            }
+        }
+
+        if (empty($data['data_fim']) && !empty($data['data_inicio'])) {
+            $data['data_fim'] = $data['data_inicio'];
+        }
+
+        if ($request->has('all_day')) {
+            $data['all_day'] = $request->boolean('all_day');
+        }
+
+        if ($request->has('publicado')) {
+            $data['publicado'] = $request->boolean('publicado');
+        } elseif ($creating) {
+            $data['publicado'] = true;
+        }
+
+        return $data;
     }
 }

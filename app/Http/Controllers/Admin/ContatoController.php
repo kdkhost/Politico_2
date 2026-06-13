@@ -83,6 +83,10 @@ class ContatoController extends Controller
                 $contact->update(['lido' => true]);
             }
 
+            if (!request()->expectsJson() && !request()->ajax()) {
+                return view('admin.contato.show', compact('contact'));
+            }
+
             return response()->json(['status' => 'success', 'data' => $contact]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Contato não encontrado.'], 404);
@@ -163,7 +167,6 @@ class ContatoController extends Controller
             }
 
             $handle = fopen($path, 'w+b');
-            fputs($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
             fputcsv($handle, ['ID', 'Nome', 'Email', 'Telefone', 'Assunto', 'Mensagem', 'Data', 'Lido', 'Respondido'], ';');
 
             foreach ($contacts as $contact) {

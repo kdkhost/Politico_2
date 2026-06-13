@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import * as bootstrap from 'bootstrap';
 import 'admin-lte';
 import 'datatables.net-bs5';
 import 'datatables.net-bs5/css/dataTables.bootstrap5.min.css';
@@ -6,6 +7,9 @@ import toastr from 'toastr';
 import Swal from 'sweetalert2';
 import Inputmask from 'inputmask';
 import 'chart.js';
+
+window.$ = window.jQuery = $;
+window.bootstrap = bootstrap;
 
 $.ajaxSetup({
     headers: {
@@ -470,15 +474,33 @@ function toggleDarkMode(event) {
 
 window.toggleDarkMode = toggleDarkMode;
 
+function syncThemeIcon(theme) {
+    const currentTheme = theme || document.documentElement.getAttribute('data-bs-theme') || document.body?.getAttribute('data-bs-theme') || 'light';
+    const icon = document.querySelector('#darkModeToggle') || document.querySelector('.dark-mode-toggle i');
+    if (icon) {
+        icon.className = currentTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+}
+
 function loadThemePreference() {
     const saved = localStorage.getItem('admin-theme');
     if (saved === 'dark') {
         document.documentElement.setAttribute('data-bs-theme', 'dark');
         document.body?.setAttribute('data-bs-theme', 'dark');
         document.body?.classList.add('dark-mode');
-        const icon = document.querySelector('#darkModeToggle') || document.querySelector('.dark-mode-toggle i');
-        if (icon) icon.className = 'fas fa-moon';
+        syncThemeIcon('dark');
+        return;
     }
+
+    if (saved === 'light') {
+        document.documentElement.setAttribute('data-bs-theme', 'light');
+        document.body?.setAttribute('data-bs-theme', 'light');
+        document.body?.classList.remove('dark-mode');
+        syncThemeIcon('light');
+        return;
+    }
+
+    syncThemeIcon();
 }
 
 $(document).on('click', '.dark-mode-toggle', toggleDarkMode);

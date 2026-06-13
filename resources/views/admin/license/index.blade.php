@@ -273,7 +273,8 @@
                     clearInterval(interval);
                     $('#updateProgressBar').css('width', '100%').text('100%');
                     $('#updateStatusText').text(res.message || 'Verificação concluída.');
-                    if (res.update_available) {
+                    var updateData = res.data || {};
+                    if (res.update_available || updateData.has_update) {
                         toastr.info('Nova versão disponível: ' + (res.latest_version || ''));
                     } else {
                         toastr.success('Sistema atualizado!');

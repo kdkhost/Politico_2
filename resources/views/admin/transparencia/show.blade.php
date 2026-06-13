@@ -1,44 +1,34 @@
 @extends('admin.layouts.master')
 
-@section('title', ucfirst($title ?? 'Listagem'))
-@section('breadcrumb', [
-    ['title' => ucfirst($title ?? 'Listagem'), 'url' => '']
-])
+@section('title', 'Detalhes da Transparência - ' . config('app.name'))
+@section('page_title', 'Detalhes da Transparência')
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('admin.transparencia.index') }}">Transparência</a></li>
+    <li class="breadcrumb-item active">Detalhes</li>
+@endsection
 
 @section('content')
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">{{ ucfirst($title ?? 'Listagem') }}</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">{{ ucfirst($title ?? 'Listagem') }}</li>
-                </ol>
-            </div>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{ $item->titulo }}</h3>
+        <div class="card-tools">
+            <a href="{{ route('admin.transparencia.edit', $item->id) }}" class="btn btn-primary btn-sm"><i class="fas fa-edit me-1"></i>Editar</a>
+            <a href="{{ route('admin.transparencia.index') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Voltar</a>
         </div>
     </div>
-</div>
-
-<div class="content">
-    <div class="container-fluid">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">{{ ucfirst($title ?? 'Listagem') }}</h3>
-                <div class="card-tools">
-                    @if(isset($createRoute))
-                    <a href="{{ route($createRoute) }}" class="btn btn-sm btn-primary">
-                        <i class="fas fa-plus"></i> Novo
-                    </a>
-                    @endif
-                </div>
-            </div>
-            <div class="card-body">
-                <p>Conteúdo da listagem será implementado aqui.</p>
-            </div>
-        </div>
+    <div class="card-body">
+        <table class="table">
+            <tr><th>Tipo</th><td>{{ $item->tipo }}</td></tr>
+            <tr><th>Categoria</th><td>{{ $item->categoria ?: '-' }}</td></tr>
+            <tr><th>Valor</th><td>{{ 'R$ ' . number_format((float) $item->valor, 2, ',', '.') }}</td></tr>
+            <tr><th>Fornecedor</th><td>{{ $item->fornecedor ?: '-' }}</td></tr>
+            <tr><th>Documento</th><td>{{ $item->documento_numero ?: '-' }}</td></tr>
+            <tr><th>Órgão responsável</th><td>{{ $item->orgao_responsavel ?: '-' }}</td></tr>
+            <tr><th>Publicação</th><td>{{ $item->data_publicacao?->format('d/m/Y') ?? '-' }}</td></tr>
+            <tr><th>Referência</th><td>{{ $item->data_referencia?->format('d/m/Y') ?? '-' }}</td></tr>
+            <tr><th>Status</th><td><span class="badge bg-info">{{ $item->status }}</span></td></tr>
+            <tr><th>Descrição</th><td>{{ $item->descricao ?: '-' }}</td></tr>
+        </table>
     </div>
 </div>
 @endsection

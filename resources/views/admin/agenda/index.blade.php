@@ -175,6 +175,7 @@
                 $('#eventModal').modal('show');
             },
             eventClick: function(info) {
+                info.jsEvent.preventDefault();
                 var event = info.event;
                 $('#event_id').val(event.id);
                 $('#event_title').val(event.title);
@@ -183,7 +184,7 @@
                 $('#event_category').val(event.extendedProps.category_id || '');
                 $('#event_color').val(event.backgroundColor || '#0d6efd');
                 $('#event_color_hex').val(event.backgroundColor || '#0d6efd');
-                $('#event_location').val(event.extendedProps.location || '');
+                $('#event_location').val(event.extendedProps.local || event.extendedProps.location || '');
                 $('#event_description').val(event.extendedProps.description || '');
                 $('#event_all_day').prop('checked', event.allDay || false);
                 $('#eventModalLabel').text('Editar Evento');
@@ -193,13 +194,13 @@
             eventDrop: function(info) {
                 var event = info.event;
                 $.ajax({
-                    url: '{{ route("admin.agenda.update", ":id") }}'.replace(':id', event.id),
-                    method: 'PUT',
+                    url: '{{ route("admin.agenda.drag-update", ":id") }}'.replace(':id', event.id),
+                    method: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
-                        title: event.title,
-                        start: event.start.toISOString(),
-                        end: event.end ? event.end.toISOString() : null
+                        data_inicio: event.start.toISOString(),
+                        data_fim: event.end ? event.end.toISOString() : event.start.toISOString(),
+                        all_day: event.allDay ? 1 : 0
                     },
                     success: function(res) {
                         if (res.success) toastr.success('Evento atualizado!');
@@ -211,13 +212,13 @@
             eventResize: function(info) {
                 var event = info.event;
                 $.ajax({
-                    url: '{{ route("admin.agenda.update", ":id") }}'.replace(':id', event.id),
-                    method: 'PUT',
+                    url: '{{ route("admin.agenda.drag-update", ":id") }}'.replace(':id', event.id),
+                    method: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
-                        title: event.title,
-                        start: event.start.toISOString(),
-                        end: event.end.toISOString()
+                        data_inicio: event.start.toISOString(),
+                        data_fim: event.end ? event.end.toISOString() : event.start.toISOString(),
+                        all_day: event.allDay ? 1 : 0
                     },
                     success: function(res) {
                         if (res.success) toastr.success('Evento redimensionado!');
@@ -233,7 +234,7 @@
             var id = $(this).val();
             calendar.removeAllEventSources();
             calendar.addEventSource({
-                url: '{{ route("admin.agenda.events") }}' + (id ? '?category_id=' + id : ''),
+                url: '{{ route("admin.agenda.data") }}' + (id ? '?category_id=' + id : ''),
                 method: 'GET'
             });
         });
@@ -246,12 +247,11 @@
             var btn = $('#btnSaveEvent');
             var id = $('#event_id').val();
             var url = id ? '{{ route("admin.agenda.update", ":id") }}'.replace(':id', id) : '{{ route("admin.agenda.store") }}';
-            var method = id ? 'PUT' : 'POST';
             btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Salvando...');
             $.ajax({
                 url: url,
                 method: 'POST',
-                data: $(this).serialize() + (id ? '&_method=PUT' : ''),
+                data: $(this).serialize(),
                 success: function(res) {
                     if (res.success) {
                         toastr.success(res.message || 'Evento salvo!');

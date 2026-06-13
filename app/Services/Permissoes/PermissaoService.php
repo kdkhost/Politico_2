@@ -41,6 +41,11 @@ class PermissaoService
     public function syncProfilePermissions(int $profileId, array $permissions): Profile
     {
         $profile = Profile::findOrFail($profileId);
+        $permissions = array_values(array_filter($permissions, fn ($permission): bool => $permission !== null && $permission !== ''));
+
+        if ($permissions !== [] && !is_numeric($permissions[0])) {
+            $permissions = Permission::whereIn('slug', $permissions)->pluck('id')->all();
+        }
 
         $profile->permissions()->sync($permissions);
 

@@ -15,10 +15,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Backup;
+use FilesystemIterator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use ZipArchive;
 
 class BackupController extends Controller
 {
@@ -41,33 +44,48 @@ class BackupController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'success' => true,
                 'data' => $backups->items(),
                 'draw' => (int) $request->draw,
                 'recordsTotal' => $backups->total(),
                 'recordsFiltered' => $backups->total(),
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao listar backups: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao listar backups: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function createForm()
+    {
+        return view('admin.backups.create');
     }
 
     public function create(Request $request)
     {
         try {
             $type = $request->input('type', 'full');
-            $filename = 'backup_' . now()->format('Ymd_His') . '.zip';
+            $extension = class_exists(ZipArchive::class) ? 'zip' : 'json';
+            $filename = 'backup_' . now()->format('Ymd_His') . '.' . $extension;
             $path = storage_path("app/backups/{$filename}");
-
             $dir = dirname($path);
+
             if (!is_dir($dir)) {
                 mkdir($dir, 0755, true);
             }
 
-            if ($type === 'db' || $type === 'full') {
+            $createdByPackage = false;
+            $commands = Artisan::all();
+
+            if (($type === 'db' || $type === 'full') && isset($commands['backup:run'])) {
                 Artisan::call('backup:run', [
-                    '--only-db' => true,
+                    '--only-db' => $type === 'db',
                     '--filename' => $filename,
                 ]);
+                $createdByPackage = file_exists($path);
+            }
+
+            if (!$createdByPackage) {
+                $this->createFallbackBackup($path, $type, $request->boolean('incluir_midia'));
             }
 
             $size = file_exists($path) ? filesize($path) : 0;
@@ -83,12 +101,13 @@ class BackupController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'success' => true,
                 'message' => 'Backup criado com sucesso.',
                 'data' => $backup,
                 'reload' => true,
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao criar backup: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao criar backup: ' . $e->getMessage()], 500);
         }
     }
 
@@ -99,12 +118,12 @@ class BackupController extends Controller
             $path = storage_path("app/{$backup->path}");
 
             if (!file_exists($path)) {
-                return response()->json(['status' => 'error', 'message' => 'Arquivo de backup não encontrado.'], 404);
+                return response()->json(['status' => 'error', 'success' => false, 'message' => 'Arquivo de backup nao encontrado.'], 404);
             }
 
             return Response::download($path, $backup->filename);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao baixar backup: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao baixar backup: ' . $e->getMessage()], 500);
         }
     }
 
@@ -120,9 +139,9 @@ class BackupController extends Controller
 
             $backup->delete();
 
-            return response()->json(['status' => 'success', 'message' => 'Backup excluído com sucesso.', 'reload' => true]);
+            return response()->json(['status' => 'success', 'success' => true, 'message' => 'Backup excluido com sucesso.', 'reload' => true]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao excluir backup.'], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao excluir backup.'], 500);
         }
     }
 
@@ -142,10 +161,11 @@ class BackupController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Configurações de backup salvas com sucesso.',
+                'success' => true,
+                'message' => 'Configuracoes de backup salvas com sucesso.',
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao salvar configurações: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao salvar configuracoes: ' . $e->getMessage()], 500);
         }
     }
 
@@ -160,16 +180,106 @@ class BackupController extends Controller
             $path = storage_path("app/{$backup->path}");
 
             if (!file_exists($path)) {
-                return response()->json(['status' => 'error', 'message' => 'Arquivo de backup não encontrado.'], 404);
+                return response()->json(['status' => 'error', 'success' => false, 'message' => 'Arquivo de backup nao encontrado.'], 404);
             }
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Restauração iniciada. Em ambiente de produção, execute o comando manualmente.',
-                'command' => "mysql -u username -p database < {$path}",
+                'success' => true,
+                'message' => 'Restauracao preparada. Em producao, valide o arquivo antes de restaurar.',
+                'path' => $path,
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao restaurar backup: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao restaurar backup: ' . $e->getMessage()], 500);
+        }
+    }
+
+    protected function createFallbackBackup(string $path, string $type, bool $includeMedia): void
+    {
+        $manifest = [
+            'app' => config('app.name'),
+            'url' => config('app.url'),
+            'type' => $type,
+            'created_at' => now()->toIso8601String(),
+            'driver' => class_exists(ZipArchive::class) ? 'ziparchive' : 'json-manifest',
+            'note' => 'Backup gerado pelo fallback interno quando o comando backup:run nao esta disponivel.',
+        ];
+
+        if (!class_exists(ZipArchive::class)) {
+            file_put_contents($path, json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+
+            return;
+        }
+
+        $zip = new ZipArchive();
+        if ($zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            throw new \RuntimeException('Nao foi possivel criar o arquivo ZIP de backup.');
+        }
+
+        $zip->addFromString('manifest.json', json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+
+        if ($type === 'db' || $type === 'full') {
+            $zip->addFromString(
+                'database/README.txt',
+                'Dump SQL automatico nao disponivel neste ambiente. Use o backup do cPanel ou mysqldump para restauracao completa do banco.'
+            );
+        }
+
+        if ($type !== 'db') {
+            $paths = [
+                'app',
+                'bootstrap',
+                'config',
+                'database',
+                'public',
+                'resources',
+                'routes',
+            ];
+
+            if ($includeMedia) {
+                $paths[] = 'storage/app/public';
+            }
+
+            foreach ($paths as $relativePath) {
+                $absolutePath = base_path($relativePath);
+                if (is_dir($absolutePath)) {
+                    $this->addDirectoryToZip($zip, $absolutePath, $relativePath);
+                } elseif (is_file($absolutePath)) {
+                    $zip->addFile($absolutePath, $relativePath);
+                }
+            }
+
+            foreach (['composer.json', 'composer.lock', 'package.json', 'vite.config.js', '.htaccess'] as $file) {
+                $absolutePath = base_path($file);
+                if (is_file($absolutePath)) {
+                    $zip->addFile($absolutePath, $file);
+                }
+            }
+        }
+
+        $zip->close();
+    }
+
+    protected function addDirectoryToZip(ZipArchive $zip, string $absolutePath, string $relativePath): void
+    {
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($absolutePath, FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::SELF_FIRST,
+        );
+
+        foreach ($iterator as $file) {
+            if (!$file->isFile()) {
+                continue;
+            }
+
+            $fullPath = $file->getPathname();
+            $zipPath = str_replace('\\', '/', $relativePath . '/' . ltrim(substr($fullPath, strlen($absolutePath)), '\\/'));
+
+            if (str_contains($zipPath, '/node_modules/') || str_contains($zipPath, '/vendor/')) {
+                continue;
+            }
+
+            $zip->addFile($fullPath, $zipPath);
         }
     }
 }

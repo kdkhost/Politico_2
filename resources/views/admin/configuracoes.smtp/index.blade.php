@@ -1,40 +1,4 @@
-@extends('admin.layouts.master')
-
-@section('title', 'Configurações SMTP')
-@section('breadcrumb', [
-    ['title' => 'Dashboard', 'url' => route('admin.dashboard')],
-    ['title' => 'Configurações', 'url' => route('admin.settings.index')],
-    ['title' => 'SMTP', 'url' => '']
-])
-
-@section('content')
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">Configurações SMTP</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('admin.settings.index') }}">Configurações</a></li>
-                    <li class="breadcrumb-item active">SMTP</li>
-                </ol>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="content">
-    <div class="container-fluid">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Configurações de Email</h3>
-            </div>
-            <div class="card-body">
-                <p>Formulário de configurações SMTP será implementado aqui.</p>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
+@php
+    header('Location: ' . route('admin.smtp.index'), true, 302);
+    exit;
+@endphp

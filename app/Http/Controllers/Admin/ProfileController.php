@@ -27,7 +27,10 @@ class ProfileController extends Controller
 
     public function index()
     {
-        return view('admin.perfis.index');
+        $profiles = $this->perfilService->listAll();
+        $permissionGroups = $this->permissaoService->getPermissionGroups();
+
+        return view('admin.perfis.index', compact('profiles', 'permissionGroups'));
     }
 
     public function list(Request $request)
@@ -61,6 +64,12 @@ class ProfileController extends Controller
     public function store(Request $request)
     {
         try {
+            $request->merge([
+                'nome' => $request->input('nome', $request->input('name')),
+                'descricao' => $request->input('descricao', $request->input('description')),
+                'nivel' => $request->input('nivel', 50),
+            ]);
+
             $validated = $request->validate([
                 'nome' => 'required|string|max:255',
                 'slug' => 'nullable|string|max:255|unique:profiles,slug',
@@ -72,9 +81,10 @@ class ProfileController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'success' => true,
                 'message' => 'Perfil criado com sucesso.',
                 'data' => $profile,
-                'redirect' => route('admin.perfis.edit', $profile->id),
+                'redirect' => route('admin.permissions.profiles.edit', $profile->id),
             ]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao criar perfil: ' . $e->getMessage()], 500);
@@ -85,7 +95,11 @@ class ProfileController extends Controller
     {
         try {
             $profile = $this->perfilService->findById($id);
-            return response()->json(['status' => 'success', 'data' => $profile]);
+            if (!request()->expectsJson() && !request()->ajax()) {
+                return view('admin.perfis.show', compact('profile'));
+            }
+
+            return response()->json(['status' => 'success', 'success' => true, 'data' => $profile]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Perfil não encontrado.'], 404);
         }
@@ -102,6 +116,12 @@ class ProfileController extends Controller
     public function update(Request $request, int $id)
     {
         try {
+            $request->merge([
+                'nome' => $request->input('nome', $request->input('name')),
+                'descricao' => $request->input('descricao', $request->input('description')),
+                'nivel' => $request->input('nivel', 50),
+            ]);
+
             $validated = $request->validate([
                 'nome' => 'required|string|max:255',
                 'slug' => 'nullable|string|max:255|unique:profiles,slug,' . $id,
@@ -113,6 +133,7 @@ class ProfileController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'success' => true,
                 'message' => 'Perfil atualizado com sucesso.',
                 'data' => $profile,
             ]);
@@ -125,7 +146,7 @@ class ProfileController extends Controller
     {
         try {
             $this->perfilService->delete($id);
-            return response()->json(['status' => 'success', 'message' => 'Perfil excluído com sucesso.', 'reload' => true]);
+            return response()->json(['status' => 'success', 'success' => true, 'message' => 'Perfil excluído com sucesso.', 'reload' => true]);
         } catch (\RuntimeException $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         } catch (\Throwable $e) {
@@ -142,6 +163,7 @@ class ProfileController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'success' => true,
                 'message' => 'Permissões sincronizadas com sucesso.',
             ]);
         } catch (\Throwable $e) {
