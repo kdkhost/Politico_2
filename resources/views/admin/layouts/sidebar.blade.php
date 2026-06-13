@@ -1,254 +1,344 @@
+@php
+    $user = auth()->user();
+    $modules = config('modules', []);
+    $currentRoute = request()->route()?->getName() ?? '';
+    $currentPrefix = request()->segment(2) ?? 'dashboard';
+    $areaAliases = [
+        'paginas' => 'pages',
+        'usuarios' => 'users',
+        'permissoes' => 'permissions',
+        'configuracoes' => 'settings',
+        'contatos' => 'contato',
+        'midia' => 'midia',
+        'modulos' => 'modules',
+    ];
+    $currentArea = $areaAliases[$currentPrefix] ?? $currentPrefix;
+
+    $moduleIsActive = function (string $module) use ($modules): bool {
+        return (bool) data_get($modules, "{$module}.active", true);
+    };
+
+    $canSee = function (array|string|null $permissions = null) use ($user): bool {
+        if (!$user) {
+            return false;
+        }
+
+        if (method_exists($user, 'isAdmin') && $user->isAdmin()) {
+            return true;
+        }
+
+        foreach ((array) $permissions as $permission) {
+            if ($permission && ($user->can($permission) || $user->hasPermission($permission))) {
+                return true;
+            }
+        }
+
+        return empty($permissions);
+    };
+
+    $routeExists = fn (string $route): bool => \Illuminate\Support\Facades\Route::has($route);
+    $urlFor = fn (string $route): string => $routeExists($route) ? route($route) : '#';
+
+    $sections = [
+        [
+            'items' => [
+                [
+                    'label' => 'Dashboard',
+                    'icon' => 'fas fa-tachometer-alt',
+                    'route' => 'admin.dashboard',
+                    'area' => 'dashboard',
+                    'permissions' => ['dashboard.view'],
+                ],
+            ],
+        ],
+        [
+            'header' => 'Conteúdo',
+            'items' => [
+                [
+                    'label' => 'Páginas',
+                    'icon' => 'fas fa-file-alt',
+                    'route' => 'admin.pages.index',
+                    'area' => 'pages',
+                    'module' => 'pages',
+                    'permissions' => ['pages.view'],
+                    'children' => [
+                        ['label' => 'Todas as Páginas', 'route' => 'admin.pages.index', 'icon' => 'far fa-circle'],
+                        ['label' => 'Nova Página', 'route' => 'admin.pages.create', 'icon' => 'far fa-circle'],
+                    ],
+                ],
+                [
+                    'label' => 'Blog',
+                    'icon' => 'fas fa-newspaper',
+                    'route' => 'admin.blog.index',
+                    'area' => 'blog',
+                    'module' => 'blog',
+                    'permissions' => ['blog.view'],
+                    'children' => [
+                        ['label' => 'Todas as Postagens', 'route' => 'admin.blog.index', 'icon' => 'far fa-circle'],
+                        ['label' => 'Nova Postagem', 'route' => 'admin.blog.create', 'icon' => 'far fa-circle'],
+                        ['label' => 'Categorias', 'route' => 'admin.blog.categories', 'icon' => 'far fa-circle'],
+                        ['label' => 'Tags', 'route' => 'admin.blog.tags', 'icon' => 'far fa-circle'],
+                    ],
+                ],
+                [
+                    'label' => 'Agenda',
+                    'icon' => 'fas fa-calendar-alt',
+                    'route' => 'admin.agenda.index',
+                    'area' => 'agenda',
+                    'module' => 'agenda',
+                    'permissions' => ['agenda.view'],
+                ],
+                [
+                    'label' => 'Mídia',
+                    'icon' => 'fas fa-photo-video',
+                    'route' => 'admin.midia.index',
+                    'area' => 'midia',
+                    'module' => 'midia',
+                    'permissions' => ['midia.view'],
+                ],
+                [
+                    'label' => 'Menus',
+                    'icon' => 'fas fa-bars-staggered',
+                    'route' => 'admin.menus.index',
+                    'area' => 'menus',
+                    'module' => 'menus',
+                    'permissions' => ['menus.view'],
+                ],
+                [
+                    'label' => 'Hashtags',
+                    'icon' => 'fas fa-hashtag',
+                    'route' => 'admin.hashtags.index',
+                    'area' => 'hashtags',
+                    'module' => 'hashtags',
+                    'permissions' => ['hashtags.view'],
+                ],
+            ],
+        ],
+        [
+            'header' => 'Gabinete',
+            'items' => [
+                [
+                    'label' => 'Transparência',
+                    'icon' => 'fas fa-eye',
+                    'route' => 'admin.transparencia.index',
+                    'area' => 'transparencia',
+                    'module' => 'transparencia',
+                    'permissions' => ['transparencia.view'],
+                    'children' => [
+                        ['label' => 'Todos os Itens', 'route' => 'admin.transparencia.index', 'icon' => 'far fa-circle'],
+                        ['label' => 'Novo Item', 'route' => 'admin.transparencia.create', 'icon' => 'far fa-circle'],
+                    ],
+                ],
+                [
+                    'label' => 'Financeiro',
+                    'icon' => 'fas fa-money-bill-wave',
+                    'route' => 'admin.financeiro.index',
+                    'area' => 'financeiro',
+                    'module' => 'financeiro',
+                    'permissions' => ['financeiro.view'],
+                    'children' => [
+                        ['label' => 'Transações', 'route' => 'admin.financeiro.index', 'icon' => 'far fa-circle'],
+                        ['label' => 'Nova Transação', 'route' => 'admin.financeiro.create', 'icon' => 'far fa-circle'],
+                        ['label' => 'Categorias', 'route' => 'admin.financeiro.categorias', 'icon' => 'far fa-circle'],
+                    ],
+                ],
+                [
+                    'label' => 'Contatos',
+                    'icon' => 'fas fa-envelope',
+                    'route' => 'admin.contato.index',
+                    'area' => 'contato',
+                    'module' => 'contato',
+                    'permissions' => ['contato.view', 'contatos.view'],
+                ],
+                [
+                    'label' => 'Newsletter',
+                    'icon' => 'fas fa-mail-bulk',
+                    'route' => 'admin.newsletter.index',
+                    'area' => 'newsletter',
+                    'module' => 'newsletter',
+                    'permissions' => ['newsletter.view'],
+                ],
+                [
+                    'label' => 'Visitas',
+                    'icon' => 'fas fa-chart-line',
+                    'route' => 'admin.visitas.index',
+                    'area' => 'visitas',
+                    'module' => 'visitas',
+                    'permissions' => ['visitas.view'],
+                ],
+                [
+                    'label' => 'SEO',
+                    'icon' => 'fas fa-search',
+                    'route' => 'admin.seo.index',
+                    'area' => 'seo',
+                    'module' => 'seo',
+                    'permissions' => ['seo.view'],
+                ],
+            ],
+        ],
+        [
+            'header' => 'Administração',
+            'items' => [
+                [
+                    'label' => 'Usuários',
+                    'icon' => 'fas fa-users',
+                    'route' => 'admin.users.index',
+                    'area' => 'users',
+                    'permissions' => ['users.view', 'usuarios.view'],
+                    'children' => [
+                        ['label' => 'Todos os Usuários', 'route' => 'admin.users.index', 'icon' => 'far fa-circle'],
+                        ['label' => 'Perfis e Permissões', 'route' => 'admin.permissions.index', 'icon' => 'far fa-circle'],
+                    ],
+                ],
+                [
+                    'label' => 'Configurações',
+                    'icon' => 'fas fa-cogs',
+                    'route' => 'admin.settings.index',
+                    'area' => 'settings',
+                    'module' => 'settings',
+                    'permissions' => ['settings.view', 'configuracoes.view'],
+                ],
+                [
+                    'label' => 'Módulos',
+                    'icon' => 'fas fa-layer-group',
+                    'route' => 'admin.modules.index',
+                    'area' => 'modules',
+                    'module' => 'modules',
+                    'permissions' => ['modules.view', 'modulos.view'],
+                ],
+                [
+                    'label' => 'SMTP',
+                    'icon' => 'fas fa-envelope-open-text',
+                    'route' => 'admin.smtp.index',
+                    'area' => 'smtp',
+                    'module' => 'smtp',
+                    'permissions' => ['smtp.view'],
+                ],
+                [
+                    'label' => 'Backup',
+                    'icon' => 'fas fa-database',
+                    'route' => 'admin.backup.index',
+                    'area' => 'backup',
+                    'module' => 'backup',
+                    'permissions' => ['backup.view'],
+                ],
+                [
+                    'label' => 'WAF',
+                    'icon' => 'fas fa-shield-alt',
+                    'route' => 'admin.waf.index',
+                    'area' => 'waf',
+                    'module' => 'waf',
+                    'permissions' => ['waf.view'],
+                ],
+                [
+                    'label' => 'Logs do Sistema',
+                    'icon' => 'fas fa-clipboard-list',
+                    'route' => 'admin.logs.index',
+                    'area' => 'logs',
+                    'module' => 'logs',
+                    'permissions' => ['logs.view'],
+                ],
+                [
+                    'label' => 'Notificações',
+                    'icon' => 'fas fa-bell',
+                    'route' => 'admin.notificacoes.index',
+                    'area' => 'notificacoes',
+                    'module' => 'notificacoes',
+                    'permissions' => ['notificacoes.view'],
+                ],
+                [
+                    'label' => 'Licença',
+                    'icon' => 'fas fa-key',
+                    'route' => 'admin.license.index',
+                    'area' => 'license',
+                    'module' => 'license',
+                    'permissions' => ['license.view'],
+                ],
+            ],
+        ],
+    ];
+@endphp
+
 <nav class="mt-2">
     <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
-        @php
-            $modules = config('modules', []);
-            $currentRoute = request()->route() ? request()->route()->getName() : '';
-            $currentPrefix = request()->segment(2) ?? 'dashboard';
-        @endphp
+        @foreach($sections as $section)
+            @php
+                $visibleItems = [];
 
-        <li class="nav-item">
-            <a href="{{ route('admin.dashboard') }}" class="nav-link {{ $currentRoute === 'admin.dashboard' ? 'active' : '' }}">
-                <i class="nav-icon fas fa-tachometer-alt"></i>
-                <p>Dashboard</p>
-            </a>
-        </li>
+                foreach ($section['items'] as $item) {
+                    $module = $item['module'] ?? null;
+                    $permissions = $item['permissions'] ?? [];
 
-        @if(isset($modules['pages']) && $modules['pages']['active'] && (auth()->check() && auth()->user()->can('pages.view')))
-        <li class="nav-item {{ in_array($currentPrefix, ['pages']) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ in_array($currentPrefix, ['pages']) ? 'active' : '' }}">
-                <i class="nav-icon fas fa-file-alt"></i>
-                <p>Páginas<i class="nav-arrow fas fa-chevron-right"></i></p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="{{ route('admin.pages.index') }}" class="nav-link {{ $currentRoute === 'admin.pages.index' ? 'active' : '' }}">
-                        <i class="far fa-circle nav-icon"></i><p>Todas as Páginas</p>
+                    if ($module && !$moduleIsActive($module)) {
+                        continue;
+                    }
+
+                    if (!$canSee($permissions)) {
+                        continue;
+                    }
+
+                    if (!$routeExists($item['route'])) {
+                        continue;
+                    }
+
+                    $visibleItems[] = $item;
+                }
+            @endphp
+
+            @continue(empty($visibleItems))
+
+            @isset($section['header'])
+                <li class="nav-header">{{ $section['header'] }}</li>
+            @endisset
+
+            @foreach($visibleItems as $item)
+                @php
+                    $children = [];
+
+                    foreach (($item['children'] ?? []) as $child) {
+                        if ($routeExists($child['route'])) {
+                            $children[] = $child;
+                        }
+                    }
+
+                    $isTree = count($children) > 0;
+                    $childIsActive = false;
+
+                    foreach ($children as $child) {
+                        if ($currentRoute === $child['route']) {
+                            $childIsActive = true;
+                            break;
+                        }
+                    }
+
+                    $isActive = $currentArea === ($item['area'] ?? null) || $currentRoute === $item['route'] || $childIsActive;
+                @endphp
+
+                <li class="nav-item {{ $isTree && $isActive ? 'menu-open' : '' }}">
+                    <a href="{{ $isTree ? '#' : $urlFor($item['route']) }}" class="nav-link {{ $isActive ? 'active' : '' }}">
+                        <i class="nav-icon {{ $item['icon'] }}"></i>
+                        <p>
+                            {{ $item['label'] }}
+                            @if($isTree)
+                                <i class="nav-arrow fas fa-chevron-right"></i>
+                            @endif
+                        </p>
                     </a>
+
+                    @if($isTree)
+                        <ul class="nav nav-treeview">
+                            @foreach($children as $child)
+                                <li class="nav-item">
+                                    <a href="{{ $urlFor($child['route']) }}" class="nav-link {{ $currentRoute === $child['route'] ? 'active' : '' }}">
+                                        <i class="nav-icon {{ $child['icon'] ?? 'far fa-circle' }}"></i>
+                                        <p>{{ $child['label'] }}</p>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.pages.create') }}" class="nav-link {{ $currentRoute === 'admin.pages.create' ? 'active' : '' }}">
-                        <i class="far fa-circle nav-icon"></i><p>Nova Página</p>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        @endif
-
-        @if(isset($modules['blog']) && $modules['blog']['active'] && (auth()->check() && auth()->user()->can('blog.view')))
-        <li class="nav-item {{ in_array($currentPrefix, ['blog']) ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ in_array($currentPrefix, ['blog']) ? 'active' : '' }}">
-                <i class="nav-icon fas fa-newspaper"></i>
-                <p>Blog<i class="nav-arrow fas fa-chevron-right"></i></p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="{{ route('admin.blog.index') }}" class="nav-link {{ $currentRoute === 'admin.blog.index' ? 'active' : '' }}">
-                        <i class="far fa-circle nav-icon"></i><p>Todas as Postagens</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.blog.create') }}" class="nav-link {{ $currentRoute === 'admin.blog.create' ? 'active' : '' }}">
-                        <i class="far fa-circle nav-icon"></i><p>Nova Postagem</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.blog.categories') }}" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i><p>Categorias</p>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        @endif
-
-        @if(isset($modules['agenda']) && $modules['agenda']['active'] && (auth()->check() && auth()->user()->can('agenda.view')))
-        <li class="nav-item">
-            <a href="{{ route('admin.agenda.index') }}" class="nav-link {{ $currentRoute === 'admin.agenda.index' ? 'active' : '' }}">
-                <i class="nav-icon fas fa-calendar-alt"></i>
-                <p>Agenda</p>
-            </a>
-        </li>
-        @endif
-
-        @if(isset($modules['midia']) && $modules['midia']['active'] && (auth()->check() && auth()->user()->can('midia.view')))
-        <li class="nav-item">
-            <a href="{{ route('admin.midia.index') }}" class="nav-link {{ $currentRoute === 'admin.midia.index' ? 'active' : '' }}">
-                <i class="nav-icon fas fa-photo-video"></i>
-                <p>Mídia</p>
-            </a>
-        </li>
-        @endif
-
-        @if(isset($modules['transparencia']) && $modules['transparencia']['active'] && (auth()->check() && auth()->user()->can('transparencia.view')))
-        <li class="nav-item {{ $currentPrefix === 'transparencia' ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ $currentPrefix === 'transparencia' ? 'active' : '' }}">
-                <i class="nav-icon fas fa-eye"></i>
-                <p>Transparência<i class="nav-arrow fas fa-chevron-right"></i></p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="{{ route('admin.transparencia.index') }}" class="nav-link {{ $currentRoute === 'admin.transparencia.index' ? 'active' : '' }}">
-                        <i class="far fa-circle nav-icon"></i><p>Todos os Itens</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.transparencia.create') }}" class="nav-link {{ $currentRoute === 'admin.transparencia.create' ? 'active' : '' }}">
-                        <i class="far fa-circle nav-icon"></i><p>Novo Item</p>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        @endif
-
-        @if(isset($modules['financeiro']) && $modules['financeiro']['active'] && (auth()->check() && auth()->user()->can('financeiro.view')))
-        <li class="nav-item {{ $currentPrefix === 'financeiro' ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ $currentPrefix === 'financeiro' ? 'active' : '' }}">
-                <i class="nav-icon fas fa-money-bill-wave"></i>
-                <p>Financeiro<i class="nav-arrow fas fa-chevron-right"></i></p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="{{ route('admin.financeiro.index') }}" class="nav-link {{ $currentRoute === 'admin.financeiro.index' ? 'active' : '' }}">
-                        <i class="far fa-circle nav-icon"></i><p>Todas as Transações</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.financeiro.create') }}" class="nav-link {{ $currentRoute === 'admin.financeiro.create' ? 'active' : '' }}">
-                        <i class="far fa-circle nav-icon"></i><p>Nova Transação</p>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        @endif
-
-        @if(isset($modules['contato']) && $modules['contato']['active'] && (auth()->check() && auth()->user()->can('contato.view')))
-        <li class="nav-item">
-            <a href="{{ route('admin.contato.index') }}" class="nav-link {{ $currentRoute === 'admin.contato.index' ? 'active' : '' }}">
-                <i class="nav-icon fas fa-envelope"></i>
-                <p>Contatos</p>
-            </a>
-        </li>
-        @endif
-
-        @if(isset($modules['newsletter']) && $modules['newsletter']['active'] && (auth()->check() && auth()->user()->can('newsletter.view')))
-        <li class="nav-item">
-            <a href="{{ route('admin.newsletter.index') }}" class="nav-link">
-                <i class="nav-icon fas fa-mail-bulk"></i>
-                <p>Newsletter</p>
-            </a>
-        </li>
-        @endif
-
-        @if(isset($modules['visitas']) && $modules['visitas']['active'] && (auth()->check() && auth()->user()->can('visitas.view')))
-        <li class="nav-item">
-            <a href="{{ route('admin.visitas.index') }}" class="nav-link {{ $currentRoute === 'admin.visitas.index' ? 'active' : '' }}">
-                <i class="nav-icon fas fa-chart-line"></i>
-                <p>Visitas</p>
-            </a>
-        </li>
-        @endif
-
-        @if(isset($modules['menus']) && $modules['menus']['active'] && (auth()->check() && auth()->user()->can('menus.view')))
-        <li class="nav-item">
-            <a href="{{ route('admin.menus.index') }}" class="nav-link {{ $currentRoute === 'admin.menus.index' ? 'active' : '' }}">
-                <i class="nav-icon fas fa-bars"></i>
-                <p>Menus</p>
-            </a>
-        </li>
-        @endif
-
-        @if(isset($modules['seo']) && $modules['seo']['active'] && (auth()->check() && auth()->user()->can('seo.view')))
-        <li class="nav-item">
-            <a href="{{ route('admin.seo.index') }}" class="nav-link">
-                <i class="nav-icon fas fa-search"></i>
-                <p>SEO</p>
-            </a>
-        </li>
-        @endif
-
-        <li class="nav-header">ADMINISTRAÇÃO</li>
-
-        @if(auth()->check() && auth()->user()->can('users.view'))
-        <li class="nav-item {{ $currentPrefix === 'users' ? 'menu-open' : '' }}">
-            <a href="#" class="nav-link {{ $currentPrefix === 'users' ? 'active' : '' }}">
-                <i class="nav-icon fas fa-users"></i>
-                <p>Usuários<i class="nav-arrow fas fa-chevron-right"></i></p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="{{ route('admin.users.index') }}" class="nav-link {{ $currentRoute === 'admin.users.index' ? 'active' : '' }}">
-                        <i class="far fa-circle nav-icon"></i><p>Todos os Usuários</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.permissions.index') }}" class="nav-link {{ $currentRoute === 'admin.permissions.index' ? 'active' : '' }}">
-                        <i class="far fa-circle nav-icon"></i><p>Perfis e Permissões</p>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        @endif
-
-        @if(isset($modules['smtp']) && $modules['smtp']['active'] && (auth()->check() && auth()->user()->can('smtp.view')))
-        <li class="nav-item">
-            <a href="{{ route('admin.smtp.index') }}" class="nav-link {{ $currentRoute === 'admin.smtp.index' ? 'active' : '' }}">
-                <i class="nav-icon fas fa-envelope-open-text"></i>
-                <p>SMTP</p>
-            </a>
-        </li>
-        @endif
-
-        @if(isset($modules['backup']) && $modules['backup']['active'] && (auth()->check() && auth()->user()->can('backup.view')))
-        <li class="nav-item">
-            <a href="{{ route('admin.backup.index') }}" class="nav-link {{ $currentRoute === 'admin.backup.index' ? 'active' : '' }}">
-                <i class="nav-icon fas fa-database"></i>
-                <p>Backup</p>
-            </a>
-        </li>
-        @endif
-
-        @if(isset($modules['waf']) && $modules['waf']['active'] && (auth()->check() && auth()->user()->can('waf.view')))
-        <li class="nav-item">
-            <a href="{{ route('admin.waf.index') }}" class="nav-link {{ $currentRoute === 'admin.waf.index' ? 'active' : '' }}">
-                <i class="nav-icon fas fa-shield-alt"></i>
-                <p>WAF</p>
-            </a>
-        </li>
-        @endif
-
-        @if(isset($modules['logs']) && $modules['logs']['active'] && (auth()->check() && auth()->user()->can('logs.view')))
-        <li class="nav-item">
-            <a href="{{ route('admin.logs.index') }}" class="nav-link {{ $currentRoute === 'admin.logs.index' ? 'active' : '' }}">
-                <i class="nav-icon fas fa-clipboard-list"></i>
-                <p>Logs do Sistema</p>
-            </a>
-        </li>
-        @endif
-
-        @if(isset($modules['notificacoes']) && $modules['notificacoes']['active'] && (auth()->check() && auth()->user()->can('notificacoes.view')))
-        <li class="nav-item">
-            <a href="{{ route('admin.notificacoes.index') }}" class="nav-link">
-                <i class="nav-icon fas fa-bell"></i>
-                <p>Notificações</p>
-            </a>
-        </li>
-        @endif
-
-        @if(isset($modules['license']) && $modules['license']['active'] && (auth()->check() && auth()->user()->can('license.view')))
-        <li class="nav-item">
-            <a href="{{ route('admin.license.index') }}" class="nav-link {{ $currentRoute === 'admin.license.index' ? 'active' : '' }}">
-                <i class="nav-icon fas fa-key"></i>
-                <p>Licença</p>
-            </a>
-        </li>
-        @endif
-
-        @if(isset($modules['settings']) && $modules['settings']['active'] && (auth()->check() && auth()->user()->can('settings.view')))
-        <li class="nav-item">
-            <a href="{{ route('admin.settings.index') }}" class="nav-link {{ $currentRoute === 'admin.settings.index' ? 'active' : '' }}">
-                <i class="nav-icon fas fa-cogs"></i>
-                <p>Configurações</p>
-            </a>
-        </li>
-        @endif
+            @endforeach
+        @endforeach
     </ul>
 </nav>

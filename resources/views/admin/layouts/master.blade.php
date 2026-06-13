@@ -22,7 +22,7 @@
     @vite(['resources/css/admin/admin.css', 'resources/js/admin/admin.js'])
     @stack('styles')
 </head>
-<body class="layout-fixed sidebar-expand-lg admin-premium {{ settings('dark_mode') ? 'dark-mode' : '' }}" data-bs-theme="{{ settings('dark_mode') ? 'dark' : 'light' }}">
+<body class="layout-fixed fixed-header sidebar-expand-lg bg-body-tertiary admin-premium {{ settings('dark_mode') ? 'dark-mode' : '' }}" data-bs-theme="{{ settings('dark_mode') ? 'dark' : 'light' }}">
     <div class="preloader flex-column justify-content-center align-items-center">
         <i class="fas fa-spinner fa-spin text-primary" style="font-size: 3rem;"></i>
     </div>
@@ -93,10 +93,10 @@
 
     <script>
         window.addEventListener('load', function() {
-            document.body.classList.add('admin-loaded');
+            document.body.classList.add('admin-loaded', 'app-loaded');
         });
         setTimeout(function() {
-            document.body.classList.add('admin-loaded');
+            document.body.classList.add('admin-loaded', 'app-loaded');
         }, 1400);
 
         $.ajaxSetup({

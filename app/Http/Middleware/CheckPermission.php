@@ -29,7 +29,7 @@ class CheckPermission
             return redirect()->route('login');
         }
 
-        if ($user->is_super_admin) {
+        if ($user->isAdmin()) {
             return $next($request);
         }
 

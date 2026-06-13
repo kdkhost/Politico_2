@@ -30,7 +30,7 @@ window.Swal = Swal;
 window.toastr = toastr;
 
 function markAdminLoaded() {
-    document.body?.classList.add('admin-loaded');
+    document.body?.classList.add('admin-loaded', 'app-loaded');
 }
 
 if (document.readyState === 'complete') {

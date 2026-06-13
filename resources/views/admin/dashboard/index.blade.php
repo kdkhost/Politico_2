@@ -56,7 +56,10 @@
             <div class="card-header border-0">
                 <h3 class="card-title"><i class="fas fa-chart-area me-1"></i>Visitas (Últimos 30 dias)</h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse"><i class="fas fa-minus"></i></button>
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse" aria-label="Recolher card">
+                        <i data-lte-icon="expand" class="fas fa-plus"></i>
+                        <i data-lte-icon="collapse" class="fas fa-minus"></i>
+                    </button>
                 </div>
             </div>
             <div class="card-body">
@@ -68,7 +71,10 @@
             <div class="card-header border-0">
                 <h3 class="card-title"><i class="fas fa-money-bill me-1"></i>Financeiro (Últimos 12 meses)</h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse"><i class="fas fa-minus"></i></button>
+                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse" aria-label="Recolher card">
+                        <i data-lte-icon="expand" class="fas fa-plus"></i>
+                        <i data-lte-icon="collapse" class="fas fa-minus"></i>
+                    </button>
                 </div>
             </div>
             <div class="card-body">

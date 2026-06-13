@@ -31,6 +31,13 @@
         </a>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link admin-icon-button" href="#" data-lte-toggle="fullscreen" role="button" aria-label="Alternar tela cheia">
+            <i data-lte-icon="maximize" class="fas fa-expand"></i>
+            <i data-lte-icon="minimize" class="fas fa-compress d-none"></i>
+        </a>
+    </li>
+
     <li class="nav-item dropdown user-menu">
         <a href="#" class="nav-link dropdown-toggle admin-user-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">
             <img src="{{ auth()->user()->avatar_url ?? asset('img/default-avatar.png') }}" class="user-image admin-avatar" alt="{{ auth()->user()->name ?? 'Usuário' }}">
