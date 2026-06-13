@@ -90,10 +90,13 @@
                 <ul class="timeline ms-3" id="activityTimeline">
                     @forelse($recentActivities ?? [] as $activity)
                         <li class="timeline-item">
-                            <span class="timeline-point timeline-point-{{ $activity->type ?? 'info' }}"></span>
+                            <span class="timeline-point timeline-point-{{ data_get($activity, 'type', 'info') }}"></span>
                             <div class="timeline-content">
-                                <small class="text-muted">{{ $activity->created_at->diffForHumans() }}</small>
-                                <p class="mb-0">{{ $activity->description }}</p>
+                                @php($activityCreatedAt = data_get($activity, 'created_at'))
+                                <small class="text-muted">
+                                    {{ $activityCreatedAt ? \Carbon\Carbon::parse($activityCreatedAt)->diffForHumans() : '-' }}
+                                </small>
+                                <p class="mb-0">{{ data_get($activity, 'description', data_get($activity, 'acao', '-')) }}</p>
                             </div>
                         </li>
                     @empty
