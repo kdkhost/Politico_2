@@ -19,6 +19,7 @@ use App\Models\Post;
 use App\Models\Tag;
 use App\Services\Blog\BlogService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class BlogController extends Controller
 {
@@ -42,26 +43,57 @@ class BlogController extends Controller
 
             $posts = $this->blogService->listPosts($filters);
             $total = $posts->total();
+            $data = collect($posts->items())->map(function (Post $post): array {
+                $editUrl = route('admin.blog.edit', $post->id);
+                $deleteUrl = route('admin.blog.destroy', $post->id);
+                $statusLabels = [
+                    'draft' => ['Rascunho', 'secondary'],
+                    'published' => ['Publicado', 'success'],
+                    'scheduled' => ['Agendado', 'warning'],
+                    'archived' => ['Arquivado', 'dark'],
+                ];
+                [$statusText, $statusClass] = $statusLabels[$post->status] ?? [$post->status ?: 'Indefinido', 'secondary'];
+
+                return [
+                    'id' => $post->id,
+                    'title' => e($post->titulo),
+                    'category_name' => e($post->category?->nome ?? 'Sem categoria'),
+                    'tags' => $post->tags->isNotEmpty()
+                        ? $post->tags->map(fn (Tag $tag): string => '<span class="badge bg-info me-1">' . e($tag->nome) . '</span>')->implode('')
+                        : '<span class="text-muted">Sem tags</span>',
+                    'status' => '<span class="badge bg-' . $statusClass . '">' . e($statusText) . '</span>',
+                    'author_name' => e($post->author?->name ?? 'N/A'),
+                    'published_at' => $post->published_at?->format('d/m/Y H:i') ?? '<span class="text-muted">-</span>',
+                    'visits_count' => number_format((int) $post->views_count, 0, ',', '.'),
+                    'action' => '<div class="btn-group btn-group-sm" role="group">'
+                        . '<a href="' . $editUrl . '" class="btn btn-primary" title="Editar"><i class="fas fa-edit"></i></a>'
+                        . '<button type="button" class="btn btn-danger btn-delete-post" data-id="' . $post->id . '" data-url="' . $deleteUrl . '" title="Excluir"><i class="fas fa-trash"></i></button>'
+                        . '</div>',
+                ];
+            })->all();
 
             return response()->json([
                 'status' => 'success',
-                'data' => $posts->items(),
+                'success' => true,
+                'data' => $data,
                 'draw' => (int) $request->draw,
                 'recordsTotal' => $total,
                 'recordsFiltered' => $total,
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao listar posts: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao listar posts: ' . $e->getMessage()], 500);
         }
     }
 
     public function create()
     {
+        $post = new Post();
         $categories = Category::active()->orderBy('nome')->get();
         $tags = Tag::orderBy('nome')->get();
         $statuses = ['draft' => 'Rascunho', 'published' => 'Publicado', 'archived' => 'Arquivado', 'scheduled' => 'Agendado'];
+        $postTags = [];
 
-        return view('admin.blog.create', compact('categories', 'tags', 'statuses'));
+        return view('admin.blog.create', compact('post', 'categories', 'tags', 'statuses', 'postTags'));
     }
 
     public function store(Request $request)
@@ -90,12 +122,15 @@ class BlogController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'success' => true,
                 'message' => 'Post criado com sucesso.',
                 'data' => $post,
                 'redirect' => route('admin.blog.edit', $post->id),
             ]);
+        } catch (ValidationException $e) {
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Dados inválidos.', 'errors' => $e->errors()], 422);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao criar post: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao criar post: ' . $e->getMessage()], 500);
         }
     }
 
@@ -136,11 +171,14 @@ class BlogController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'success' => true,
                 'message' => 'Post atualizado com sucesso.',
                 'data' => $post,
             ]);
+        } catch (ValidationException $e) {
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Dados inválidos.', 'errors' => $e->errors()], 422);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao atualizar post: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao atualizar post: ' . $e->getMessage()], 500);
         }
     }
 
@@ -169,12 +207,13 @@ class BlogController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'success' => true,
                 'message' => 'Post publicado com sucesso.',
                 'data' => $post,
                 'reload' => true,
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao publicar post.'], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao publicar post.'], 500);
         }
     }
 
@@ -187,12 +226,13 @@ class BlogController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'success' => true,
                 'message' => 'Post arquivado com sucesso.',
                 'data' => $post,
                 'reload' => true,
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao arquivar post.'], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao arquivar post.'], 500);
         }
     }
 
@@ -201,9 +241,9 @@ class BlogController extends Controller
         try {
             $this->blogService->deletePost($id);
 
-            return response()->json(['status' => 'success', 'message' => 'Post excluído com sucesso.', 'reload' => true]);
+            return response()->json(['status' => 'success', 'success' => true, 'message' => 'Post excluído com sucesso.', 'reload' => true]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao excluir post.'], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao excluir post.'], 500);
         }
     }
 }

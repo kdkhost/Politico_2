@@ -85,7 +85,7 @@ class BlogService
 
     public function createPost(array $data): Post
     {
-        if (!isset($data['slug'])) {
+        if (empty($data['slug'])) {
             $data['slug'] = Str::slug($data['titulo']);
         }
 
@@ -114,7 +114,7 @@ class BlogService
     {
         $post = Post::findOrFail($id);
 
-        if (isset($data['titulo']) && !isset($data['slug'])) {
+        if (isset($data['titulo']) && empty($data['slug'])) {
             $data['slug'] = Str::slug($data['titulo']);
         }
 

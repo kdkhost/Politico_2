@@ -9,5 +9,5 @@
 @endsection
 
 @section('content')
-    @include('admin.blog.form', ['post' => new \App\Models\Blog\Post()])
+    @include('admin.blog.form')
 @endsection

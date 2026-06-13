@@ -75,7 +75,8 @@
 
         $(document).on('click', '.btn-delete-post', function() {
             var id = $(this).data('id');
-            confirmDelete('{{ route("admin.blog.destroy", ":id") }}'.replace(':id', id), 'A postagem será excluída permanentemente.');
+            var url = $(this).data('url') || '{{ route("admin.blog.destroy", ":id") }}'.replace(':id', id);
+            confirmDelete(url, 'A postagem será excluída permanentemente.');
         });
     });
 </script>

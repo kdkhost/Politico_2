@@ -191,12 +191,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/data', [App\Http\Controllers\Admin\BlogController::class, 'list'])->name('data');
             Route::get('/criar', [App\Http\Controllers\Admin\BlogController::class, 'create'])->name('create');
             Route::post('/criar', [App\Http\Controllers\Admin\BlogController::class, 'store'])->name('store');
-            Route::get('/{id}', [App\Http\Controllers\Admin\BlogController::class, 'show'])->name('show');
-            Route::get('/{id}/editar', [App\Http\Controllers\Admin\BlogController::class, 'edit'])->name('edit');
-            Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\BlogController::class, 'update'])->name('update');
-            Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\BlogController::class, 'destroy'])->name('destroy');
-            Route::post('/{id}/publicar', [App\Http\Controllers\Admin\BlogController::class, 'publish'])->name('publish');
-            Route::post('/{id}/arquivar', [App\Http\Controllers\Admin\BlogController::class, 'archive'])->name('archive');
 
             // Categories
             Route::get('/categorias', [App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('categories');
@@ -211,6 +205,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/tags/criar', [App\Http\Controllers\Admin\TagController::class, 'store'])->name('tags.store');
             Route::post('/tags/{id}/atualizar', [App\Http\Controllers\Admin\TagController::class, 'update'])->name('tags.update');
             Route::delete('/tags/{id}/excluir', [App\Http\Controllers\Admin\TagController::class, 'destroy'])->name('tags.destroy');
+
+            Route::get('/{id}', [App\Http\Controllers\Admin\BlogController::class, 'show'])->name('show');
+            Route::get('/{id}/editar', [App\Http\Controllers\Admin\BlogController::class, 'edit'])->name('edit');
+            Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\BlogController::class, 'update'])->name('update');
+            Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\BlogController::class, 'destroy'])->name('destroy');
+            Route::post('/{id}/publicar', [App\Http\Controllers\Admin\BlogController::class, 'publish'])->name('publish');
+            Route::post('/{id}/arquivar', [App\Http\Controllers\Admin\BlogController::class, 'archive'])->name('archive');
         });
 
         // Media
