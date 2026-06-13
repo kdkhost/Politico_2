@@ -1,0 +1,75 @@
+# Secure uploads directory - allow only safe file types
+
+# Block PHP and other executable files
+<FilesMatch "\.(php|php\d|phtml|pht|phar|phps|pl|py|jsp|asp|aspx|sh|shtml|cgi|htaccess|htpasswd)$">
+    Require all denied
+</FilesMatch>
+
+# Block hidden files
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Block specific sensitive files
+<FilesMatch "(\.env|\.git|composer\.json|composer\.lock|artisan|wp-config\.php)">
+    Require all denied
+</FilesMatch>
+
+# Allow only safe file types
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|ico|bmp|tiff?|avif)$">
+    Require all granted
+</FilesMatch>
+
+<FilesMatch "\.(pdf|doc|docx|xls|xlsx|ppt|pptx|odt|ods|odp)$">
+    Require all granted
+</FilesMatch>
+
+<FilesMatch "\.(mp3|wav|ogg|aac|flac|wma)$">
+    Require all granted
+</FilesMatch>
+
+<FilesMatch "\.(mp4|avi|mkv|mov|wmv|flv|webm)$">
+    Require all granted
+</FilesMatch>
+
+<FilesMatch "\.(zip|rar|7z|tar|gz)$">
+    Require all granted
+</FilesMatch>
+
+<FilesMatch "\.(csv|json|xml|txt)$">
+    Require all granted
+</FilesMatch>
+
+# Set handler for images
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+
+# Disable directory listing
+Options -Indexes
+
+# Cache images
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/avif "access plus 1 year"
+    ExpiresByType application/pdf "access plus 1 month"
+</IfModule>
+
+# CORS headers for uploads
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set X-Content-Type-Options "nosniff"
+</IfModule>

@@ -1,0 +1,28 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "admin-lte": "^4.0.2",
+        "bootstrap": "^5.3.3",
+        "chart.js": "^4.4.7",
+        "datatables.net-bs5": "^2.2.2",
+        "datatables.net-plugins": "^2.2.2",
+        "inputmask": "^5.0.9",
+        "intersection-observer": "^0.12.2",
+        "jquery": "^3.7.1",
+        "summernote": "^0.9.1",
+        "sweetalert2": "^11.17.2",
+        "toastr": "^2.1.4"
+    },
+    "devDependencies": {
+        "@fortawesome/fontawesome-free": "^6.7.2",
+        "laravel-vite-plugin": "^3.1.0",
+        "sass": "^1.86.3",
+        "vite": "^8.0.0"
+    }
+}
