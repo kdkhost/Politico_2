@@ -11,7 +11,7 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 ## Estado atual publicado
 
 - Branch publicada: `master`
-- Commit publicado no Git e sincronizado no servidor: `f386a9e`
+- Commit publicado no Git e sincronizado no servidor: consultar `HEAD` atual da branch `master`
 - Servidor remoto validado em `2026-06-13`
 - Rotas principais do painel administrativo validadas com `HTTP 200` após autenticação
 
