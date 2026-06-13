@@ -505,6 +505,45 @@ function loadThemePreference() {
 
 $(document).on('click', '.dark-mode-toggle', toggleDarkMode);
 
+function syncSidebarState() {
+    const body = document.body;
+    if (!body) return;
+
+    const isDesktop = window.innerWidth >= 992;
+    const collapsed = localStorage.getItem('admin-sidebar-collapsed') === '1';
+
+    body.classList.toggle('admin-sidebar-collapsed', isDesktop && collapsed);
+
+    if (isDesktop) {
+        body.classList.remove('admin-sidebar-open');
+    }
+}
+
+function toggleAdminSidebar(event) {
+    if (event) event.preventDefault();
+
+    const body = document.body;
+    if (!body) return;
+
+    if (window.innerWidth < 992) {
+        body.classList.toggle('admin-sidebar-open');
+        return;
+    }
+
+    const collapsed = !body.classList.contains('admin-sidebar-collapsed');
+    body.classList.toggle('admin-sidebar-collapsed', collapsed);
+    localStorage.setItem('admin-sidebar-collapsed', collapsed ? '1' : '0');
+}
+
+window.toggleAdminSidebar = toggleAdminSidebar;
+
+$(document).on('click', '[data-admin-sidebar-toggle]', toggleAdminSidebar);
+$(document).on('click', '[data-admin-sidebar-backdrop]', function () {
+    document.body?.classList.remove('admin-sidebar-open');
+});
+
+window.addEventListener('resize', syncSidebarState);
+
 function startNotificationPolling(url, interval) {
     if (!url) url = '/admin/notifications';
     if (!interval) interval = 30000;
@@ -583,6 +622,7 @@ $(document).on('click', '[data-toggle="tooltip"]', function () {
 
 $(function () {
     loadThemePreference();
+    syncSidebarState();
     if (typeof bootstrap !== 'undefined') {
         document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
             new bootstrap.Tooltip(el);

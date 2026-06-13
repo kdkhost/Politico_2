@@ -45,7 +45,7 @@
                 <p>Mensagens de Contato</p>
             </div>
             <div class="icon"><i class="fas fa-envelope"></i></div>
-            <a href="{{ route('admin.contatos.index') }}" class="small-box-footer">Mais detalhes <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ route('admin.contato.index') }}" class="small-box-footer">Mais detalhes <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
 </div>
@@ -167,7 +167,7 @@
                 </div>
             </div>
             <div class="card-footer text-center">
-                <a href="{{ route('admin.contatos.index') }}" class="btn btn-sm btn-primary">Ver Todas as Mensagens</a>
+                <a href="{{ route('admin.contato.index') }}" class="btn btn-sm btn-primary">Ver Todas as Mensagens</a>
             </div>
         </div>
 

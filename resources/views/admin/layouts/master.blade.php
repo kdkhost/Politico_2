@@ -22,7 +22,7 @@
     @vite(['resources/css/admin/admin.css', 'resources/js/admin/admin.js'])
     @stack('styles')
 </head>
-<body class="layout-fixed fixed-header sidebar-expand-lg bg-body-tertiary admin-premium {{ settings('dark_mode') ? 'dark-mode' : '' }}" data-bs-theme="{{ settings('dark_mode') ? 'dark' : 'light' }}">
+<body class="layout-fixed fixed-header admin-premium {{ settings('dark_mode') ? 'dark-mode' : '' }}" data-bs-theme="{{ settings('dark_mode') ? 'dark' : 'light' }}">
     <div class="preloader flex-column justify-content-center align-items-center">
         <i class="fas fa-spinner fa-spin text-primary" style="font-size: 3rem;"></i>
     </div>
@@ -34,7 +34,7 @@
             </div>
         </nav>
 
-        <aside class="app-sidebar admin-sidebar shadow" data-bs-theme="dark" data-sidebar-breakpoint="992" data-enable-persistence="true">
+        <aside class="app-sidebar admin-sidebar shadow" data-bs-theme="dark">
             @php($adminLogo = settings('logo') ?: asset('img/logo.png'))
             <div class="sidebar-brand">
                 <a href="{{ route('admin.dashboard') }}" class="brand-link admin-brand text-decoration-none">
@@ -76,6 +76,8 @@
 
         @include('admin.layouts.footer')
     </div>
+
+    <div class="admin-sidebar-backdrop" data-admin-sidebar-backdrop></div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

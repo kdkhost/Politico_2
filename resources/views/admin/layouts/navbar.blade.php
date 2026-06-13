@@ -1,6 +1,6 @@
 <ul class="navbar-nav align-items-center">
     <li class="nav-item">
-        <a class="nav-link admin-icon-button" data-lte-toggle="sidebar" href="#" role="button" aria-label="Alternar menu">
+        <a class="nav-link admin-icon-button" data-admin-sidebar-toggle href="#" role="button" aria-label="Alternar menu">
             <i class="fas fa-bars"></i>
         </a>
     </li>

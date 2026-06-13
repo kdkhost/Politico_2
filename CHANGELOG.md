@@ -11,11 +11,33 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 ## Estado atual publicado
 
 - Branch publicada: `master`
-- Commit publicado no Git e sincronizado no servidor: `33426d5`
+- Commit publicado no Git e sincronizado no servidor: `f386a9e`
 - Servidor remoto validado em `2026-06-13`
 - Rotas principais do painel administrativo validadas com `HTTP 200` após autenticação
 
 ## Linha do tempo
+
+### 2026-06-13 - `c412e67` - corrige shell do admin no tema claro e padroniza sidebar
+
+- remoção da dependência do toggle nativo quebrado da sidebar no layout administrativo
+- criação de estado próprio para sidebar desktop e mobile em `resources/js/admin/admin.js`
+- correção da geometria do shell administrativo para evitar faixa branca entre sidebar e conteúdo
+- padronização do posicionamento de:
+  - header
+  - sidebar
+  - conteúdo principal
+  - footer
+- unificação da base visual entre tema claro e dark para o container principal
+- inclusão de backdrop da sidebar para mobile
+- correção de links do dashboard para `admin.contato.index`
+- recompilação dos assets Vite do admin para refletir o novo shell
+
+### 2026-06-13 - `f386a9e` - adiciona changelog completo do sistema
+
+- recriação do `CHANGELOG.md` na raiz do projeto
+- documentação da linha do tempo do sistema desde a criação do painel até o estado publicado
+- formalização da regra de manutenção obrigatória do changelog a cada modificação
+- publicação do changelog no Git e no servidor remoto
 
 ### 2026-06-13 - `11646ec` - Organiza projeto e corrige deploy web
 

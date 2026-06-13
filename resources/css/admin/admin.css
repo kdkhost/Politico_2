@@ -2285,3 +2285,158 @@ body.admin-premium.dark-mode .page-link {
     background-color: #0f172a;
     border-color: rgba(255, 255, 255, 0.12);
 }
+
+/* Stable admin shell: same geometry for light and dark */
+body.admin-premium {
+    --admin-shell-sidebar-offset: var(--admin-sidebar-width);
+    overflow-x: hidden;
+}
+
+.admin-shell.app-wrapper {
+    display: block;
+    min-height: 100vh;
+    padding-left: var(--admin-shell-sidebar-offset);
+}
+
+.admin-sidebar.app-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: var(--admin-sidebar-width);
+    z-index: 1045;
+    transition: width var(--admin-transition), transform var(--admin-transition), box-shadow var(--admin-transition);
+}
+
+.admin-topbar.app-header {
+    position: fixed;
+    top: 0;
+    left: var(--admin-shell-sidebar-offset);
+    right: 0;
+    width: auto;
+    margin: 0 !important;
+}
+
+.admin-main.app-main {
+    min-height: 100vh;
+    margin: 0 !important;
+    padding-top: var(--admin-header-height);
+    overflow-x: hidden;
+}
+
+.admin-footer.app-footer {
+    margin-left: var(--admin-shell-sidebar-offset);
+}
+
+.admin-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(6, 20, 43, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--admin-transition), visibility var(--admin-transition);
+    z-index: 1040;
+}
+
+.admin-premium .card,
+.admin-premium .small-box,
+.admin-premium .info-box,
+.admin-premium .list-group-item,
+.admin-premium .table-responsive,
+.admin-premium .dropdown-menu {
+    overflow: hidden;
+}
+
+.admin-premium .small-box .small-box-footer,
+.admin-premium .btn,
+.admin-premium .nav-link,
+.admin-premium .page-link,
+.admin-premium .dropdown-item {
+    transition: background-color var(--admin-transition), color var(--admin-transition), border-color var(--admin-transition), box-shadow var(--admin-transition), transform var(--admin-transition);
+}
+
+body.admin-premium.admin-sidebar-collapsed {
+    --admin-shell-sidebar-offset: 88px;
+}
+
+body.admin-premium.admin-sidebar-collapsed .admin-sidebar.app-sidebar {
+    width: 88px;
+}
+
+body.admin-premium.admin-sidebar-collapsed .admin-sidebar .brand-text,
+body.admin-premium.admin-sidebar-collapsed .admin-sidebar .sidebar-menu .nav-header,
+body.admin-premium.admin-sidebar-collapsed .admin-sidebar .sidebar-menu .nav-link p,
+body.admin-premium.admin-sidebar-collapsed .admin-sidebar .nav-treeview {
+    display: none !important;
+}
+
+body.admin-premium.admin-sidebar-collapsed .admin-sidebar .sidebar-brand {
+    justify-content: center;
+    padding-inline: 12px;
+}
+
+body.admin-premium.admin-sidebar-collapsed .admin-sidebar .sidebar-menu .nav-link {
+    justify-content: center;
+    padding-inline: 0;
+}
+
+body.admin-premium.admin-sidebar-collapsed .admin-sidebar .sidebar-menu .nav-icon {
+    margin-right: 0;
+}
+
+body.admin-premium.admin-sidebar-collapsed .admin-sidebar .sidebar-wrapper {
+    padding-top: 16px;
+}
+
+body.admin-premium.admin-sidebar-collapsed .admin-content-header,
+body.admin-premium.admin-sidebar-collapsed .admin-content {
+    width: 100%;
+}
+
+@media (min-width: 992px) {
+    .admin-shell.app-wrapper {
+        grid-template-columns: none !important;
+    }
+
+    .admin-premium .app-header,
+    .admin-premium .app-main,
+    .admin-premium .app-footer {
+        min-width: 0;
+    }
+}
+
+@media (max-width: 991.98px) {
+    body.admin-premium {
+        --admin-shell-sidebar-offset: 0px;
+    }
+
+    .admin-shell.app-wrapper {
+        padding-left: 0;
+    }
+
+    .admin-topbar.app-header,
+    .admin-footer.app-footer {
+        left: 0;
+        margin-left: 0 !important;
+    }
+
+    .admin-main.app-main {
+        padding-top: var(--admin-header-height);
+    }
+
+    .admin-sidebar.app-sidebar {
+        width: min(86vw, 304px);
+        transform: translateX(-100%);
+        box-shadow: none;
+    }
+
+    body.admin-premium.admin-sidebar-open .admin-sidebar.app-sidebar {
+        transform: translateX(0);
+        box-shadow: 12px 0 36px rgba(6, 20, 43, 0.24);
+    }
+
+    body.admin-premium.admin-sidebar-open .admin-sidebar-backdrop {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+}
