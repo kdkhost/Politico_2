@@ -22,6 +22,8 @@ use Illuminate\Support\Str;
 
 class UploadService
 {
+    private const UNSAFE_EXTENSIONS = ['svg'];
+
     public function __construct(
         protected MidiaService $midiaService,
     ) {}
@@ -36,21 +38,19 @@ class UploadService
         $tamanho = $file->getSize();
         $hash = md5_file($file->getRealPath());
 
-        $pasta = $this->organizeByDate($pasta);
-
-        $nomeSanitizado = $this->sanitizeFilename(pathinfo($nomeOriginal, PATHINFO_FILENAME));
-        $nomeArquivo = $nomeSanitizado . '-' . Str::random(8) . '.' . $extensao;
-
-        $caminho = $file->storeAs($pasta, $nomeArquivo, 'public');
-
-        if (!$caminho) {
-            throw new \RuntimeException('Falha ao armazenar o arquivo.');
-        }
-
         $existingMedia = Media::where('hash_arquivo', $hash)->first();
 
         if ($existingMedia) {
             return $existingMedia;
+        }
+
+        $pasta = $this->organizeByDate($pasta);
+        $nomeSanitizado = $this->sanitizeFilename(pathinfo($nomeOriginal, PATHINFO_FILENAME));
+        $nomeArquivo = $nomeSanitizado . '-' . Str::random(8) . '.' . $extensao;
+        $caminho = $file->storeAs($pasta, $nomeArquivo, 'public');
+
+        if (!$caminho) {
+            throw new \RuntimeException('Falha ao armazenar o arquivo.');
         }
 
         $data = [
@@ -59,7 +59,7 @@ class UploadService
             'nome_original' => $nomeOriginal,
             'caminho' => $caminho,
             'url' => Storage::url($caminho),
-            'tipo' => $this->resolveTipo($mimeType),
+            'tipo' => $this->resolveTipo((string) $mimeType),
             'mime_type' => $mimeType,
             'extensao' => $extensao,
             'tamanho' => $tamanho,
@@ -72,7 +72,7 @@ class UploadService
             'downloadable' => $options['downloadable'] ?? false,
         ];
 
-        if (str_starts_with($mimeType, 'image/') && $extensao !== 'svg') {
+        if (str_starts_with((string) $mimeType, 'image/') && strtolower($extensao) !== 'svg') {
             $dimensions = @getimagesize($file->getRealPath());
 
             if ($dimensions) {
@@ -85,7 +85,7 @@ class UploadService
 
         $media = Media::create($data);
 
-        if (str_starts_with($mimeType, 'image/') && in_array($extensao, ['jpg', 'jpeg', 'png', 'webp'], true)) {
+        if (str_starts_with((string) $mimeType, 'image/') && in_array(strtolower($extensao), ['jpg', 'jpeg', 'png', 'webp'], true)) {
             $this->generateThumbnail($media);
         }
 
@@ -130,6 +130,12 @@ class UploadService
         $this->validateFile($file);
 
         $media = Media::findOrFail($mediaId);
+        $hash = md5_file($file->getRealPath());
+        $existingMedia = Media::where('hash_arquivo', $hash)->where('id', '!=', $mediaId)->first();
+
+        if ($existingMedia) {
+            return $existingMedia;
+        }
 
         if (Storage::disk('public')->exists($media->caminho)) {
             Storage::disk('public')->delete($media->caminho);
@@ -138,8 +144,6 @@ class UploadService
         $extensao = $file->getClientOriginalExtension();
         $mimeType = $file->getMimeType();
         $tamanho = $file->getSize();
-        $hash = md5_file($file->getRealPath());
-
         $nomeArquivo = $media->nome . '-' . Str::random(8) . '.' . $extensao;
         $caminho = $file->storeAs(dirname($media->caminho), $nomeArquivo, 'public');
 
@@ -176,10 +180,8 @@ class UploadService
     public function validateFile(UploadedFile $file): bool
     {
         $maxSize = $this->getUploadLimits();
-
         $configMax = $maxSize['config_max_size'];
         $serverMax = $maxSize['upload_max_filesize'];
-
         $effectiveMax = min($configMax, $serverMax);
 
         if ($file->getSize() > $effectiveMax) {
@@ -188,6 +190,10 @@ class UploadService
 
         $extension = strtolower($file->getClientOriginalExtension());
         $allowedExtensions = config('sistema.allowed_extensions', []);
+
+        if (in_array($extension, self::UNSAFE_EXTENSIONS, true)) {
+            throw new \RuntimeException("Extensão .{$extension} não permitida por segurança.");
+        }
 
         if (!empty($allowedExtensions) && !in_array($extension, $allowedExtensions, true)) {
             throw new \RuntimeException("Extensão .{$extension} não permitida.");
@@ -214,7 +220,6 @@ class UploadService
 
         $thumbnailPath = 'thumbnails/' . $media->caminho;
         $thumbnailFullPath = Storage::disk('public')->path($thumbnailPath);
-
         $dir = dirname($thumbnailFullPath);
 
         if (!is_dir($dir)) {
@@ -278,13 +283,23 @@ class UploadService
     {
         $name = preg_replace('/[^\p{L}\p{N}\s\-_]/u', '', $name);
         $name = preg_replace('/[\s\-]+/', '-', $name);
-        $name = trim($name, '-');
+        $name = trim((string) $name, '-');
 
         return Str::limit($name, 100, '');
     }
 
     public function organizeByDate(string $pasta): string
     {
+        $pasta = trim($pasta);
+        $pasta = str_replace('\\', '/', $pasta);
+        $pasta = preg_replace('#/+#', '/', $pasta) ?? $pasta;
+        $pasta = trim($pasta, '/.');
+        $pasta = preg_replace('/[^A-Za-z0-9_\/-]/', '', $pasta) ?? '';
+
+        if ($pasta === '') {
+            $pasta = 'uploads';
+        }
+
         return $pasta . '/' . now()->format('Y/m');
     }
 
@@ -295,14 +310,14 @@ class UploadService
             str_starts_with($mimeType, 'video/') => 'video',
             str_starts_with($mimeType, 'audio/') => 'audio',
             str_contains($mimeType, 'pdf'),
-                 str_contains($mimeType, 'document'),
-                 str_contains($mimeType, 'spreadsheet'),
-                 str_contains($mimeType, 'csv') => 'documento',
+            str_contains($mimeType, 'document'),
+            str_contains($mimeType, 'spreadsheet'),
+            str_contains($mimeType, 'csv') => 'documento',
             default => 'outro',
         };
     }
 
-    protected function parseSize(string|null $size): int
+    protected function parseSize(?string $size): int
     {
         if ($size === null || $size === '') {
             return 0;

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * @autor marcelo-brad rj
+ * @contato Tel: +55 (21) 98132-5441
+ * @contato Email: contato@kdkhost.com.br
+ * @contato Telegram: @MARCELO_BRAD
+ * @contato Instagram: @marcelobradrj
+ * @contato WhatsApp: 5521981325441
+ */
+
 return [
 
     /*
@@ -97,11 +106,7 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
-    'key' => env('APP_KEY') ?: (
-        file_exists(storage_path('app/installed'))
-            ? null
-            : 'base64:RpTepBqMB39g1E2QTNorls2QShCXACgGl5DS2KK53ns='
-    ),
+    'key' => env('APP_KEY'),
 
     'previous_keys' => [
         ...array_filter(

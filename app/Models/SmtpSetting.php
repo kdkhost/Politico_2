@@ -33,6 +33,10 @@ class SmtpSetting extends Model
         'test_recipient',
     ];
 
+    protected $hidden = [
+        'mail_password',
+    ];
+
     protected function casts(): array
     {
         return [

@@ -22,6 +22,16 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    private const SORTABLE_FIELDS = [
+        'id',
+        'name',
+        'email',
+        'status',
+        'created_at',
+        'updated_at',
+        'ultimo_acesso',
+    ];
+
     public function index()
     {
         return view('admin.usuarios.index');
@@ -52,7 +62,7 @@ class UserController extends Controller
 
             if ($request->filled('search')) {
                 $search = $request->search;
-                $query->where(function ($q) use ($search) {
+                $query->where(function ($q) use ($search): void {
                     $q->where('name', 'like', "%{$search}%")
                         ->orWhere('email', 'like', "%{$search}%");
                 });
@@ -66,8 +76,10 @@ class UserController extends Controller
                 $query->where('status', $request->status);
             }
 
-            $sortField = $request->sort_by ?? 'created_at';
-            $sortOrder = $request->sort_order ?? 'desc';
+            $sortField = in_array((string) $request->sort_by, self::SORTABLE_FIELDS, true)
+                ? (string) $request->sort_by
+                : 'created_at';
+            $sortOrder = strtolower((string) $request->sort_order) === 'asc' ? 'asc' : 'desc';
             $query->orderBy($sortField, $sortOrder);
 
             $users = $query->paginate(config('sistema.pagination_per_page', 15));
@@ -88,6 +100,7 @@ class UserController extends Controller
     public function create()
     {
         $profiles = Profile::orderBy('nome')->pluck('nome', 'id');
+
         return view('admin.usuarios.create', compact('profiles'));
     }
 
@@ -106,7 +119,6 @@ class UserController extends Controller
             ]);
 
             $validated['password'] = Hash::make($validated['password']);
-
             $user = User::create($validated);
 
             return response()->json([
@@ -124,6 +136,7 @@ class UserController extends Controller
     {
         $user = User::with('profile')->findOrFail($id);
         $profiles = Profile::orderBy('nome')->pluck('nome', 'id');
+
         return view('admin.usuarios.edit', compact('user', 'profiles'));
     }
 
@@ -210,12 +223,16 @@ class UserController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            $user->ativo = !$user->ativo;
-            $user->save();
+            $newStatus = $user->status === 'active' ? 'inactive' : 'active';
+
+            $user->update([
+                'status' => $newStatus,
+                'is_blocked' => $newStatus !== 'active',
+            ]);
 
             return response()->json([
                 'status' => 'success',
-                'message' => $user->ativo ? 'Usuário ativado com sucesso.' : 'Usuário desativado com sucesso.',
+                'message' => $newStatus === 'active' ? 'Usuário ativado com sucesso.' : 'Usuário desativado com sucesso.',
                 'reload' => true,
             ]);
         } catch (\Throwable $e) {
@@ -226,7 +243,7 @@ class UserController extends Controller
     public function loginAs(int $id)
     {
         try {
-            if (!Auth::user()->is_super_admin) {
+            if (!Auth::user()?->is_super_admin) {
                 return response()->json(['status' => 'error', 'message' => 'Apenas super administradores podem impersonar usuários.'], 403);
             }
 

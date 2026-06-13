@@ -14,11 +14,23 @@ declare(strict_types=1);
 namespace App\Services\Agenda;
 
 use App\Models\Event;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 
 class AgendaService
 {
+    private const SORTABLE_FIELDS = [
+        'id',
+        'titulo',
+        'data_inicio',
+        'data_fim',
+        'created_at',
+        'updated_at',
+        'status',
+        'tipo',
+    ];
+
     public function listEvents(array $filters = []): LengthAwarePaginator
     {
         $query = Event::with('creator:id,name');
@@ -52,8 +64,10 @@ class AgendaService
             $query->whereDate('data_fim', '<=', $filters['date_to']);
         }
 
-        $sortField = $filters['sort_by'] ?? 'data_inicio';
-        $sortOrder = $filters['sort_order'] ?? 'asc';
+        $sortField = in_array(($filters['sort_by'] ?? 'data_inicio'), self::SORTABLE_FIELDS, true)
+            ? $filters['sort_by']
+            : 'data_inicio';
+        $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'asc')) === 'desc' ? 'desc' : 'asc';
 
         $query->orderBy($sortField, $sortOrder);
 
@@ -97,7 +111,7 @@ class AgendaService
         return (bool) Event::findOrFail($id)->delete();
     }
 
-    public function getEventsByDateRange(string $start, string $end): array
+    public function getEventsByDateRange(string $start, string $end): Collection
     {
         return Event::with('creator:id,name')
             ->where('publicado', true)
@@ -110,30 +124,27 @@ class AgendaService
                     });
             })
             ->orderBy('data_inicio')
-            ->get()
-            ->toArray();
+            ->get();
     }
 
-    public function getUpcomingEvents(int $limit = 5): array
+    public function getUpcomingEvents(int $limit = 5): Collection
     {
         return Event::with('creator:id,name')
             ->where('publicado', true)
             ->whereDate('data_inicio', '>=', now())
             ->orderBy('data_inicio')
             ->limit($limit)
-            ->get()
-            ->toArray();
+            ->get();
     }
 
-    public function getDayEvents(string $date): array
+    public function getDayEvents(string $date): Collection
     {
         return Event::with('creator:id,name')
             ->where('publicado', true)
             ->whereDate('data_inicio', '<=', $date)
             ->whereDate('data_fim', '>=', $date)
             ->orderBy('data_inicio')
-            ->get()
-            ->toArray();
+            ->get();
     }
 
     public function getEventDetails(int $id): Event

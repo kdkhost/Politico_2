@@ -20,6 +20,18 @@ use Illuminate\Support\Facades\DB;
 
 class FinanceiroService
 {
+    private const SORTABLE_FIELDS = [
+        'id',
+        'descricao',
+        'valor',
+        'data_vencimento',
+        'data_pagamento',
+        'status',
+        'tipo',
+        'created_at',
+        'updated_at',
+    ];
+
     public function listTransactions(array $filters = []): LengthAwarePaginator
     {
         $query = FinancialTransaction::with(['category:id,nome,slug,tipo', 'user:id,name']);
@@ -64,8 +76,10 @@ class FinanceiroService
             $query->where('forma_pagamento', $filters['forma_pagamento']);
         }
 
-        $sortField = $filters['sort_by'] ?? 'data_vencimento';
-        $sortOrder = $filters['sort_order'] ?? 'desc';
+        $sortField = in_array(($filters['sort_by'] ?? 'data_vencimento'), self::SORTABLE_FIELDS, true)
+            ? $filters['sort_by']
+            : 'data_vencimento';
+        $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
 
         $query->orderBy($sortField, $sortOrder);
 

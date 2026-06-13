@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @autor marcelo-brad rj
  * @contato Tel: +55 (21) 98132-5441
@@ -35,7 +37,7 @@ return [
     | Chave de autenticação para comunicação com o servidor de licenças.
     |
     */
-    'api_key' => env('LICENSE_API_KEY', '8D7D3C0AE370A633F0D6'),
+    'api_key' => env('LICENSE_API_KEY', ''),
 
     /*
     |--------------------------------------------------------------------------
@@ -91,4 +93,8 @@ return [
     |
     */
     'cache_ttl' => (int) env('LICENSE_CACHE_TTL', 86400),
+
+    'skip_check' => (bool) env('LICENSE_SKIP_CHECK', false),
+
+    'offline_grace_days' => (int) env('LICENSE_OFFLINE_GRACE_DAYS', 7),
 ];

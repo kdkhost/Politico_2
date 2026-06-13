@@ -15,7 +15,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Media extends Model
@@ -57,7 +57,7 @@ class Media extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function usages(): MorphMany
+    public function usages(): HasMany
     {
         return $this->hasMany(MediaUsage::class, 'media_id');
     }

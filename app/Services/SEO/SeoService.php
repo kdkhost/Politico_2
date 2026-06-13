@@ -18,7 +18,6 @@ use App\Models\Page;
 use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -62,6 +61,7 @@ class SeoService
         $sitemap .= '</urlset>';
 
         Storage::disk('public')->put('sitemap.xml', $sitemap);
+        @file_put_contents(public_path('sitemap.xml'), $sitemap, LOCK_EX);
 
         return $sitemap;
     }
@@ -76,9 +76,10 @@ class SeoService
         $robots .= "Disallow: /password/\n";
         $robots .= "Disallow: /api/\n";
         $robots .= "Disallow: /storage/temp/\n\n";
-        $robots .= "Sitemap: " . url('storage/sitemap.xml') . "\n";
+        $robots .= "Sitemap: " . url('sitemap.xml') . "\n";
 
         Storage::disk('public')->put('robots.txt', $robots);
+        @file_put_contents(public_path('robots.txt'), $robots, LOCK_EX);
 
         return $robots;
     }

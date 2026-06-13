@@ -37,7 +37,7 @@ class LicenseBoxExternalAPI
     {
         $this->product_id = config('license.product_code', 'C73B74F0');
         $this->api_url = rtrim(config('license.api_url', 'https://ativador.kdkhost.com.br/'), '/');
-        $this->api_key = config('license.api_key', '8D7D3C0AE370A633F0D6');
+        $this->api_key = (string) config('license.api_key', '');
         $this->api_language = config('license.language', 'portuguese');
         $this->current_version = config('license.version', 'v1.0.0');
         $this->verify_type = config('license.verification_type', 'non_envato');
@@ -59,6 +59,13 @@ class LicenseBoxExternalAPI
 
     public function callApi(string $method, string $url, $data = null): string
     {
+        if (trim($this->api_key) === '') {
+            return json_encode([
+                'status' => false,
+                'message' => 'Chave da API de licenciamento não configurada.',
+            ], JSON_UNESCAPED_UNICODE);
+        }
+
         $curl = curl_init();
 
         switch ($method) {

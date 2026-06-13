@@ -38,7 +38,7 @@ class SmtpController extends Controller
                 'mail_host' => 'required|string|max:255',
                 'mail_port' => 'required|integer|min:1|max:65535',
                 'mail_username' => 'required|string|max:255',
-                'mail_password' => 'required|string|max:255',
+                'mail_password' => 'nullable|string|max:255',
                 'mail_encryption' => 'nullable|string|in:tls,ssl,null',
                 'mail_from_address' => 'required|email|max:255',
                 'mail_from_name' => 'nullable|string|max:255',

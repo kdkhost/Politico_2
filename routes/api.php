@@ -43,7 +43,7 @@ Route::middleware(['force.json', 'throttle:60,1'])->group(function () {
     });
 
     // Newsletter — inscrição pública
-    Route::post('newsletter', function (Illuminate\Http\Request $request) {
+    Route::middleware('throttle:10,1')->post('newsletter', function (Illuminate\Http\Request $request) {
         $validated = $request->validate([
             'email' => 'required|email|unique:newsletter_subscribers,email',
             'nome' => 'nullable|string|max:255',
@@ -56,6 +56,7 @@ Route::middleware(['force.json', 'throttle:60,1'])->group(function () {
                 'token' => \Illuminate\Support\Str::random(32),
                 'active' => false,
                 'subscribed_at' => now(),
+                'confirmation_expires_at' => now()->addDays(2),
             ]);
 
             return response()->json([
@@ -72,14 +73,22 @@ Route::middleware(['force.json', 'throttle:60,1'])->group(function () {
     });
 
     // Contato — envio público
-    Route::post('contato', function (Illuminate\Http\Request $request) {
+    Route::middleware('throttle:5,1')->post('contato', function (Illuminate\Http\Request $request) {
         $validated = $request->validate([
             'nome' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'telefone' => 'nullable|string|max:20',
             'assunto' => 'required|string|max:255',
             'mensagem' => 'required|string|max:5000',
+            'website' => 'nullable|string|max:255',
         ]);
+
+        if (!empty($validated['website'])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Requisição inválida.',
+            ], 422);
+        }
 
         try {
             $contact = App\Models\Contact::create([
@@ -108,7 +117,7 @@ Route::middleware(['force.json', 'throttle:60,1'])->group(function () {
     });
 
     // Visitas — registrar visita pública
-    Route::post('visitas/registrar', function (Illuminate\Http\Request $request) {
+    Route::middleware('throttle:30,1')->post('visitas/registrar', function (Illuminate\Http\Request $request) {
         try {
             $service = app(App\Services\Visitas\VisitaService::class);
             $service->registerVisit($request);

@@ -23,6 +23,7 @@ class NewsletterSubscriber extends Model
         'token',
         'active',
         'subscribed_at',
+        'confirmation_expires_at',
         'unsubscribed_at',
     ];
 
@@ -31,6 +32,7 @@ class NewsletterSubscriber extends Model
         return [
             'active' => 'bool',
             'subscribed_at' => 'datetime',
+            'confirmation_expires_at' => 'datetime',
             'unsubscribed_at' => 'datetime',
         ];
     }

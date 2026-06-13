@@ -22,9 +22,29 @@ use Symfony\Component\HttpFoundation\Response;
 
 class WafMiddleware
 {
+    private const SAFE_PREFIXES = [
+        'install',
+        'storage',
+        'build',
+        'vendor',
+    ];
+
+    private const SAFE_PATHS = [
+        '',
+        '/',
+        'favicon.ico',
+        'robots.txt',
+        'sitemap.xml',
+        'up',
+    ];
+
     public function handle(Request $request, Closure $next): Response
     {
         if (!config('waf.enabled', true)) {
+            return $next($request);
+        }
+
+        if ($this->shouldBypass($request)) {
             return $next($request);
         }
 
@@ -127,7 +147,18 @@ class WafMiddleware
 
         foreach ($patterns as $pattern) {
             foreach ($flattened as $value) {
-                if (is_string($value) && preg_match("#{$pattern}#i", $value)) {
+                if (!is_string($value)) {
+                    continue;
+                }
+
+                $value = mb_substr($value, 0, 5000);
+                $regex = "#{$pattern}#i";
+
+                if (@preg_match($regex, '') === false) {
+                    continue;
+                }
+
+                if (preg_match($regex, $value) === 1) {
                     return true;
                 }
             }
@@ -217,5 +248,22 @@ class WafMiddleware
         });
 
         return $result;
+    }
+
+    private function shouldBypass(Request $request): bool
+    {
+        $path = trim($request->path(), '/');
+
+        if (in_array($path, self::SAFE_PATHS, true)) {
+            return true;
+        }
+
+        foreach (self::SAFE_PREFIXES as $prefix) {
+            if ($path === $prefix || str_starts_with($path, $prefix . '/')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

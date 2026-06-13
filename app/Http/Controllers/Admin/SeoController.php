@@ -19,6 +19,7 @@ use App\Models\Post;
 use App\Services\SEO\SeoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class SeoController extends Controller
 {
@@ -53,6 +54,13 @@ class SeoController extends Controller
 
             if ($url) {
                 try {
+                    $parsedHost = parse_url($url, PHP_URL_HOST);
+                    $appHost = parse_url(config('app.url'), PHP_URL_HOST);
+
+                    if (!$parsedHost || !$appHost || !Str::is($appHost, $parsedHost)) {
+                        return response()->json(['status' => 'error', 'message' => 'Informe uma URL do próprio site para análise.'], 422);
+                    }
+
                     $response = Http::timeout(10)->get($url);
                     $html = $response->body();
                     $result = $this->seoService->getPageScore($url, $html);
@@ -93,7 +101,7 @@ class SeoController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Sitemap gerado com sucesso.',
-                'data' => ['url' => url('storage/sitemap.xml')],
+                'data' => ['url' => url('sitemap.xml')],
             ]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao gerar sitemap: ' . $e->getMessage()], 500);
@@ -108,7 +116,7 @@ class SeoController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'robots.txt atualizado com sucesso.',
-                'data' => ['url' => url('storage/robots.txt')],
+                'data' => ['url' => url('robots.txt')],
             ]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao atualizar robots.txt: ' . $e->getMessage()], 500);

@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @contato Instagram: @marcelobradrj
  * @contato WhatsApp: 5521981325441
  *
- * LicenseService — Gerenciamento de licenciamento do sistema
+ * LicenseService - Gerenciamento de licenciamento do sistema
  */
 
 namespace App\Services\License;
@@ -31,21 +31,33 @@ class LicenseService
 
     public function checkConnection(): array
     {
+        if (!$this->hasApiKey()) {
+            return [
+                'success' => false,
+                'message' => 'Chave da API de licenciamento não configurada.',
+            ];
+        }
+
         $result = $this->api->checkConnection();
         Log::info('License connection check', ['result' => $result]);
+
         return $result;
     }
 
     public function activate(string $licenseKey, ?string $clientName = null, ?string $clientEmail = null): array
     {
+        if (!$this->hasApiKey()) {
+            return [
+                'success' => false,
+                'message' => 'Chave da API de licenciamento não configurada.',
+            ];
+        }
+
         $client = $clientName ?? ($_SERVER['SERVER_NAME'] ?? gethostname());
         $cacheKey = $this->licenseCacheKey();
-
         $response = $this->api->activateLicense($licenseKey, $client);
 
         if (!empty($response['status'])) {
-            $licResponse = $response['lic_response'] ?? '';
-
             LicenseSetting::updateOrCreate(
                 ['license_key' => $licenseKey],
                 [
@@ -72,12 +84,20 @@ class LicenseService
 
         return [
             'success' => false,
-            'message' => $this->normalizeMessage($response['message'] ?? 'Seu período de atualização terminou ou sua licença é inválida. Entre em contato com o suporte.'),
+            'message' => $this->normalizeMessage($response['message'] ?? 'Licença inválida ou expirada.'),
         ];
     }
 
     public function verify(bool $force = false): array
     {
+        if ((bool) config('license.skip_check', false)) {
+            return [
+                'valid' => true,
+                'cached' => true,
+                'message' => 'Validação de licença ignorada por configuração.',
+            ];
+        }
+
         $cacheKey = $this->licenseCacheKey();
 
         if (!$force && Cache::has($cacheKey)) {
@@ -93,6 +113,10 @@ class LicenseService
                 'valid' => false,
                 'message' => 'Nenhuma licença encontrada.',
             ];
+        }
+
+        if (!$this->hasApiKey()) {
+            return $this->verifyOfflineGrace('Chave da API de licenciamento não configurada.');
         }
 
         $response = $this->api->verifyLicense(true);
@@ -119,14 +143,23 @@ class LicenseService
             'status' => 'invalid',
         ]);
 
-        return [
-            'valid' => false,
-            'message' => $this->normalizeMessage($response['message'] ?? 'Seu período de atualização terminou ou sua licença é inválida. Entre em contato com o suporte.'),
-        ];
+        return $this->verifyOfflineGrace(
+            $this->normalizeMessage($response['message'] ?? 'Licença inválida ou expirada.')
+        );
     }
 
     public function deactivate(): array
     {
+        if (!$this->hasApiKey()) {
+            LicenseSetting::truncate();
+            Cache::forget($this->licenseCacheKey());
+
+            return [
+                'success' => true,
+                'message' => 'Licença local removida sem chamada externa porque a chave da API não está configurada.',
+            ];
+        }
+
         $response = $this->api->deactivateLicense();
 
         LicenseSetting::truncate();
@@ -176,14 +209,55 @@ class LicenseService
         }, $message) ?? $message;
     }
 
+    private function verifyOfflineGrace(?string $fallbackMessage = null): array
+    {
+        $setting = LicenseSetting::query()->where('status', 'active')->latest('last_verified_at')->first();
+
+        if (!$setting) {
+            return [
+                'valid' => false,
+                'message' => $fallbackMessage ?? 'Licença não configurada.',
+            ];
+        }
+
+        $graceDays = max(0, (int) config('license.offline_grace_days', 7));
+        $lastVerifiedAt = $setting->last_verified_at ?? $setting->activated_at;
+
+        if ($lastVerifiedAt && $lastVerifiedAt->copy()->addDays($graceDays)->isFuture()) {
+            return [
+                'valid' => true,
+                'offline_grace' => true,
+                'message' => 'Licença validada em modo de tolerância offline.',
+            ];
+        }
+
+        return [
+            'valid' => false,
+            'message' => $fallbackMessage ?? 'Não foi possível validar a licença e a tolerância offline expirou.',
+        ];
+    }
+
+    private function hasApiKey(): bool
+    {
+        return trim((string) config('license.api_key', '')) !== '';
+    }
+
     public function getCurrentVersion(): string
     {
         $setting = LicenseSetting::first();
+
         return $setting?->current_version ?? config('license.version', 'v1.0.0');
     }
 
     public function checkForUpdates(): array
     {
+        if (!$this->hasApiKey()) {
+            return [
+                'has_update' => false,
+                'message' => 'Chave da API de licenciamento não configurada.',
+            ];
+        }
+
         $response = $this->api->checkUpdate();
 
         if (!empty($response['status'])) {
@@ -209,7 +283,7 @@ class LicenseService
 
         return [
             'has_update' => false,
-            'message' => $response['message'] ?? 'O servidor n\u00e3o est\u00e1 dispon\u00edvel no momento. Tente novamente.',
+            'message' => $response['message'] ?? 'O servidor não está disponível no momento. Tente novamente.',
         ];
     }
 
@@ -220,7 +294,7 @@ class LicenseService
         if (!$updateInfo['has_update']) {
             return [
                 'success' => false,
-                'message' => $updateInfo['message'] ?? 'Nenhuma atualiza\u00e7\u00e3o dispon\u00edvel.',
+                'message' => $updateInfo['message'] ?? 'Nenhuma atualização disponível.',
             ];
         }
 
@@ -228,10 +302,10 @@ class LicenseService
         $version = $updateInfo['latest_version'] ?? $this->getCurrentVersion();
         $hasSql = $updateInfo['sql_update'] ?? false;
 
-        if (empty($updateId)) {
+        if ($updateId === '') {
             return [
                 'success' => false,
-                'message' => 'ID de atualiza\u00e7\u00e3o n\u00e3o encontrado.',
+                'message' => 'ID de atualização não encontrado.',
             ];
         }
 
@@ -254,15 +328,16 @@ class LicenseService
                     'update_available' => false,
                 ]);
 
-                return ['success' => true, 'type' => 'main', 'message' => 'Atualiza\u00e7\u00e3o conclu\u00edda.'];
+                return ['success' => true, 'type' => 'main', 'message' => 'Atualização concluída.'];
             }
 
-            return ['success' => true, 'type' => 'sql', 'message' => 'Download SQL conclu\u00eddo.'];
+            return ['success' => true, 'type' => 'sql', 'message' => 'Download SQL concluído.'];
         } catch (\Throwable $e) {
             Log::error('Update download error: ' . $e->getMessage());
+
             return [
                 'success' => false,
-                'message' => 'A pasta n\u00e3o tem permiss\u00e3o de grava\u00e7\u00e3o ou o caminho do arquivo de atualiza\u00e7\u00e3o n\u00e3o p\u00f4de ser resolvido. Entre em contato com o suporte.',
+                'message' => 'A pasta não tem permissão de gravação ou o caminho do arquivo de atualização não pôde ser resolvido. Entre em contato com o suporte.',
             ];
         }
     }
@@ -277,7 +352,7 @@ class LicenseService
         if (!file_exists($file)) {
             return [
                 'success' => false,
-                'message' => 'Arquivo SQL n\u00e3o encontrado.',
+                'message' => 'Arquivo SQL não encontrado.',
             ];
         }
 
@@ -285,8 +360,8 @@ class LicenseService
             $sql = file_get_contents($file);
             $db = config('database.default');
 
-            if (!empty(trim($sql))) {
-                DB::connection($db)->unprepared($sql);
+            if (!empty(trim((string) $sql))) {
+                DB::connection($db)->unprepared((string) $sql);
                 @unlink($file);
 
                 return [
@@ -299,19 +374,27 @@ class LicenseService
 
             return [
                 'success' => true,
-                'message' => 'O aplicativo foi atualizado com sucesso. N\u00e3o houve atualiza\u00e7\u00f5es de SQL.',
+                'message' => 'O aplicativo foi atualizado com sucesso. Não houve atualizações de SQL.',
             ];
         } catch (\Throwable $e) {
             Log::error('SQL import error: ' . $e->getMessage());
+
             return [
                 'success' => false,
-                'message' => 'O aplicativo foi atualizado com sucesso, mas a importa\u00e7\u00e3o autom\u00e1tica de SQL falhou. Importe manualmente o arquivo SQL no banco de dados.',
+                'message' => 'O aplicativo foi atualizado com sucesso, mas a importação automática de SQL falhou. Importe manualmente o arquivo SQL no banco de dados.',
             ];
         }
     }
 
     public function getLatestVersion(): array
     {
+        if (!$this->hasApiKey()) {
+            return [
+                'status' => false,
+                'message' => 'Chave da API de licenciamento não configurada.',
+            ];
+        }
+
         return $this->api->getLatestVersion();
     }
 }

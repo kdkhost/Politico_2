@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @autor marcelo-brad rj
  * @contato Tel: +55 (21) 98132-5441
@@ -81,7 +83,7 @@ return [
     |
     */
     'allowed_extensions' => [
-        'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg',
+        'jpg', 'jpeg', 'png', 'gif', 'webp',
         'pdf', 'doc', 'docx', 'xls', 'xlsx', 'csv',
         'mp4', 'mp3', 'zip', 'rar', 'txt',
     ],
@@ -98,7 +100,6 @@ return [
         'image/png',
         'image/gif',
         'image/webp',
-        'image/svg+xml',
         'application/pdf',
         'application/msword',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',

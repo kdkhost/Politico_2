@@ -26,7 +26,7 @@ class AdminMiddleware
         $user = Auth::user();
 
         if (!$user) {
-            return redirect()->route('login');
+            return redirect()->route('admin.login');
         }
 
         if ($user->isBlocked()) {
@@ -35,7 +35,7 @@ class AdminMiddleware
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return redirect()->route('login')
+            return redirect()->route('admin.login')
                 ->with('error', 'Sua conta foi bloqueada. Entre em contato com o administrador.');
         }
 

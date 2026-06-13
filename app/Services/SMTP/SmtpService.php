@@ -29,6 +29,10 @@ class SmtpService
     {
         $settings = SmtpSetting::where('active', true)->first();
 
+        if (($data['mail_password'] ?? '') === '' && $settings?->getRawOriginal('mail_password')) {
+            $data['mail_password'] = $settings->getRawOriginal('mail_password');
+        }
+
         if ($settings) {
             $settings->update($data);
         } else {
@@ -41,7 +45,7 @@ class SmtpService
         return $settings->fresh();
     }
 
-    public function testConnection(array|null $settings = null): array
+    public function testConnection(?array $settings = null): array
     {
         $config = $settings ?? $this->getSettings();
 
@@ -54,12 +58,10 @@ class SmtpService
 
         try {
             $this->applyConfig($config);
-
             $transport = Mail::mailer()->getSymfonyTransport();
 
             if (method_exists($transport, 'start')) {
                 $transport->start();
-
                 $this->logTest($config, true);
 
                 return [
@@ -82,7 +84,7 @@ class SmtpService
         }
     }
 
-    public function sendTestEmail(string $to, array|null $settings = null): array
+    public function sendTestEmail(string $to, ?array $settings = null): array
     {
         $config = $settings ?? $this->getSettings();
 
@@ -97,17 +99,16 @@ class SmtpService
             $this->applyConfig($config);
 
             Mail::raw(
-                'Este é um e-mail de teste do sistema Político 2. Se você recebeu este e-mail, a configuração SMTP está funcionando corretamente.
-
-Enviado em: ' . now()->format('d/m/Y H:i:s'),
-                function ($message) use ($to, $config) {
-                    $message->to($to)
-                        ->subject('Teste de Configuração SMTP - Político 2');
+                'Este é um e-mail de teste do sistema Político 2. Se você recebeu este e-mail, a configuração SMTP está funcionando corretamente.' . PHP_EOL . PHP_EOL .
+                'Enviado em: ' . now()->format('d/m/Y H:i:s'),
+                function ($message) use ($to): void {
+                    $message->to($to)->subject('Teste de Configuração SMTP - Político 2');
                 }
             );
 
             if (isset($config['id']) || $config instanceof SmtpSetting) {
                 $setting = $config instanceof SmtpSetting ? $config : SmtpSetting::find($config['id']);
+
                 if ($setting) {
                     $setting->update([
                         'ultimo_teste' => now(),
@@ -151,6 +152,7 @@ Enviado em: ' . now()->format('d/m/Y H:i:s'),
             'mailer' => $settings->mail_mailer,
             'host' => $settings->mail_host,
             'from_address' => $settings->mail_from_address,
+            'password_configured' => !empty($settings->getRawOriginal('mail_password')),
             'message' => $settings->is_configured ? 'SMTP configurado e operacional.' : 'SMTP configurado, mas não testado.',
         ];
     }
@@ -186,7 +188,7 @@ Enviado em: ' . now()->format('d/m/Y H:i:s'),
         return !empty($settings->mail_host)
             && !empty($settings->mail_port)
             && !empty($settings->mail_username)
-            && !empty($settings->mail_password)
+            && !empty($settings->getRawOriginal('mail_password'))
             && !empty($settings->mail_from_address);
     }
 }

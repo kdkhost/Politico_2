@@ -56,10 +56,10 @@ Route::name('site.')->group(function () {
 
     // Contato
     Route::get('/contato', [App\Http\Controllers\Site\ContatoController::class, 'index'])->name('contato');
-    Route::post('/contato/enviar', [App\Http\Controllers\Site\ContatoController::class, 'enviar'])->name('contato.enviar');
+    Route::post('/contato/enviar', [App\Http\Controllers\Site\ContatoController::class, 'enviar'])->middleware('throttle:5,1')->name('contato.enviar');
 
     // Newsletter
-    Route::post('/newsletter/inscrever', [App\Http\Controllers\Site\NewsletterController::class, 'inscrever'])->name('newsletter.subscribe');
+    Route::post('/newsletter/inscrever', [App\Http\Controllers\Site\NewsletterController::class, 'inscrever'])->middleware('throttle:10,1')->name('newsletter.subscribe');
     Route::get('/newsletter/confirmar/{token}', [App\Http\Controllers\Site\NewsletterController::class, 'confirmar'])->name('newsletter.confirm');
     Route::get('/newsletter/cancelar/{token}', [App\Http\Controllers\Site\NewsletterController::class, 'cancelar'])->name('newsletter.cancel');
 
@@ -243,6 +243,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\EventController::class, 'index'])->name('index');
             Route::get('/eventos', [App\Http\Controllers\Admin\EventController::class, 'list'])->name('list');
             Route::get('/data', [App\Http\Controllers\Admin\EventController::class, 'list'])->name('data');
+            Route::get('/events', [App\Http\Controllers\Admin\EventController::class, 'list'])->name('events');
             Route::get('/criar', [App\Http\Controllers\Admin\EventController::class, 'create'])->name('create');
             Route::post('/criar', [App\Http\Controllers\Admin\EventController::class, 'store'])->name('store');
             Route::get('/{id}', [App\Http\Controllers\Admin\EventController::class, 'show'])->name('show');

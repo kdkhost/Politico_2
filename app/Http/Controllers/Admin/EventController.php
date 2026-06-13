@@ -42,25 +42,25 @@ class EventController extends Controller
             $events = $this->agendaService->getEventsByDateRange($start, $end);
 
             if ($request->filled('category_id')) {
-                $events = array_values(array_filter($events, fn (array $event): bool => (string) ($event['categoria_id'] ?? '') === (string) $request->input('category_id')));
+                $events = $events->where('categoria_id', (int) $request->input('category_id'));
             }
 
-            $formatted = array_map(function (array $event): array {
+            $formatted = $events->map(function ($event): array {
                 return [
-                    'id' => $event['id'],
-                    'title' => $event['titulo'],
-                    'start' => $event['data_inicio'],
-                    'end' => $event['data_fim'],
-                    'color' => $event['cor'] ?? '#3788d8',
+                    'id' => $event->id,
+                    'title' => $event->titulo,
+                    'start' => $event->data_inicio,
+                    'end' => $event->data_fim,
+                    'color' => $event->cor ?? '#3788d8',
                     'textColor' => '#ffffff',
-                    'allDay' => (bool) ($event['all_day'] ?? false),
-                    'description' => $event['descricao'] ?? '',
-                    'local' => $event['local'] ?? '',
-                    'tipo' => $event['tipo'] ?? '',
-                    'publicado' => (bool) ($event['publicado'] ?? false),
-                    'url' => route('admin.agenda.show', $event['id']),
+                    'allDay' => (bool) ($event->all_day ?? false),
+                    'description' => $event->descricao ?? '',
+                    'local' => $event->local ?? '',
+                    'tipo' => $event->tipo ?? '',
+                    'publicado' => (bool) ($event->publicado ?? false),
+                    'url' => route('admin.agenda.show', $event->id),
                 ];
-            }, $events);
+            })->values();
 
             return response()->json($formatted);
         } catch (\Throwable $e) {

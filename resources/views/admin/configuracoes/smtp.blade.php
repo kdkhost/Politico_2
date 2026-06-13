@@ -43,7 +43,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="mail_password" class="form-label">Senha</label>
-                            <input type="password" id="mail_password" name="mail_password" class="form-control" value="{{ $settings->mail_password ?? '' }}" autocomplete="current-password" required>
+                            <input type="password" id="mail_password" name="mail_password" class="form-control" value="" autocomplete="new-password" placeholder="Deixe em branco para manter a senha atual">
                         </div>
                     </div>
 

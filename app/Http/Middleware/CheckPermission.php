@@ -26,7 +26,7 @@ class CheckPermission
         $user = Auth::user();
 
         if (!$user) {
-            return redirect()->route('login');
+            return redirect()->route('admin.login');
         }
 
         if ($user->isAdmin()) {

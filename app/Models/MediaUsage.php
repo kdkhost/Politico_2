@@ -27,12 +27,17 @@ class MediaUsage extends Model
         'model_type',
         'model_id',
         'colecao',
+        'context',
+        'field',
+        'url',
+        'metadata',
         'created_by',
         'updated_by',
     ];
 
     protected $casts = [
         'deleted_at' => 'datetime',
+        'metadata' => 'array',
     ];
 
     public function media(): BelongsTo
