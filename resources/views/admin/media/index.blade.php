@@ -1,10 +1,10 @@
 @extends('admin.layouts.master')
 
-@section('title', 'Mídia - ' . config('app.name'))
-@section('page_title', 'Gerenciador de Mídia')
+@section('title', 'MÃ­dia - ' . config('app.name'))
+@section('page_title', 'Gerenciador de MÃ­dia')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item active">Mídia</li>
+    <li class="breadcrumb-item active">MÃ­dia</li>
 @endsection
 
 @section('content')
@@ -44,19 +44,19 @@
                     <select id="fileTypeFilter" class="form-select">
                         <option value="">Todos</option>
                         <option value="imagem">Imagens</option>
-                        <option value="video">Vídeos</option>
+                        <option value="video">VÃ­deos</option>
                         <option value="documento">Documentos</option>
-                        <option value="audio">Áudio</option>
+                        <option value="audio">Ãudio</option>
                         <option value="outro">Outros</option>
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="fileDateFilter" class="form-label">Período</label>
+                    <label for="fileDateFilter" class="form-label">PerÃ­odo</label>
                     <select id="fileDateFilter" class="form-select">
                         <option value="">Todos</option>
                         <option value="today">Hoje</option>
                         <option value="week">Esta Semana</option>
-                        <option value="month">Este Mês</option>
+                        <option value="month">Este MÃªs</option>
                         <option value="year">Este Ano</option>
                     </select>
                 </div>
@@ -114,7 +114,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="fas fa-info-circle me-1"></i>Informações do Arquivo</h5>
+                <h5 class="modal-title"><i class="fas fa-info-circle me-1"></i>InformaÃ§Ãµes do Arquivo</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="fileInfoContent"></div>
@@ -233,7 +233,7 @@
                     '<tr><th>URL</th><td style="word-break:break-all;"><code>' + data.url + '</code></td></tr>' +
                     '<tr><th>Tamanho</th><td>' + (data.size_formatted || '') + '</td></tr>' +
                     '<tr><th>Tipo</th><td>' + (data.type || '') + '</td></tr>' +
-                    '<tr><th>Dimensões</th><td>' + (data.dimensions || '-') + '</td></tr>' +
+                    '<tr><th>DimensÃµes</th><td>' + (data.dimensions || '-') + '</td></tr>' +
                     '<tr><th>Upload em</th><td>' + formatDate(data.created_at, true) + '</td></tr>' +
                     '</tbody></table>';
                 $('#fileInfoContent').html(html);
@@ -246,7 +246,7 @@
         $('#copyFileUrl').on('click', function() {
             var url = $(this).data('url');
             navigator.clipboard.writeText(url).then(function() {
-                toastr.success('URL copiada para a área de transferência!');
+                toastr.success('URL copiada para a Ã¡rea de transferÃªncia!');
             }).catch(function() {
                 prompt('Copie a URL:', url);
             });
@@ -254,7 +254,7 @@
 
         $('#deleteFileBtn').on('click', function() {
             var id = $(this).data('id');
-            confirmDelete('{{ route("admin.media.destroy", ":id") }}'.replace(':id', id), 'O arquivo será excluído permanentemente.');
+            confirmDelete('{{ route("admin.media.destroy", ":id") }}'.replace(':id', id), 'O arquivo serÃ¡ excluÃ­do permanentemente.');
             $('#fileInfoModal').modal('hide');
         });
 
@@ -301,7 +301,7 @@
                     return xhr;
                 },
                 success: function(res) {
-                    if (res.success) {
+                    if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'Arquivos enviados com sucesso!');
                         loadMedia();
                     } else {
@@ -345,7 +345,7 @@
                 method: 'POST',
                 data: $(this).serialize(),
                 success: function(res) {
-                    if (res.success) {
+                    if (window.isSuccessfulResponse(res)) {
                         toastr.success('Pasta criada!');
                         $('#newFolderModal').modal('hide');
                         $('#newFolderForm')[0].reset();

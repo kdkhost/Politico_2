@@ -33,6 +33,12 @@ toastr.options = {
 window.Swal = Swal;
 window.toastr = toastr;
 
+function isSuccessfulResponse(response) {
+    return !!(response && (response.success === true || response.status === 'success'));
+}
+
+window.isSuccessfulResponse = isSuccessfulResponse;
+
 function markAdminLoaded() {
     document.body?.classList.add('admin-loaded', 'app-loaded');
 }
@@ -540,6 +546,32 @@ window.toggleAdminSidebar = toggleAdminSidebar;
 $(document).on('click', '[data-admin-sidebar-toggle]', toggleAdminSidebar);
 $(document).on('click', '[data-admin-sidebar-backdrop]', function () {
     document.body?.classList.remove('admin-sidebar-open');
+});
+
+$(document).on('click', '.admin-sidebar .nav-item > .nav-link', function (event) {
+    const link = this;
+    const item = link.closest('.nav-item');
+    const tree = item?.querySelector(':scope > .nav-treeview');
+    const href = link.getAttribute('href');
+
+    if (!item || !tree || href !== '#') {
+        return;
+    }
+
+    event.preventDefault();
+
+    const isOpen = item.classList.contains('menu-open');
+    const siblings = item.parentElement?.querySelectorAll(':scope > .nav-item.menu-open') || [];
+
+    siblings.forEach(function (sibling) {
+        if (sibling !== item) {
+            sibling.classList.remove('menu-open');
+            sibling.querySelector(':scope > .nav-treeview')?.setAttribute('style', 'display:none;');
+        }
+    });
+
+    item.classList.toggle('menu-open', !isOpen);
+    tree.setAttribute('style', isOpen ? 'display:none;' : 'display:block;');
 });
 
 window.addEventListener('resize', syncSidebarState);

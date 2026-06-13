@@ -31,7 +31,7 @@
         <div class="info-box">
             <span class="info-box-icon bg-info"><i class="fas fa-hard-drive"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">Espaço usado</span>
+                <span class="info-box-text">EspaÃ§o usado</span>
                 <span class="info-box-number">{{ $formatBytes($stats['total_size'] ?? 0) }}</span>
             </div>
         </div>
@@ -40,7 +40,7 @@
         <div class="info-box">
             <span class="info-box-icon bg-success"><i class="fas fa-clock"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">Último backup</span>
+                <span class="info-box-text">Ãšltimo backup</span>
                 <span class="info-box-number fs-6">{{ !empty($stats['last_backup']) ? \Carbon\Carbon::parse($stats['last_backup'])->format('d/m/Y H:i') : 'Nunca' }}</span>
             </div>
         </div>
@@ -68,7 +68,7 @@
                                 <th>Tamanho</th>
                                 <th>Status</th>
                                 <th>Criado em</th>
-                                <th class="actions-column">Ações</th>
+                                <th class="actions-column">AÃ§Ãµes</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -102,33 +102,33 @@
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-sliders-h me-1"></i>Configuração</h3>
+                <h3 class="card-title"><i class="fas fa-sliders-h me-1"></i>ConfiguraÃ§Ã£o</h3>
             </div>
             <div class="card-body">
                 <form id="backupConfigForm">
                     @csrf
                     <div class="mb-3">
-                        <label for="frequencia" class="form-label">Frequência</label>
+                        <label for="frequencia" class="form-label">FrequÃªncia</label>
                         <select id="frequencia" name="frequencia" class="form-select">
-                            <option value="diario" {{ settings('backup_frequencia') === 'diario' ? 'selected' : '' }}>Diário</option>
+                            <option value="diario" {{ settings('backup_frequencia') === 'diario' ? 'selected' : '' }}>DiÃ¡rio</option>
                             <option value="semanal" {{ settings('backup_frequencia') === 'semanal' ? 'selected' : '' }}>Semanal</option>
                             <option value="mensal" {{ settings('backup_frequencia') === 'mensal' ? 'selected' : '' }}>Mensal</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="horario" class="form-label">Horário</label>
+                        <label for="horario" class="form-label">HorÃ¡rio</label>
                         <input type="time" id="horario" name="horario" class="form-control" value="{{ settings('backup_horario') ?? '03:00' }}">
                     </div>
                     <div class="mb-3">
-                        <label for="retencao" class="form-label">Retenção (dias)</label>
+                        <label for="retencao" class="form-label">RetenÃ§Ã£o (dias)</label>
                         <input type="number" id="retencao" name="retencao" class="form-control" min="1" max="365" value="{{ settings('backup_retencao') ?? 30 }}">
                     </div>
                     <div class="form-check form-switch mb-3">
                         <input type="checkbox" id="incluir_midia" name="incluir_midia" class="form-check-input" value="1" {{ settings('backup_incluir_midia') ? 'checked' : '' }}>
-                        <label for="incluir_midia" class="form-check-label">Incluir mídia pública</label>
+                        <label for="incluir_midia" class="form-check-label">Incluir mÃ­dia pÃºblica</label>
                     </div>
                     <button type="submit" class="btn btn-primary w-100" id="btnSaveBackupConfig">
-                        <i class="fas fa-save me-1"></i>Salvar Configuração
+                        <i class="fas fa-save me-1"></i>Salvar ConfiguraÃ§Ã£o
                     </button>
                 </form>
             </div>
@@ -156,7 +156,7 @@ $(function () {
             btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Criando...');
             $.post('{{ route("admin.backup.create") }}', { _token: '{{ csrf_token() }}', type: 'full' })
                 .done(function (res) {
-                    if (res.status === 'success' || res.success) {
+                    if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'Backup criado com sucesso.');
                         setTimeout(function () { location.reload(); }, 1000);
                     } else {
@@ -172,7 +172,7 @@ $(function () {
         var id = $(this).data('id');
         Swal.fire({
             title: 'Excluir backup?',
-            text: 'O arquivo será removido permanentemente.',
+            text: 'O arquivo serÃ¡ removido permanentemente.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sim, excluir',
@@ -182,7 +182,7 @@ $(function () {
             if (!result.isConfirmed) return;
             $.ajax({ url: '{{ route("admin.backup.delete", ":id") }}'.replace(':id', id), method: 'DELETE' })
                 .done(function (res) {
-                    toastr.success(res.message || 'Backup excluído.');
+                    toastr.success(res.message || 'Backup excluÃ­do.');
                     setTimeout(function () { location.reload(); }, 800);
                 })
                 .fail(function (xhr) { toastr.error(xhr.responseJSON?.message || 'Erro ao excluir backup.'); });
@@ -195,11 +195,11 @@ $(function () {
         btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Salvando...');
         $.post('{{ route("admin.backup.config.save") }}', $(this).serialize())
             .done(function (res) {
-                if (res.status === 'success' || res.success) toastr.success(res.message || 'Configuração salva.');
-                else toastr.error(res.message || 'Erro ao salvar configuração.');
+                if (window.isSuccessfulResponse(res)) toastr.success(res.message || 'ConfiguraÃ§Ã£o salva.');
+                else toastr.error(res.message || 'Erro ao salvar configuraÃ§Ã£o.');
             })
-            .fail(function (xhr) { toastr.error(xhr.responseJSON?.message || 'Erro ao salvar configuração.'); })
-            .always(function () { btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i>Salvar Configuração'); });
+            .fail(function (xhr) { toastr.error(xhr.responseJSON?.message || 'Erro ao salvar configuraÃ§Ã£o.'); })
+            .always(function () { btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i>Salvar ConfiguraÃ§Ã£o'); });
     });
 });
 </script>

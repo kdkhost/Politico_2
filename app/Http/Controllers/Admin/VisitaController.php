@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Visit;
 use App\Services\Visitas\VisitaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -29,17 +30,34 @@ class VisitaController extends Controller
         $visitsToday = $this->visitaService->getUniqueVisitors('today');
         $visitsWeek = $this->visitaService->getUniqueVisitors('week');
         $visitsMonth = $this->visitaService->getUniqueVisitors('month');
+        $totalVisits = Visit::where('bot', false)->count();
+        $uniqueVisitors = $visitsMonth;
+        $todayVisits = $visitsToday;
+        $onlineNow = Visit::where('visit_time', '>=', now()->subMinutes(5))
+            ->where('bot', false)
+            ->count();
 
         $deviceStats = $this->visitaService->getDeviceStats('month');
         $browserStats = $this->visitaService->getBrowserStats();
         $osStats = $this->visitaService->getOsStats();
         $topPages = $this->visitaService->getTopPages(10);
         $trafficSources = $this->visitaService->getTrafficSources('month');
+        $countries = $this->visitaService->getGeoStats();
 
         return view('admin.visitas.index', compact(
-            'visitsToday', 'visitsWeek', 'visitsMonth',
-            'deviceStats', 'browserStats', 'osStats',
-            'topPages', 'trafficSources',
+            'visitsToday',
+            'visitsWeek',
+            'visitsMonth',
+            'totalVisits',
+            'uniqueVisitors',
+            'todayVisits',
+            'onlineNow',
+            'deviceStats',
+            'browserStats',
+            'osStats',
+            'topPages',
+            'trafficSources',
+            'countries',
         ));
     }
 
@@ -55,13 +73,14 @@ class VisitaController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'success' => true,
                 'data' => $visits->items(),
                 'draw' => (int) $request->draw,
                 'recordsTotal' => $visits->total(),
                 'recordsFiltered' => $visits->total(),
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao listar visitas: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao listar visitas: ' . $e->getMessage()], 500);
         }
     }
 
@@ -71,9 +90,9 @@ class VisitaController extends Controller
             $limit = $request->input('limit', 10);
             $pages = $this->visitaService->getTopPages((int) $limit);
 
-            return response()->json(['status' => 'success', 'data' => $pages]);
+            return response()->json(['status' => 'success', 'success' => true, 'data' => $pages]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao obter páginas mais visitadas.'], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao obter paginas mais visitadas.'], 500);
         }
     }
 
@@ -83,9 +102,9 @@ class VisitaController extends Controller
             $period = $request->input('period', 'month');
             $sources = $this->visitaService->getTrafficSources($period);
 
-            return response()->json(['status' => 'success', 'data' => $sources]);
+            return response()->json(['status' => 'success', 'success' => true, 'data' => $sources]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao obter fontes de tráfego.'], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao obter fontes de trafego.'], 500);
         }
     }
 
@@ -94,9 +113,9 @@ class VisitaController extends Controller
         try {
             $stats = $this->visitaService->getGeoStats();
 
-            return response()->json(['status' => 'success', 'data' => $stats]);
+            return response()->json(['status' => 'success', 'success' => true, 'data' => $stats]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao obter estatísticas geográficas.'], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao obter estatisticas geograficas.'], 500);
         }
     }
 
@@ -115,7 +134,7 @@ class VisitaController extends Controller
             }
 
             $handle = fopen($path, 'w+b');
-            fputcsv($handle, ['IP', 'URL', 'Página', 'Dispositivo', 'Navegador', 'SO', 'Referenciador', 'Data/Hora', 'Único', 'Bot'], ';');
+            fputcsv($handle, ['IP', 'URL', 'Pagina', 'Dispositivo', 'Navegador', 'SO', 'Referenciador', 'Data/Hora', 'Unico', 'Bot'], ';');
 
             foreach ($visits->items() as $visit) {
                 fputcsv($handle, [
@@ -127,8 +146,8 @@ class VisitaController extends Controller
                     $visit->os,
                     $visit->referer,
                     $visit->visit_time?->format('d/m/Y H:i:s'),
-                    $visit->unique_visit ? 'Sim' : 'Não',
-                    $visit->bot ? 'Sim' : 'Não',
+                    $visit->unique_visit ? 'Sim' : 'Nao',
+                    $visit->bot ? 'Sim' : 'Nao',
                 ], ';');
             }
 
@@ -136,7 +155,7 @@ class VisitaController extends Controller
 
             return Response::download($path, $filename)->deleteFileAfterSend();
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao exportar visitas: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao exportar visitas: ' . $e->getMessage()], 500);
         }
     }
 
@@ -146,12 +165,12 @@ class VisitaController extends Controller
             $days = $request->input('days', 30);
             $data = $this->visitaService->getChartData((int) $days);
 
-            return response()->json([
+            return response()->json(array_merge([
                 'status' => 'success',
-                'data' => $data,
-            ]);
+                'success' => true,
+            ], $data));
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao carregar dados do gráfico.'], 500);
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao carregar dados do grafico.'], 500);
         }
     }
 }

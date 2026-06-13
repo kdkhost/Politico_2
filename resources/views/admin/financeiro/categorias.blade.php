@@ -25,8 +25,8 @@
                         <th>Nome</th>
                         <th>Slug</th>
                         <th>Tipo</th>
-                        <th>Descrição</th>
-                        <th class="actions-column">Ações</th>
+                        <th>DescriÃ§Ã£o</th>
+                        <th class="actions-column">AÃ§Ãµes</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -92,7 +92,7 @@
                         </select>
                     </div>
                     <div class="mb-0">
-                        <label for="financial_category_descricao" class="form-label">Descrição</label>
+                        <label for="financial_category_descricao" class="form-label">DescriÃ§Ã£o</label>
                         <textarea id="financial_category_descricao" name="descricao" class="form-control" rows="3"></textarea>
                     </div>
                 </div>
@@ -138,7 +138,7 @@ $(function () {
         btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Salvando...');
         $.post(url, $(this).serialize())
             .done(function (res) {
-                if (res.status === 'success' || res.success) {
+                if (window.isSuccessfulResponse(res)) {
                     toastr.success(res.message || 'Categoria salva.');
                     setTimeout(function () { location.reload(); }, 800);
                 } else {
@@ -153,7 +153,7 @@ $(function () {
         var id = $(this).data('id');
         Swal.fire({
             title: 'Excluir categoria?',
-            text: 'Categorias com transações vinculadas não serão excluídas.',
+            text: 'Categorias com transaÃ§Ãµes vinculadas nÃ£o serÃ£o excluÃ­das.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sim, excluir',
@@ -163,7 +163,7 @@ $(function () {
             if (!result.isConfirmed) return;
             $.ajax({ url: '{{ route("admin.financeiro.categorias.destroy", ":id") }}'.replace(':id', id), method: 'DELETE' })
                 .done(function (res) {
-                    toastr.success(res.message || 'Categoria excluída.');
+                    toastr.success(res.message || 'Categoria excluÃ­da.');
                     setTimeout(function () { location.reload(); }, 800);
                 })
                 .fail(function (xhr) { toastr.error(xhr.responseJSON?.message || 'Erro ao excluir categoria.'); });

@@ -203,7 +203,7 @@
                         all_day: event.allDay ? 1 : 0
                     },
                     success: function(res) {
-                        if (res.success) toastr.success('Evento atualizado!');
+                        if (window.isSuccessfulResponse(res)) toastr.success('Evento atualizado!');
                         else toastr.error(res.message || 'Erro ao atualizar.');
                     },
                     error: function() { toastr.error('Erro ao atualizar evento.'); calendar.refetchEvents(); }
@@ -221,7 +221,7 @@
                         all_day: event.allDay ? 1 : 0
                     },
                     success: function(res) {
-                        if (res.success) toastr.success('Evento redimensionado!');
+                        if (window.isSuccessfulResponse(res)) toastr.success('Evento redimensionado!');
                         else toastr.error(res.message || 'Erro.');
                     },
                     error: function() { toastr.error('Erro.'); calendar.refetchEvents(); }
@@ -253,7 +253,7 @@
                 method: 'POST',
                 data: $(this).serialize(),
                 success: function(res) {
-                    if (res.success) {
+                    if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'Evento salvo!');
                         $('#eventModal').modal('hide');
                         calendar.refetchEvents();
@@ -288,7 +288,7 @@
                         type: 'DELETE',
                         data: { _token: '{{ csrf_token() }}' },
                         success: function(res) {
-                            if (res.success) {
+                            if (window.isSuccessfulResponse(res)) {
                                 toastr.success('Evento excluído!');
                                 $('#eventModal').modal('hide');
                                 calendar.refetchEvents();

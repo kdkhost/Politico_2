@@ -33,6 +33,11 @@ class Notification extends Model
         'link',
         'lida',
         'lida_at',
+        'type',
+        'notifiable_type',
+        'notifiable_id',
+        'data',
+        'read_at',
     ];
 
     protected function casts(): array
@@ -40,6 +45,8 @@ class Notification extends Model
         return [
             'lida' => 'bool',
             'lida_at' => 'datetime',
+            'data' => 'array',
+            'read_at' => 'datetime',
             'created_at' => 'datetime',
         ];
     }

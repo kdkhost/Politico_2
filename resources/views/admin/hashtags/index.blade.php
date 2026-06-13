@@ -25,7 +25,7 @@
                         <th>Slug</th>
                         <th>Tipo</th>
                         <th>Usos</th>
-                        <th class="actions-column">Ações</th>
+                        <th class="actions-column">AÃ§Ãµes</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -59,8 +59,8 @@
                             <option value="global">Global</option>
                             <option value="campanha">Campanha</option>
                             <option value="blog">Blog</option>
-                            <option value="pagina">Página</option>
-                            <option value="midia">Mídia</option>
+                            <option value="pagina">PÃ¡gina</option>
+                            <option value="midia">MÃ­dia</option>
                         </select>
                     </div>
                 </div>
@@ -133,7 +133,7 @@ $(function () {
         btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Salvando...');
         $.post(url, $(this).serialize())
             .done(function (res) {
-                if (res.status === 'success' || res.success) {
+                if (window.isSuccessfulResponse(res)) {
                     toastr.success(res.message || 'Hashtag salva com sucesso.');
                     modal.hide();
                     table.ajax.reload(null, false);
@@ -149,7 +149,7 @@ $(function () {
         var id = $(this).data('id');
         Swal.fire({
             title: 'Excluir hashtag?',
-            text: 'A hashtag será desvinculada dos conteúdos.',
+            text: 'A hashtag serÃ¡ desvinculada dos conteÃºdos.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sim, excluir',
@@ -159,7 +159,7 @@ $(function () {
             if (!result.isConfirmed) return;
             $.ajax({ url: '{{ route("admin.hashtags.destroy", ":id") }}'.replace(':id', id), method: 'DELETE' })
                 .done(function (res) {
-                    toastr.success(res.message || 'Hashtag excluída.');
+                    toastr.success(res.message || 'Hashtag excluÃ­da.');
                     table.ajax.reload(null, false);
                 })
                 .fail(function (xhr) { toastr.error(xhr.responseJSON?.message || 'Erro ao excluir hashtag.'); });

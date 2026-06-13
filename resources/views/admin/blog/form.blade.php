@@ -20,8 +20,8 @@
                     @endif
 
                     <div class="mb-3">
-                        <label for="titulo" class="form-label">Título <span class="text-danger">*</span></label>
-                        <input type="text" id="titulo" name="titulo" class="form-control" value="{{ old('titulo', $post->titulo) }}" placeholder="Título da postagem" required>
+                        <label for="titulo" class="form-label">TÃ­tulo <span class="text-danger">*</span></label>
+                        <input type="text" id="titulo" name="titulo" class="form-control" value="{{ old('titulo', $post->titulo) }}" placeholder="TÃ­tulo da postagem" required>
                     </div>
 
                     <div class="row">
@@ -59,10 +59,10 @@
                             <div class="mb-3">
                                 <label for="formato" class="form-label">Formato</label>
                                 <select id="formato" name="formato" class="form-select">
-                                    <option value="">Padrão</option>
+                                    <option value="">PadrÃ£o</option>
                                     <option value="artigo" @selected(old('formato', $post->formato) === 'artigo')>Artigo</option>
-                                    <option value="noticia" @selected(old('formato', $post->formato) === 'noticia')>Notícia</option>
-                                    <option value="video" @selected(old('formato', $post->formato) === 'video')>Vídeo</option>
+                                    <option value="noticia" @selected(old('formato', $post->formato) === 'noticia')>NotÃ­cia</option>
+                                    <option value="video" @selected(old('formato', $post->formato) === 'video')>VÃ­deo</option>
                                     <option value="galeria" @selected(old('formato', $post->formato) === 'galeria')>Galeria</option>
                                 </select>
                             </div>
@@ -81,7 +81,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="published_at" class="form-label">Data de Publicação</label>
+                                <label for="published_at" class="form-label">Data de PublicaÃ§Ã£o</label>
                                 <input type="datetime-local" id="published_at" name="published_at" class="form-control" value="{{ old('published_at', $post->published_at ? $post->published_at->format('Y-m-d\TH:i') : '') }}">
                             </div>
                         </div>
@@ -109,7 +109,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="conteudo" class="form-label">Conteúdo</label>
+                        <label for="conteudo" class="form-label">ConteÃºdo</label>
                         <textarea id="conteudo" name="conteudo" class="form-control summernote" rows="15">{{ old('conteudo', $post->conteudo) }}</textarea>
                     </div>
 
@@ -117,19 +117,19 @@
                         <div class="card-header">
                             <h5 class="card-title">
                                 <a data-bs-toggle="collapse" href="#seoPanel" role="button" aria-expanded="false">
-                                    <i class="fas fa-search me-1"></i>Configurações de SEO
+                                    <i class="fas fa-search me-1"></i>ConfiguraÃ§Ãµes de SEO
                                 </a>
                             </h5>
                         </div>
                         <div class="collapse" id="seoPanel">
                             <div class="card-body">
                                 <div class="mb-3">
-                                    <label for="seo_title" class="form-label">Título SEO</label>
-                                    <input type="text" id="seo_title" name="seo_title" class="form-control" value="{{ old('seo_title', $post->seo_title) }}" placeholder="Título para mecanismos de busca">
+                                    <label for="seo_title" class="form-label">TÃ­tulo SEO</label>
+                                    <input type="text" id="seo_title" name="seo_title" class="form-control" value="{{ old('seo_title', $post->seo_title) }}" placeholder="TÃ­tulo para mecanismos de busca">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="seo_description" class="form-label">Descrição SEO</label>
-                                    <textarea id="seo_description" name="seo_description" class="form-control" rows="2" maxlength="500" placeholder="Descrição para mecanismos de busca">{{ old('seo_description', $post->seo_description) }}</textarea>
+                                    <label for="seo_description" class="form-label">DescriÃ§Ã£o SEO</label>
+                                    <textarea id="seo_description" name="seo_description" class="form-control" rows="2" maxlength="500" placeholder="DescriÃ§Ã£o para mecanismos de busca">{{ old('seo_description', $post->seo_description) }}</textarea>
                                 </div>
                                 <div class="mb-3">
                                     <label for="seo_keywords" class="form-label">Palavras-chave SEO</label>
@@ -157,7 +157,7 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-info-circle me-1"></i>Informações</h3>
+                <h3 class="card-title"><i class="fas fa-info-circle me-1"></i>InformaÃ§Ãµes</h3>
             </div>
             <div class="card-body">
                 @if($isEditing)
@@ -171,11 +171,11 @@
                         <a href="{{ route('site.blog.show', $post->slug) }}" target="_blank" class="btn btn-sm btn-info"><i class="fas fa-external-link-alt me-1"></i>Ver Post</a>
                     @endif
                 @else
-                    <p class="text-muted">Preencha o formulário para criar uma nova postagem.</p>
+                    <p class="text-muted">Preencha o formulÃ¡rio para criar uma nova postagem.</p>
                     <ul class="text-muted small">
-                        <li>O slug pode ser gerado automaticamente pelo título.</li>
-                        <li>Use categorias e tags para organizar o conteúdo.</li>
-                        <li>Use a data de agendamento para publicações futuras.</li>
+                        <li>O slug pode ser gerado automaticamente pelo tÃ­tulo.</li>
+                        <li>Use categorias e tags para organizar o conteÃºdo.</li>
+                        <li>Use a data de agendamento para publicaÃ§Ãµes futuras.</li>
                     </ul>
                 @endif
             </div>
@@ -266,7 +266,7 @@
                 processData: false,
                 contentType: false,
                 success: function(res) {
-                    var ok = res.success || res.status === 'success';
+                    var ok = window.isSuccessfulResponse(res);
                     if (ok) {
                         toastr.success(res.message || 'Postagem salva com sucesso!');
                         window.location.href = res.redirect || '{{ route("admin.blog.index") }}';

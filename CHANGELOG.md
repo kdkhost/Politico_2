@@ -32,6 +32,16 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 - correção de links do dashboard para `admin.contato.index`
 - recompilação dos assets Vite do admin para refletir o novo shell
 
+### 2026-06-13 - corrige dropdowns do menu, respostas AJAX e gráficos de visitas
+
+- criação de helper global `window.isSuccessfulResponse(res)` para padronizar o reconhecimento de sucesso no admin
+- padronização das checagens AJAX em múltiplas views administrativas que antes dependiam apenas de `res.success`
+- implementação de treeview próprio da sidebar para abrir e fechar menus dropdown com consistência
+- correção do controller `VisitaController` para entregar os indicadores esperados pela view
+- correção do endpoint `admin.visitas.chart-data` para devolver `labels`, `visits`, `unique`, `browsers` e `devices` no formato esperado pelo gráfico
+- ajuste do serviço e model de notificações para compatibilidade com o schema real da tabela `notifications`
+- redução de falhas silenciosas do admin em telas de agenda, contatos, menus, mídia, permissões, usuários, páginas, WAF, categorias, tags, hashtags, backup e financeiro
+
 ### 2026-06-13 - `f386a9e` - adiciona changelog completo do sistema
 
 - recriação do `CHANGELOG.md` na raiz do projeto

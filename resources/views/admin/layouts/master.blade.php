@@ -94,107 +94,132 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
-        window.addEventListener('load', function() {
+        window.addEventListener('load', function () {
             document.body.classList.add('admin-loaded', 'app-loaded');
         });
-        setTimeout(function() {
+
+        window.setTimeout(function () {
             document.body.classList.add('admin-loaded', 'app-loaded');
         }, 1400);
 
-        $.ajaxSetup({
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
-        });
+        if (typeof window.formatMoney !== 'function') {
+            window.formatMoney = function (value) {
+                return new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                }).format(Number(value || 0));
+            };
+        }
 
-        toastr.options = {
-            closeButton: true,
-            progressBar: true,
-            positionClass: 'toast-top-right',
-            timeOut: 5000,
-            extendedTimeOut: 1000,
-            escapeHtml: false,
-        };
+        if (typeof window.formatDate !== 'function') {
+            window.formatDate = function (dateStr, showTime) {
+                if (!dateStr) return '-';
+
+                var date = new Date(dateStr);
+                if (isNaN(date.getTime())) return dateStr;
+
+                var options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                if (showTime) {
+                    options.hour = '2-digit';
+                    options.minute = '2-digit';
+                }
+
+                return date.toLocaleDateString('pt-BR', options);
+            };
+        }
+
+        if (typeof window.confirmDelete !== 'function' || window.confirmDelete.length < 2) {
+            window.confirmDelete = function (url, msg, callback) {
+                return Swal.fire({
+                    title: 'Tem certeza?',
+                    text: msg || 'Esta acao nao pode ser desfeita!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sim, excluir!',
+                    cancelButtonText: 'Cancelar'
+                }).then(function (result) {
+                    if (!result.isConfirmed) {
+                        if (typeof callback === 'function') callback(false);
+                        return result;
+                    }
+
+                    return $.ajax({
+                        url: url,
+                        type: 'DELETE'
+                    }).done(function (res) {
+                        if (window.isSuccessfulResponse ? window.isSuccessfulResponse(res) : (res && (res.success || res.status === 'success'))) {
+                            window.toastr?.success(res.message || 'Registro excluido com sucesso!');
+                            if (typeof window.table !== 'undefined' && window.table?.ajax) {
+                                window.table.ajax.reload();
+                            }
+                            if (typeof callback === 'function') callback(true, res);
+                        } else {
+                            window.toastr?.error(res?.message || 'Erro ao excluir registro.');
+                            if (typeof callback === 'function') callback(false, res);
+                        }
+                    }).fail(function (xhr) {
+                        window.toastr?.error(xhr.responseJSON?.message || 'Erro ao excluir registro.');
+                        if (typeof callback === 'function') callback(false, xhr.responseJSON);
+                    });
+                });
+            };
+        }
 
         @if(session('success'))
-            toastr.success(@json(session('success')));
+            window.addEventListener('load', function () {
+                window.toastr?.success(@json(session('success')));
+            }, { once: true });
         @endif
         @if(session('error'))
-            toastr.error(@json(session('error')));
+            window.addEventListener('load', function () {
+                window.toastr?.error(@json(session('error')));
+            }, { once: true });
         @endif
         @if(session('warning'))
-            toastr.warning(@json(session('warning')));
+            window.addEventListener('load', function () {
+                window.toastr?.warning(@json(session('warning')));
+            }, { once: true });
         @endif
         @if(session('info'))
-            toastr.info(@json(session('info')));
+            window.addEventListener('load', function () {
+                window.toastr?.info(@json(session('info')));
+            }, { once: true });
         @endif
 
-        $(function() {
-            $('[data-bs-toggle="tooltip"]').tooltip();
-            $('[data-bs-toggle="popover"]').popover();
-        });
+        window.addEventListener('load', function () {
+            if (typeof window.startNotificationPolling === 'function') {
+                window.startNotificationPolling(@json(route('admin.notificacoes.poll')), 30000);
+                return;
+            }
 
-        function confirmDelete(url, msg) {
-            Swal.fire({
-                title: 'Tem certeza?',
-                text: msg || 'Esta ação não pode ser desfeita!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#dc3545',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sim, excluir!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: url,
-                        type: 'DELETE',
-                        success: function(res) {
-                            if (res.success || res.status === 'success') {
-                                toastr.success(res.message || 'Registro excluído com sucesso!');
-                                if (typeof table !== 'undefined') table.ajax.reload();
-                            } else {
-                                toastr.error(res.message || 'Erro ao excluir registro.');
-                            }
-                        },
-                        error: function(xhr) {
-                            toastr.error(xhr.responseJSON?.message || 'Erro ao excluir registro.');
-                        }
-                    });
-                }
-            });
-        }
+            window.setInterval(function () {
+                $.get(@json(route('admin.notificacoes.poll')), function (data) {
+                    var count = Number(data.count || data.unread_count || 0);
+                    $('.notifications-count').text(count).toggleClass('d-none', count === 0);
 
-        function formatMoney(value) {
-            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-        }
+                    if (!$('.notifications-dropdown-menu').length || !Array.isArray(data.items)) {
+                        return;
+                    }
 
-        function formatDate(dateStr, showTime) {
-            if (!dateStr) return '';
-            var d = new Date(dateStr);
-            var opts = { day: '2-digit', month: '2-digit', year: 'numeric' };
-            if (showTime) opts.hour = '2-digit', opts.minute = '2-digit';
-            return d.toLocaleDateString('pt-BR', opts);
-        }
+                    if (!data.items.length) {
+                        $('.notifications-dropdown-menu').html('<span class="dropdown-item dropdown-header text-center">Nenhuma notificacao</span>');
+                        return;
+                    }
 
-        setInterval(function() {
-            $.get('{{ route("admin.notificacoes.poll") }}', function(data) {
-                var count = data.count || 0;
-                $('.notifications-count').text(count);
-                if (count > 0) {
-                    $('.notifications-count').removeClass('d-none');
-                } else {
-                    $('.notifications-count').addClass('d-none');
-                }
-                if (data.items) {
-                    var html = '';
-                    data.items.forEach(function(item) {
+                    var html = '<span class="dropdown-item dropdown-header text-center">' + count + ' notificacoes</span>';
+                    data.items.forEach(function (item) {
                         html += '<a href="' + (item.url || '#') + '" class="dropdown-item">' +
                             '<i class="' + (item.icon || 'fas fa-bell') + ' me-2"></i>' +
-                            item.message + '<br><small class="text-muted">' + formatDate(item.created_at, true) + '</small></a>';
+                            (item.message || item.mensagem || '') +
+                            '<br><small class="text-muted">' + window.formatDate(item.created_at, true) + '</small></a>';
                     });
+                    html += '<div class="dropdown-divider"></div><a href="/admin/notificacoes" class="dropdown-item dropdown-footer">Ver todas</a>';
                     $('.notifications-dropdown-menu').html(html);
-                }
-            });
-        }, 30000);
+                });
+            }, 30000);
+        }, { once: true });
     </script>
 
     @stack('scripts')

@@ -57,10 +57,12 @@ class DashboardController extends Controller
 
         $contactsUnread = Contact::where('lido', false)->count();
         $contactsTotal = Contact::count();
+        $contactsCount = $contactsTotal;
 
         $latestContacts = Contact::orderBy('created_at', 'desc')->limit(5)->get();
 
         $recentActivity = $this->auditoriaService->getRecent(10);
+        $recentActivities = $recentActivity;
 
         $pendingTransactions = FinancialTransaction::where('status', 'pendente')->count();
         $totalRevenue = FinancialTransaction::where('tipo', 'receita')->where('status', 'pago')->sum('valor');
@@ -108,8 +110,8 @@ class DashboardController extends Controller
             'visitsToday', 'visitsWeek', 'visitsMonth', 'totalVisits',
             'postsCount', 'publishedPosts', 'draftPosts', 'scheduledPosts',
             'eventsCount', 'upcomingEvents', 'todayEvents',
-            'contactsUnread', 'contactsTotal', 'latestContacts',
-            'recentActivity',
+            'contactsUnread', 'contactsTotal', 'contactsCount', 'latestContacts',
+            'recentActivity', 'recentActivities',
             'pendingTransactions', 'totalRevenue', 'totalExpenses', 'balance',
             'topPages', 'trafficSources', 'visitsByDay',
             'chartLabels', 'visitsData', 'financeLabels', 'revenuesData', 'expensesData',

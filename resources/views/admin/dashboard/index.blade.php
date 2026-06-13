@@ -124,8 +124,8 @@
                             <div class="d-flex w-100 justify-content-between">
                                 <h6 class="mb-1">{{ $event->title }}</h6>
                                 <small>
-                                    @if($event->start_time)
-                                        {{ \Carbon\Carbon::parse($event->start_time)->format('H:i') }}
+                                    @if($event->data_inicio ?? $event->start_time)
+                                        {{ \Carbon\Carbon::parse($event->data_inicio ?? $event->start_time)->format('H:i') }}
                                     @endif
                                 </small>
                             </div>

@@ -15,9 +15,17 @@ namespace App\Services\Notificacao;
 
 use App\Models\Notification;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Schema;
 
 class NotificacaoService
 {
+    private function usesLegacyColumns(): bool
+    {
+        return Schema::hasColumn('notifications', 'user_id')
+            && Schema::hasColumn('notifications', 'mensagem')
+            && Schema::hasColumn('notifications', 'lida');
+    }
+
     public function create(
         int $userId,
         string $tipo,
@@ -27,6 +35,28 @@ class NotificacaoService
         string|null $cor = null,
         string|null $link = null,
     ): Notification {
+        if (!$this->usesLegacyColumns()) {
+            $payload = [
+                'tipo' => $tipo,
+                'titulo' => $titulo,
+                'mensagem' => $mensagem,
+                'icone' => $icone,
+                'cor' => $cor,
+                'link' => $link,
+            ];
+
+            return Notification::create([
+                'type' => $tipo,
+                'notifiable_type' => \App\Models\User::class,
+                'notifiable_id' => $userId,
+                'data' => json_encode($payload, JSON_UNESCAPED_UNICODE),
+                'icone' => $icone,
+                'cor' => $cor,
+                'link' => $link,
+                'read_at' => null,
+            ]);
+        }
+
         return Notification::create([
             'user_id' => $userId,
             'tipo' => $tipo,
@@ -44,43 +74,90 @@ class NotificacaoService
     {
         $notification = Notification::findOrFail($notificationId);
 
-        $notification->update([
-            'lida' => true,
-            'lida_at' => now(),
-        ]);
+        if ($this->usesLegacyColumns()) {
+            $notification->update([
+                'lida' => true,
+                'lida_at' => now(),
+            ]);
+        } else {
+            $notification->update([
+                'read_at' => now(),
+            ]);
+        }
 
         return $notification->fresh();
     }
 
     public function markAllAsRead(int $userId): int
     {
-        return Notification::where('user_id', $userId)
-            ->where('lida', false)
+        if ($this->usesLegacyColumns()) {
+            return Notification::where('user_id', $userId)
+                ->where('lida', false)
+                ->update([
+                    'lida' => true,
+                    'lida_at' => now(),
+                ]);
+        }
+
+        return Notification::where('notifiable_type', \App\Models\User::class)
+            ->where('notifiable_id', $userId)
+            ->whereNull('read_at')
             ->update([
-                'lida' => true,
-                'lida_at' => now(),
+                'read_at' => now(),
             ]);
     }
 
     public function getUnread(int $userId): array
     {
-        return Notification::where('user_id', $userId)
-            ->where('lida', false)
+        if ($this->usesLegacyColumns()) {
+            return Notification::where('user_id', $userId)
+                ->where('lida', false)
+                ->orderByDesc('created_at')
+                ->get()
+                ->toArray();
+        }
+
+        return Notification::where('notifiable_type', \App\Models\User::class)
+            ->where('notifiable_id', $userId)
+            ->whereNull('read_at')
             ->orderByDesc('created_at')
             ->get()
+            ->map(function (Notification $notification): array {
+                $data = is_array($notification->data) ? $notification->data : json_decode((string) $notification->data, true);
+                $data = is_array($data) ? $data : [];
+
+                return [
+                    'id' => $notification->id,
+                    'tipo' => $notification->type ?? ($data['tipo'] ?? 'info'),
+                    'titulo' => $data['titulo'] ?? null,
+                    'mensagem' => $data['mensagem'] ?? $data['message'] ?? '',
+                    'icone' => $notification->icone ?? ($data['icone'] ?? 'fas fa-bell'),
+                    'cor' => $notification->cor ?? ($data['cor'] ?? null),
+                    'url' => $notification->link ?? ($data['link'] ?? '#'),
+                    'created_at' => $notification->created_at,
+                ];
+            })
             ->toArray();
     }
 
     public function getAll(int $userId, array $filters = []): LengthAwarePaginator
     {
-        $query = Notification::where('user_id', $userId);
+        $query = $this->usesLegacyColumns()
+            ? Notification::where('user_id', $userId)
+            : Notification::where('notifiable_type', \App\Models\User::class)->where('notifiable_id', $userId);
 
         if (!empty($filters['tipo'])) {
-            $query->where('tipo', $filters['tipo']);
+            $query->where($this->usesLegacyColumns() ? 'tipo' : 'type', $filters['tipo']);
         }
 
         if (isset($filters['lida'])) {
-            $query->where('lida', (bool) $filters['lida']);
+            if ($this->usesLegacyColumns()) {
+                $query->where('lida', (bool) $filters['lida']);
+            } elseif ((bool) $filters['lida']) {
+                $query->whereNotNull('read_at');
+            } else {
+                $query->whereNull('read_at');
+            }
         }
 
         if (!empty($filters['date_from'])) {
@@ -108,8 +185,15 @@ class NotificacaoService
 
     public function getUnreadCount(int $userId): int
     {
-        return Notification::where('user_id', $userId)
-            ->where('lida', false)
+        if ($this->usesLegacyColumns()) {
+            return Notification::where('user_id', $userId)
+                ->where('lida', false)
+                ->count();
+        }
+
+        return Notification::where('notifiable_type', \App\Models\User::class)
+            ->where('notifiable_id', $userId)
+            ->whereNull('read_at')
             ->count();
     }
 }

@@ -1,7 +1,7 @@
 @extends('admin.layouts.master')
 
 @section('title', 'WAF - ' . config('app.name'))
-@section('page_title', 'Firewall de Aplicação Web (WAF)')
+@section('page_title', 'Firewall de AplicaÃ§Ã£o Web (WAF)')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
     <li class="breadcrumb-item active">WAF</li>
@@ -19,11 +19,11 @@
                     @if($wafEnabled ?? false)
                         <i class="fas fa-shield-check text-success" style="font-size: 4rem;"></i>
                         <h4 class="text-success mt-2">WAF Ativo</h4>
-                        <p class="text-muted">O firewall está protegendo sua aplicação.</p>
+                        <p class="text-muted">O firewall estÃ¡ protegendo sua aplicaÃ§Ã£o.</p>
                     @else
                         <i class="fas fa-shield-slash text-danger" style="font-size: 4rem;"></i>
                         <h4 class="text-danger mt-2">WAF Inativo</h4>
-                        <p class="text-muted">Sua aplicação não está protegida pelo WAF.</p>
+                        <p class="text-muted">Sua aplicaÃ§Ã£o nÃ£o estÃ¡ protegida pelo WAF.</p>
                     @endif
                 </div>
                 <div class="d-flex justify-content-center gap-2">
@@ -37,7 +37,7 @@
 
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-sliders-h me-1"></i>Configurações</h3>
+                <h3 class="card-title"><i class="fas fa-sliders-h me-1"></i>ConfiguraÃ§Ãµes</h3>
             </div>
             <div class="card-body">
                 <form id="wafConfigForm">
@@ -57,11 +57,11 @@
                     <div class="mb-3">
                         <div class="form-check form-switch">
                             <input type="checkbox" id="rate_limiting" name="rate_limiting" class="form-check-input" value="1" {{ $config->rate_limiting ?? true ? 'checked' : '' }}>
-                            <label for="rate_limiting" class="form-check-label">Limitar Taxa de Requisições</label>
+                            <label for="rate_limiting" class="form-check-label">Limitar Taxa de RequisiÃ§Ãµes</label>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="max_requests_per_minute" class="form-label">Máx. Requisições/Minuto</label>
+                        <label for="max_requests_per_minute" class="form-label">MÃ¡x. RequisiÃ§Ãµes/Minuto</label>
                         <input type="number" id="max_requests_per_minute" name="max_requests_per_minute" class="form-control" value="{{ $config->max_requests_per_minute ?? 60 }}" min="10" max="1000">
                     </div>
                     <div class="mb-3">
@@ -85,7 +85,7 @@
                         <textarea id="blacklist_ips" name="blacklist_ips" class="form-control font-monospace" rows="3" placeholder="1.2.3.4&#10;5.6.7.0/24">{{ $config->blacklist_ips ?? '' }}</textarea>
                     </div>
                     <button type="submit" class="btn btn-primary w-100" id="btnSaveWaf">
-                        <i class="fas fa-save me-1"></i>Salvar Configurações
+                        <i class="fas fa-save me-1"></i>Salvar ConfiguraÃ§Ãµes
                     </button>
                 </form>
             </div>
@@ -106,7 +106,7 @@
                                 <th>IP</th>
                                 <th>Tipo</th>
                                 <th>Motivo</th>
-                                <th>Ação</th>
+                                <th>AÃ§Ã£o</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -133,7 +133,7 @@
 
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-chart-bar me-1"></i>Estatísticas</h3>
+                <h3 class="card-title"><i class="fas fa-chart-bar me-1"></i>EstatÃ­sticas</h3>
             </div>
             <div class="card-body">
                 <div class="row text-center">
@@ -169,7 +169,7 @@
                 method: 'POST',
                 data: { _token: '{{ csrf_token() }}' },
                 success: function(res) {
-                    if (res.success || res.status === 'success') {
+                    if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'WAF alterado!');
                         setTimeout(function() { location.reload(); }, 1000);
                     } else {
@@ -194,8 +194,8 @@
                 method: 'POST',
                 data: $(this).serialize(),
                 success: function(res) {
-                    if (res.success || res.status === 'success') {
-                        toastr.success(res.message || 'Configurações salvas!');
+                    if (window.isSuccessfulResponse(res)) {
+                        toastr.success(res.message || 'ConfiguraÃ§Ãµes salvas!');
                     } else {
                         toastr.error(res.message || 'Erro ao salvar.');
                     }
@@ -204,7 +204,7 @@
                     toastr.error(xhr.responseJSON?.message || 'Erro ao salvar.');
                 },
                 complete: function() {
-                    btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i>Salvar Configurações');
+                    btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i>Salvar ConfiguraÃ§Ãµes');
                 }
             });
         });
@@ -217,7 +217,7 @@
                 method: 'POST',
                 data: { _token: '{{ csrf_token() }}', ip: ip },
                 success: function(res) {
-                    if (res.success || res.status === 'success') {
+                    if (window.isSuccessfulResponse(res)) {
                         toastr.success('IP desbloqueado: ' + ip);
                         row.fadeOut(function() { $(this).remove(); });
                     }

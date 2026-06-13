@@ -26,7 +26,7 @@
                         <th>Slug</th>
                         <th>Posts</th>
                         <th>Criada em</th>
-                        <th class="actions-column">Ações</th>
+                        <th class="actions-column">AÃ§Ãµes</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -119,7 +119,7 @@ $(function () {
         btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Salvando...');
         $.post(url, $(this).serialize())
             .done(function (res) {
-                if (res.status === 'success' || res.success) {
+                if (window.isSuccessfulResponse(res)) {
                     toastr.success(res.message || 'Tag salva com sucesso.');
                     modal.hide();
                     table.ajax.reload(null, false);
@@ -135,7 +135,7 @@ $(function () {
         var id = $(this).data('id');
         Swal.fire({
             title: 'Excluir tag?',
-            text: 'A tag será removida dos posts vinculados.',
+            text: 'A tag serÃ¡ removida dos posts vinculados.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sim, excluir',
@@ -145,7 +145,7 @@ $(function () {
             if (!result.isConfirmed) return;
             $.ajax({ url: '{{ route("admin.blog.tags.destroy", ":id") }}'.replace(':id', id), method: 'DELETE' })
                 .done(function (res) {
-                    toastr.success(res.message || 'Tag excluída.');
+                    toastr.success(res.message || 'Tag excluÃ­da.');
                     table.ajax.reload(null, false);
                 })
                 .fail(function (xhr) { toastr.error(xhr.responseJSON?.message || 'Erro ao excluir tag.'); });

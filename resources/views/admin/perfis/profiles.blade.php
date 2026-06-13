@@ -4,8 +4,8 @@
 @section('page_title', 'Perfis de Acesso')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">Usuários</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('admin.permissions.index') }}">Permissões</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">UsuÃ¡rios</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.permissions.index') }}">PermissÃµes</a></li>
     <li class="breadcrumb-item active">Perfis</li>
 @endsection
 
@@ -32,21 +32,21 @@
                     </div>
                 @endif
                 <div class="card-body">
-                    <p class="text-muted">{{ $profile->description ?? 'Sem descrição' }}</p>
+                    <p class="text-muted">{{ $profile->description ?? 'Sem descriÃ§Ã£o' }}</p>
                     <hr>
                     <div class="d-flex justify-content-between align-items-center">
-                        <span><i class="fas fa-users me-1"></i>Usuários:</span>
+                        <span><i class="fas fa-users me-1"></i>UsuÃ¡rios:</span>
                         <span class="badge bg-info fs-6">{{ $profile->users_count ?? 0 }}</span>
                     </div>
                     @if($profile->id === 1)
                         <div class="mt-2">
-                            <span class="badge bg-warning"><i class="fas fa-exclamation-triangle me-1"></i>Perfil padrão do sistema</span>
+                            <span class="badge bg-warning"><i class="fas fa-exclamation-triangle me-1"></i>Perfil padrÃ£o do sistema</span>
                         </div>
                     @endif
                 </div>
                 <div class="card-footer text-center">
                     <a href="{{ route('admin.permissions.index') }}?profile={{ $profile->id }}" class="btn btn-sm btn-primary">
-                        <i class="fas fa-lock me-1"></i>Gerenciar Permissões
+                        <i class="fas fa-lock me-1"></i>Gerenciar PermissÃµes
                     </a>
                 </div>
             </div>
@@ -88,8 +88,8 @@
                         <input type="text" id="profile_name" name="name" class="form-control" placeholder="Ex: Editor, Admin" required>
                     </div>
                     <div class="mb-3">
-                        <label for="profile_description" class="form-label">Descrição</label>
-                        <textarea id="profile_description" name="description" class="form-control" rows="2" placeholder="Descrição opcional"></textarea>
+                        <label for="profile_description" class="form-label">DescriÃ§Ã£o</label>
+                        <textarea id="profile_description" name="description" class="form-control" rows="2" placeholder="DescriÃ§Ã£o opcional"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -132,7 +132,7 @@
                 method: 'POST',
                 data: $(this).serialize(),
                 success: function(res) {
-                    if (res.success || res.status === 'success') {
+                    if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'Perfil salvo!');
                         $('#profileModal').modal('hide');
                         setTimeout(function() { location.reload(); }, 1000);
@@ -153,7 +153,7 @@
             var id = $(this).data('id');
             Swal.fire({
                 title: 'Excluir Perfil?',
-                text: 'Usuários vinculados perderão o acesso.',
+                text: 'UsuÃ¡rios vinculados perderÃ£o o acesso.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc3545',
@@ -166,8 +166,8 @@
                         type: 'DELETE',
                         data: { _token: '{{ csrf_token() }}' },
                         success: function(res) {
-                            if (res.success) {
-                                toastr.success(res.message || 'Perfil excluído!');
+                            if (window.isSuccessfulResponse(res)) {
+                                toastr.success(res.message || 'Perfil excluÃ­do!');
                                 setTimeout(function() { location.reload(); }, 1000);
                             } else {
                                 toastr.error(res.message || 'Erro ao excluir.');

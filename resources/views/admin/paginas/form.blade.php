@@ -1,10 +1,10 @@
 @extends('admin.layouts.master')
 
-@section('title', ($page->id ?? false) ? 'Editar Página - ' . config('app.name') : 'Nova Página - ' . config('app.name'))
-@section('page_title', ($page->id ?? false) ? 'Editar Página' : 'Nova Página')
+@section('title', ($page->id ?? false) ? 'Editar PÃ¡gina - ' . config('app.name') : 'Nova PÃ¡gina - ' . config('app.name'))
+@section('page_title', ($page->id ?? false) ? 'Editar PÃ¡gina' : 'Nova PÃ¡gina')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('admin.pages.index') }}">Páginas</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.pages.index') }}">PÃ¡ginas</a></li>
     <li class="breadcrumb-item active">{{ ($page->id ?? false) ? 'Editar' : 'Nova' }}</li>
 @endsection
 
@@ -13,7 +13,7 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-file-alt me-1"></i>{{ ($page->id ?? false) ? 'Editar Página' : 'Nova Página' }}</h3>
+                <h3 class="card-title"><i class="fas fa-file-alt me-1"></i>{{ ($page->id ?? false) ? 'Editar PÃ¡gina' : 'Nova PÃ¡gina' }}</h3>
             </div>
             <div class="card-body">
                 <form id="pageForm" enctype="multipart/form-data">
@@ -24,8 +24,8 @@
                     @endif
 
                     <div class="mb-3">
-                        <label for="title" class="form-label">Título <span class="text-danger">*</span></label>
-                        <input type="text" id="title" name="title" class="form-control" value="{{ $page->title ?? '' }}" placeholder="Título da página" required>
+                        <label for="title" class="form-label">TÃ­tulo <span class="text-danger">*</span></label>
+                        <input type="text" id="title" name="title" class="form-control" value="{{ $page->title ?? '' }}" placeholder="TÃ­tulo da pÃ¡gina" required>
                     </div>
 
                     <div class="row">
@@ -51,7 +51,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="content" class="form-label">Conteúdo <span class="text-danger">*</span></label>
+                        <label for="content" class="form-label">ConteÃºdo <span class="text-danger">*</span></label>
                         <textarea id="content" name="content" class="form-control summernote" rows="15">{{ $page->content ?? '' }}</textarea>
                     </div>
 
@@ -69,7 +69,7 @@
                         <div class="card-header">
                             <h5 class="card-title">
                                 <a data-bs-toggle="collapse" href="#seoPanel" role="button" aria-expanded="false">
-                                    <i class="fas fa-search me-1"></i>Configurações de SEO
+                                    <i class="fas fa-search me-1"></i>ConfiguraÃ§Ãµes de SEO
                                 </a>
                             </h5>
                             <div class="card-tools">
@@ -80,12 +80,12 @@
                             <div class="card-body">
                                 <div class="mb-3">
                                     <label for="meta_title" class="form-label">Meta Title</label>
-                                    <input type="text" id="meta_title" name="meta_title" class="form-control" value="{{ $page->meta_title ?? '' }}" placeholder="Título para SEO (se vazio, usa o título da página)">
+                                    <input type="text" id="meta_title" name="meta_title" class="form-control" value="{{ $page->meta_title ?? '' }}" placeholder="TÃ­tulo para SEO (se vazio, usa o tÃ­tulo da pÃ¡gina)">
                                 </div>
                                 <div class="mb-3">
                                     <label for="meta_description" class="form-label">Meta Description</label>
-                                    <textarea id="meta_description" name="meta_description" class="form-control" rows="2" maxlength="160" placeholder="Descrição para mecanismos de busca">{{ $page->meta_description ?? '' }}</textarea>
-                                    <div class="form-text">Máximo 160 caracteres.</div>
+                                    <textarea id="meta_description" name="meta_description" class="form-control" rows="2" maxlength="160" placeholder="DescriÃ§Ã£o para mecanismos de busca">{{ $page->meta_description ?? '' }}</textarea>
+                                    <div class="form-text">MÃ¡ximo 160 caracteres.</div>
                                 </div>
                                 <div class="mb-3">
                                     <label for="meta_keywords" class="form-label">Meta Keywords</label>
@@ -116,7 +116,7 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-info-circle me-1"></i>Informações</h3>
+                <h3 class="card-title"><i class="fas fa-info-circle me-1"></i>InformaÃ§Ãµes</h3>
             </div>
             <div class="card-body">
                 @if($page->id ?? false)
@@ -125,13 +125,13 @@
                     <p><strong>Criado em:</strong> {{ \Carbon\Carbon::parse($page->created_at)->format('d/m/Y H:i') }}</p>
                     <p><strong>Atualizado em:</strong> {{ \Carbon\Carbon::parse($page->updated_at)->format('d/m/Y H:i') }}</p>
                     <hr>
-                    <a href="{{ url($page->slug) }}" target="_blank" class="btn btn-sm btn-info"><i class="fas fa-external-link-alt me-1"></i>Ver Página</a>
+                    <a href="{{ url($page->slug) }}" target="_blank" class="btn btn-sm btn-info"><i class="fas fa-external-link-alt me-1"></i>Ver PÃ¡gina</a>
                 @else
-                    <p class="text-muted">Preencha o formulário ao lado para criar uma nova página.</p>
+                    <p class="text-muted">Preencha o formulÃ¡rio ao lado para criar uma nova pÃ¡gina.</p>
                     <ul class="text-muted small">
-                        <li>O slug é gerado automaticamente a partir do título</li>
-                        <li>Você pode personalizar as configurações de SEO</li>
-                        <li>Adicione uma imagem de destaque para melhorar a aparência</li>
+                        <li>O slug Ã© gerado automaticamente a partir do tÃ­tulo</li>
+                        <li>VocÃª pode personalizar as configuraÃ§Ãµes de SEO</li>
+                        <li>Adicione uma imagem de destaque para melhorar a aparÃªncia</li>
                     </ul>
                 @endif
             </div>
@@ -209,12 +209,12 @@
                 processData: false,
                 contentType: false,
                 success: function(res) {
-                    if (res.success) {
-                        toastr.success(res.message || 'Página salva com sucesso!');
+                    if (window.isSuccessfulResponse(res)) {
+                        toastr.success(res.message || 'PÃ¡gina salva com sucesso!');
                         if (res.redirect) { window.location.href = res.redirect; }
                         else { window.location.href = '{{ route("admin.pages.index") }}'; }
                     } else {
-                        toastr.error(res.message || 'Erro ao salvar página.');
+                        toastr.error(res.message || 'Erro ao salvar pÃ¡gina.');
                     }
                 },
                 error: function(xhr) {
@@ -224,7 +224,7 @@
                             $.each(msgs, function(i, msg) { toastr.error(msg); });
                         });
                     } else {
-                        toastr.error(xhr.responseJSON?.message || 'Erro ao salvar página.');
+                        toastr.error(xhr.responseJSON?.message || 'Erro ao salvar pÃ¡gina.');
                     }
                 },
                 complete: function() {

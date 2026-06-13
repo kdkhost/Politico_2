@@ -22,7 +22,7 @@
         <div class="small-box bg-warning">
             <div class="inner">
                 <h3>{{ $unreadMessages ?? 0 }}</h3>
-                <p>Não Lidas</p>
+                <p>NÃ£o Lidas</p>
             </div>
             <div class="icon"><i class="fas fa-envelope-open"></i></div>
         </div>
@@ -70,7 +70,7 @@
                                 <th>Assunto</th>
                                 <th>Status</th>
                                 <th>Data</th>
-                                <th style="width: 110px;">Ações</th>
+                                <th style="width: 110px;">AÃ§Ãµes</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -125,7 +125,7 @@
                     '<tr><th>Telefone</th><td>' + (data.phone || '-') + '</td></tr>' +
                     '<tr><th>Assunto</th><td>' + (data.subject || '-') + '</td></tr>' +
                     '<tr><th>Data</th><td>' + formatDate(data.created_at, true) + '</td></tr>' +
-                    '<tr><th>Status</th><td>' + (data.read_at ? '<span class="badge bg-success">Lida</span>' : '<span class="badge bg-warning">Não Lida</span>') + '</td></tr>' +
+                    '<tr><th>Status</th><td>' + (data.read_at ? '<span class="badge bg-success">Lida</span>' : '<span class="badge bg-warning">NÃ£o Lida</span>') + '</td></tr>' +
                     '</table>' +
                     '<div class="card bg-light"><div class="card-body"><strong>Mensagem:</strong><hr>' +
                     '<p class="mb-0">' + (data.message || '') + '</p></div></div>';
@@ -160,7 +160,7 @@
                 method: 'POST',
                 data: $(this).serialize(),
                 success: function(res) {
-                    if (res.success) {
+                    if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'Resposta enviada!');
                         $('#contatoShowModal').modal('hide');
                         table.ajax.reload();
@@ -179,7 +179,7 @@
 
         $(document).on('click', '.btn-delete-message', function() {
             var id = $(this).data('id');
-            confirmDelete('{{ route("admin.contato.destroy", ":id") }}'.replace(':id', id), 'A mensagem será excluída permanentemente.');
+            confirmDelete('{{ route("admin.contato.destroy", ":id") }}'.replace(':id', id), 'A mensagem serÃ¡ excluÃ­da permanentemente.');
         });
 
         $('#markAllRead').on('click', function() {
@@ -188,7 +188,7 @@
                 method: 'POST',
                 data: { _token: '{{ csrf_token() }}' },
                 success: function(res) {
-                    if (res.success) {
+                    if (window.isSuccessfulResponse(res)) {
                         toastr.success('Todas as mensagens marcadas como lidas.');
                         table.ajax.reload();
                     }
@@ -199,7 +199,7 @@
         $('#deleteAllRead').on('click', function() {
             Swal.fire({
                 title: 'Excluir Mensagens Lidas?',
-                text: 'Todas as mensagens lidas serão excluídas.',
+                text: 'Todas as mensagens lidas serÃ£o excluÃ­das.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc3545',
@@ -212,8 +212,8 @@
                         type: 'DELETE',
                         data: { _token: '{{ csrf_token() }}' },
                         success: function(res) {
-                            if (res.success) {
-                                toastr.success('Mensagens lidas excluídas.');
+                            if (window.isSuccessfulResponse(res)) {
+                                toastr.success('Mensagens lidas excluÃ­das.');
                                 table.ajax.reload();
                             }
                         }

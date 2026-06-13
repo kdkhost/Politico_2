@@ -1,10 +1,10 @@
 @extends('admin.layouts.master')
 
-@section('title', 'Usuários - ' . config('app.name'))
-@section('page_title', 'Gerenciamento de Usuários')
+@section('title', 'UsuÃ¡rios - ' . config('app.name'))
+@section('page_title', 'Gerenciamento de UsuÃ¡rios')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item active">Usuários</li>
+    <li class="breadcrumb-item active">UsuÃ¡rios</li>
 @endsection
 
 @section('content')
@@ -12,10 +12,10 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-users me-1"></i>Todos os Usuários</h3>
+                <h3 class="card-title"><i class="fas fa-users me-1"></i>Todos os UsuÃ¡rios</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#userModal">
-                        <i class="fas fa-plus me-1"></i>Novo Usuário
+                        <i class="fas fa-plus me-1"></i>Novo UsuÃ¡rio
                     </button>
                 </div>
             </div>
@@ -29,8 +29,8 @@
                                 <th>E-mail</th>
                                 <th>Perfil</th>
                                 <th>Status</th>
-                                <th>Último Acesso</th>
-                                <th style="width: 150px;">Ações</th>
+                                <th>Ãšltimo Acesso</th>
+                                <th style="width: 150px;">AÃ§Ãµes</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -47,7 +47,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="fas fa-user me-1"></i>Detalhes do Usuário</h5>
+                <h5 class="modal-title"><i class="fas fa-user me-1"></i>Detalhes do UsuÃ¡rio</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="viewUserContent"></div>
@@ -95,7 +95,7 @@
                 $('#profile_id').val(data.profile_id);
                 $('#password').prop('required', false).val('');
                 $('#password_confirmation').prop('required', false).val('');
-                $('#userModalLabel').text('Editar Usuário');
+                $('#userModalLabel').text('Editar UsuÃ¡rio');
                 $('#userModal').modal('show');
             });
         });
@@ -110,7 +110,7 @@
                     '<tr><th>Perfil</th><td>' + (data.profile?.name || '-') + '</td></tr>' +
                     '<tr><th>Status</th><td>' + (data.active ? '<span class="badge bg-success">Ativo</span>' : '<span class="badge bg-danger">Inativo</span>') + '</td></tr>' +
                     '<tr><th>Criado em</th><td>' + formatDate(data.created_at, true) + '</td></tr>' +
-                    '<tr><th>Último Acesso</th><td>' + (data.last_login_at ? formatDate(data.last_login_at, true) : 'Nunca') + '</td></tr>' +
+                    '<tr><th>Ãšltimo Acesso</th><td>' + (data.last_login_at ? formatDate(data.last_login_at, true) : 'Nunca') + '</td></tr>' +
                     '</table>';
                 $('#viewUserContent').html(html);
                 $('#viewUserModal').modal('show');
@@ -124,7 +124,7 @@
                 type: 'POST',
                 data: { _token: '{{ csrf_token() }}' },
                 success: function(res) {
-                    if (res.success) {
+                    if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'Status alterado!');
                         table.ajax.reload();
                     } else {
@@ -140,8 +140,8 @@
         $(document).on('click', '.btn-block-user', function() {
             var id = $(this).data('id');
             Swal.fire({
-                title: 'Bloquear Usuário?',
-                text: 'O usuário não poderá acessar o sistema até ser desbloqueado.',
+                title: 'Bloquear UsuÃ¡rio?',
+                text: 'O usuÃ¡rio nÃ£o poderÃ¡ acessar o sistema atÃ© ser desbloqueado.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc3545',
@@ -155,15 +155,15 @@
                         type: 'POST',
                         data: { _token: '{{ csrf_token() }}' },
                         success: function(res) {
-                            if (res.success) {
-                                toastr.success(res.message || 'Usuário bloqueado!');
+                            if (window.isSuccessfulResponse(res)) {
+                                toastr.success(res.message || 'UsuÃ¡rio bloqueado!');
                                 table.ajax.reload();
                             } else {
                                 toastr.error(res.message || 'Erro ao bloquear.');
                             }
                         },
                         error: function(xhr) {
-                            toastr.error(xhr.responseJSON?.message || 'Erro ao bloquear usuário.');
+                            toastr.error(xhr.responseJSON?.message || 'Erro ao bloquear usuÃ¡rio.');
                         }
                     });
                 }

@@ -2295,7 +2295,7 @@ body.admin-premium {
 .admin-shell.app-wrapper {
     display: block;
     min-height: 100vh;
-    padding-left: var(--admin-shell-sidebar-offset);
+    padding-left: 0;
 }
 
 .admin-sidebar.app-sidebar {
@@ -2309,21 +2309,23 @@ body.admin-premium {
 .admin-topbar.app-header {
     position: fixed;
     top: 0;
-    left: var(--admin-shell-sidebar-offset);
+    left: 0;
     right: 0;
-    width: auto;
-    margin: 0 !important;
+    width: calc(100% - var(--admin-shell-sidebar-offset));
+    margin: 0 0 0 var(--admin-shell-sidebar-offset) !important;
 }
 
 .admin-main.app-main {
     min-height: 100vh;
-    margin: 0 !important;
+    width: calc(100% - var(--admin-shell-sidebar-offset));
+    margin: 0 0 0 var(--admin-shell-sidebar-offset) !important;
     padding-top: var(--admin-header-height);
     overflow-x: hidden;
 }
 
 .admin-footer.app-footer {
-    margin-left: var(--admin-shell-sidebar-offset);
+    width: calc(100% - var(--admin-shell-sidebar-offset));
+    margin-left: var(--admin-shell-sidebar-offset) !important;
 }
 
 .admin-sidebar-backdrop {
@@ -2414,8 +2416,9 @@ body.admin-premium.admin-sidebar-collapsed .admin-content {
     }
 
     .admin-topbar.app-header,
+    .admin-main.app-main,
     .admin-footer.app-footer {
-        left: 0;
+        width: 100%;
         margin-left: 0 !important;
     }
 

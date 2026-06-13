@@ -5,7 +5,7 @@
                 @csrf
                 <input type="hidden" id="user_id" name="user_id" value="">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="userModalLabel"><i class="fas fa-user me-1"></i>Novo Usuário</h5>
+                    <h5 class="modal-title" id="userModalLabel"><i class="fas fa-user me-1"></i>Novo UsuÃ¡rio</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -27,7 +27,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="password" class="form-label">Senha <span class="text-danger" id="passwordRequired">*</span></label>
-                                <input type="password" id="password" name="password" class="form-control" placeholder="Mínimo 8 caracteres" minlength="8" required>
+                                <input type="password" id="password" name="password" class="form-control" placeholder="MÃ­nimo 8 caracteres" minlength="8" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -61,7 +61,7 @@
                             <div class="mb-3">
                                 <div class="form-check form-switch">
                                     <input type="checkbox" id="active" name="active" class="form-check-input" value="1" checked>
-                                    <label for="active" class="form-check-label">Usuário Ativo</label>
+                                    <label for="active" class="form-check-label">UsuÃ¡rio Ativo</label>
                                 </div>
                             </div>
                         </div>
@@ -81,7 +81,7 @@
         $('#userModal').on('hidden.bs.modal', function() {
             $('#userForm')[0].reset();
             $('#user_id').val('');
-            $('#userModalLabel').text('Novo Usuário');
+            $('#userModalLabel').text('Novo UsuÃ¡rio');
             $('#password').prop('required', true);
             $('#password_confirmation').prop('required', true);
             $('#passwordRequired').show();
@@ -108,12 +108,12 @@
                 processData: false,
                 contentType: false,
                 success: function(res) {
-                    if (res.success) {
-                        toastr.success(res.message || 'Usuário salvo com sucesso!');
+                    if (window.isSuccessfulResponse(res)) {
+                        toastr.success(res.message || 'UsuÃ¡rio salvo com sucesso!');
                         $('#userModal').modal('hide');
                         if (typeof table !== 'undefined') table.ajax.reload();
                     } else {
-                        toastr.error(res.message || 'Erro ao salvar usuário.');
+                        toastr.error(res.message || 'Erro ao salvar usuÃ¡rio.');
                     }
                 },
                 error: function(xhr) {
@@ -123,7 +123,7 @@
                             $.each(msgs, function(i, msg) { toastr.error(msg); });
                         });
                     } else {
-                        toastr.error(xhr.responseJSON?.message || 'Erro ao salvar usuário.');
+                        toastr.error(xhr.responseJSON?.message || 'Erro ao salvar usuÃ¡rio.');
                     }
                 },
                 complete: function() {
