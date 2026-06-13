@@ -1979,10 +1979,20 @@ body.admin-premium * {
 }
 
 @media (min-width: 992px) {
-    .sidebar-expand-lg:not(.sidebar-collapse) .app-header,
-    .sidebar-expand-lg:not(.sidebar-collapse) .app-main,
-    .sidebar-expand-lg:not(.sidebar-collapse) .app-footer {
-        margin-left: var(--admin-sidebar-width);
+    .admin-shell.app-wrapper {
+        grid-template-columns: var(--admin-sidebar-width) minmax(0, 1fr) !important;
+    }
+
+    .admin-premium .app-header,
+    .admin-premium .app-main,
+    .admin-premium .app-footer {
+        margin-left: 0 !important;
+        min-width: 0;
+    }
+
+    .admin-main.app-main {
+        width: 100%;
+        overflow-x: hidden;
     }
 }
 
