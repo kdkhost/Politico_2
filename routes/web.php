@@ -374,6 +374,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\ModuleController::class, 'index'])->name('index');
             Route::post('/{id}/alternar', [App\Http\Controllers\Admin\ModuleController::class, 'toggle'])->name('toggle');
             Route::post('/{id}/configurar', [App\Http\Controllers\Admin\ModuleController::class, 'config'])->name('config');
+            Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\ModuleController::class, 'update'])->name('update');
         });
 
         // SEO
@@ -416,9 +417,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('contato/marcar-todos-lidos', [App\Http\Controllers\Admin\ContatoController::class, 'markAllRead'])->name('contato.mark-all-read');
         Route::delete('contato/{id}/excluir', [App\Http\Controllers\Admin\ContatoController::class, 'destroy'])->name('contato.destroy');
         Route::delete('contato/lidos/excluir', [App\Http\Controllers\Admin\ContatoController::class, 'deleteRead'])->name('contato.delete-read');
-
-        Route::get('agenda/eventos', [App\Http\Controllers\Admin\EventController::class, 'list'])->name('agenda.events');
-        Route::delete('backup/{id}/excluir', [App\Http\Controllers\Admin\BackupController::class, 'destroy'])->name('backup.destroy');
 
         // Documentação
         Route::get('docs', function () {
