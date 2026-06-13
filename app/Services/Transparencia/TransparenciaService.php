@@ -21,6 +21,21 @@ use Illuminate\Support\Str;
 
 class TransparenciaService
 {
+    private const SORTABLE_FIELDS = [
+        'id',
+        'tipo',
+        'titulo',
+        'valor',
+        'data_publicacao',
+        'data_referencia',
+        'categoria',
+        'fornecedor',
+        'orgao_responsavel',
+        'status',
+        'created_at',
+        'updated_at',
+    ];
+
     public function listItems(array $filters = []): LengthAwarePaginator
     {
         $query = TransparencyItem::with('creator:id,name');
@@ -63,8 +78,10 @@ class TransparenciaService
             $query->where('orgao_responsavel', 'like', "%{$filters['orgao_responsavel']}%");
         }
 
-        $sortField = $filters['sort_by'] ?? 'data_publicacao';
-        $sortOrder = $filters['sort_order'] ?? 'desc';
+        $sortField = in_array(($filters['sort_by'] ?? 'data_publicacao'), self::SORTABLE_FIELDS, true)
+            ? $filters['sort_by']
+            : 'data_publicacao';
+        $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
 
         $query->orderBy($sortField, $sortOrder);
 

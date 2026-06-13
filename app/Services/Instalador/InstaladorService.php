@@ -72,6 +72,8 @@ class InstaladorService
 
     public function checkPermissions(): array
     {
+        $this->ensurePublicStorageLink();
+
         $paths = [
             storage_path() => 'storage',
             storage_path('app/public') => 'storage/app/public',
@@ -442,6 +444,7 @@ class InstaladorService
         }
 
         file_put_contents($installedPath, date('Y-m-d H:i:s'));
+        $this->ensurePublicStorageLink();
     }
 
     public function protectInstaller(): void
@@ -648,6 +651,31 @@ class InstaladorService
 
         if (File::exists($configCache) && !File::delete($configCache)) {
             throw new \RuntimeException('Não foi possível limpar o cache de configuração em bootstrap/cache/config.php.');
+        }
+    }
+
+    protected function ensurePublicStorageLink(): void
+    {
+        $target = storage_path('app/public');
+        $link = public_path('storage');
+
+        if (!is_dir($target)) {
+            mkdir($target, 0755, true);
+        }
+
+        if (is_link($link) || is_dir($link)) {
+            return;
+        }
+
+        try {
+            if (function_exists('symlink')) {
+                @symlink($target, $link);
+            }
+        } catch (\Throwable) {
+        }
+
+        if (!is_link($link) && !is_dir($link)) {
+            mkdir($link, 0755, true);
         }
     }
 }

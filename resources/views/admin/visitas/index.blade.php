@@ -102,14 +102,16 @@
                     </thead>
                     <tbody>
                         @forelse($countries ?? [] as $country)
+                            @php($countryTotal = (int) data_get($country, 'count', data_get($country, 'total', 0)))
+                            @php($countryPercentage = (float) data_get($country, 'percentage', 0))
                             <tr>
-                                <td><i class="fas fa-flag me-1"></i>{{ $country->country ?? $country->name ?? 'Desconhecido' }}</td>
-                                <td>{{ $country->count ?? 0 }}</td>
+                                <td><i class="fas fa-flag me-1"></i>{{ data_get($country, 'country', data_get($country, 'name', 'Desconhecido')) }}</td>
+                                <td>{{ $countryTotal }}</td>
                                 <td>
                                     <div class="progress" style="height: 5px;">
-                                        <div class="progress-bar" style="width: {{ $country->percentage ?? 0 }}%"></div>
+                                        <div class="progress-bar" style="width: {{ $countryPercentage }}%"></div>
                                     </div>
-                                    <small>{{ number_format($country->percentage ?? 0, 1) }}%</small>
+                                    <small>{{ number_format($countryPercentage, 1) }}%</small>
                                 </td>
                             </tr>
                         @empty
@@ -134,8 +136,8 @@
                     <tbody>
                         @forelse($topPages ?? [] as $page)
                             <tr>
-                                <td><small>{{ $page->url ?? $page->path ?? '-' }}</small></td>
-                                <td><span class="badge bg-info">{{ $page->count ?? 0 }}</span></td>
+                                <td><small>{{ data_get($page, 'url', data_get($page, 'path', data_get($page, 'page', '-'))) }}</small></td>
+                                <td><span class="badge bg-info">{{ data_get($page, 'count', data_get($page, 'views', 0)) }}</span></td>
                             </tr>
                         @empty
                             <tr><td colspan="2" class="text-center text-muted py-3">Sem dados.</td></tr>

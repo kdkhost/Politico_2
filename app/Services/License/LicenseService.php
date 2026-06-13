@@ -39,7 +39,7 @@ class LicenseService
         }
 
         $result = $this->api->checkConnection();
-        Log::info('License connection check', ['result' => $result]);
+        Log::info('License connection check', ['result' => $this->sanitizeLicenseResponse($result)]);
 
         return $result;
     }
@@ -69,7 +69,7 @@ class LicenseService
                     'last_verified_at' => now(),
                     'next_verified_at' => now()->addDays(config('license.verification_period', 1)),
                     'current_version' => config('license.version', 'v1.0.0'),
-                    'license_data' => json_encode($response, JSON_UNESCAPED_UNICODE),
+                    'license_data' => json_encode($this->sanitizeLicenseResponse($response), JSON_UNESCAPED_UNICODE),
                 ]
             );
 
@@ -78,7 +78,7 @@ class LicenseService
             return [
                 'success' => true,
                 'message' => $this->normalizeMessage($response['message'] ?? 'Verificado! Obrigado por comprar.'),
-                'data' => $response,
+                'data' => $this->sanitizeLicenseResponse($response),
             ];
         }
 
@@ -90,7 +90,7 @@ class LicenseService
 
     public function verify(bool $force = false): array
     {
-        if ((bool) config('license.skip_check', false)) {
+        if ((bool) config('license.skip_check', false) && app()->environment('local')) {
             return [
                 'valid' => true,
                 'cached' => true,
@@ -220,10 +220,15 @@ class LicenseService
             ];
         }
 
-        $graceDays = max(0, (int) config('license.offline_grace_days', 7));
+        $graceDays = max(0, (int) config('license.offline_grace_days', 3));
         $lastVerifiedAt = $setting->last_verified_at ?? $setting->activated_at;
 
         if ($lastVerifiedAt && $lastVerifiedAt->copy()->addDays($graceDays)->isFuture()) {
+            Log::warning('Licenca liberada temporariamente por tolerancia offline.', [
+                'last_verified_at' => $lastVerifiedAt->toIso8601String(),
+                'offline_grace_days' => $graceDays,
+            ]);
+
             return [
                 'valid' => true,
                 'offline_grace' => true,
@@ -240,6 +245,17 @@ class LicenseService
     private function hasApiKey(): bool
     {
         return trim((string) config('license.api_key', '')) !== '';
+    }
+
+    private function sanitizeLicenseResponse(array $response): array
+    {
+        foreach (['lic_response', 'license_key', 'api_key', 'token', 'password'] as $key) {
+            if (array_key_exists($key, $response)) {
+                $response[$key] = '[removido]';
+            }
+        }
+
+        return $response;
     }
 
     public function getCurrentVersion(): string
@@ -298,48 +314,22 @@ class LicenseService
             ];
         }
 
-        $updateId = $updateInfo['update_id'] ?? '';
         $version = $updateInfo['latest_version'] ?? $this->getCurrentVersion();
-        $hasSql = $updateInfo['sql_update'] ?? false;
 
-        if ($updateId === '') {
-            return [
-                'success' => false,
-                'message' => 'ID de atualização não encontrado.',
-            ];
-        }
+        Log::warning('Atualizador automatico remoto bloqueado por seguranca.', [
+            'type' => $type,
+            'latest_version' => $version,
+            'sql_update' => (bool) ($updateInfo['sql_update'] ?? false),
+        ]);
 
-        try {
-            if ($type === 'main') {
-                $dbConfig = config('database.connections.' . config('database.default'));
-                $dbForImport = $hasSql ? [
-                    'db_host' => $dbConfig['host'] ?? '',
-                    'db_user' => $dbConfig['username'] ?? '',
-                    'db_pass' => $dbConfig['password'] ?? '',
-                    'db_name' => $dbConfig['database'] ?? '',
-                ] : false;
+        return [
+            'success' => false,
+            'blocked' => true,
+            'type' => $type,
+            'latest_version' => $version,
+            'message' => 'Atualizador automatico remoto desabilitado por seguranca. Aplique atualizacoes somente por pacote validado, backup e aprovacao manual.',
+        ];
 
-                $this->api->showUpdateProgress = true;
-                $this->api->downloadUpdate($updateId, $hasSql, $version, false, false, $dbForImport);
-
-                LicenseSetting::where('status', 'active')->update([
-                    'current_version' => $version,
-                    'latest_version' => $version,
-                    'update_available' => false,
-                ]);
-
-                return ['success' => true, 'type' => 'main', 'message' => 'Atualização concluída.'];
-            }
-
-            return ['success' => true, 'type' => 'sql', 'message' => 'Download SQL concluído.'];
-        } catch (\Throwable $e) {
-            Log::error('Update download error: ' . $e->getMessage());
-
-            return [
-                'success' => false,
-                'message' => 'A pasta não tem permissão de gravação ou o caminho do arquivo de atualização não pôde ser resolvido. Entre em contato com o suporte.',
-            ];
-        }
     }
 
     public function applyUpdate(string $type = 'main'): array
@@ -349,41 +339,96 @@ class LicenseService
 
     public function importSqlUpdate(string $file): array
     {
-        if (!file_exists($file)) {
+        $realFile = realpath($file);
+
+        if ($realFile === false || !is_file($realFile)) {
             return [
                 'success' => false,
-                'message' => 'Arquivo SQL não encontrado.',
+                'message' => 'Arquivo SQL nao encontrado.',
+            ];
+        }
+
+        $allowedDir = storage_path('app/updates/sql');
+        $realAllowedDir = realpath($allowedDir) ?: $allowedDir;
+
+        if (!str_starts_with($realFile, rtrim($realAllowedDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR)) {
+            return [
+                'success' => false,
+                'message' => 'Arquivo SQL fora da pasta segura de atualizacoes.',
+            ];
+        }
+
+        if (mb_strtolower((string) pathinfo($realFile, PATHINFO_EXTENSION)) !== 'sql') {
+            return [
+                'success' => false,
+                'message' => 'Arquivo de atualizacao SQL invalido.',
+            ];
+        }
+
+        if (!file_exists($realFile . '.approved')) {
+            return [
+                'success' => false,
+                'message' => 'Importacao SQL exige aprovacao manual antes da execucao.',
             ];
         }
 
         try {
-            $sql = file_get_contents($file);
-            $db = config('database.default');
+            $sql = file_get_contents($realFile);
 
-            if (!empty(trim((string) $sql))) {
-                DB::connection($db)->unprepared((string) $sql);
-                @unlink($file);
-
+            if (trim((string) $sql) === '') {
                 return [
                     'success' => true,
-                    'message' => 'O aplicativo foi atualizado com sucesso e o arquivo SQL foi importado automaticamente.',
+                    'message' => 'Arquivo SQL vazio. Nenhuma instrucao executada.',
                 ];
             }
 
-            @unlink($file);
+            $blockedCommands = [
+                'DROP\s+DATABASE',
+                'DROP\s+USER',
+                'GRANT',
+                'REVOKE',
+                'CREATE\s+USER',
+                'ALTER\s+USER',
+                'LOAD\s+DATA',
+                'OUTFILE',
+                'INFILE',
+                'SHUTDOWN',
+            ];
+
+            foreach ($blockedCommands as $command) {
+                if (preg_match("/\b{$command}\b/i", (string) $sql) === 1) {
+                    return [
+                        'success' => false,
+                        'message' => 'Arquivo SQL bloqueado por conter comando perigoso.',
+                    ];
+                }
+            }
+
+            $backupDir = storage_path('app/updates/sql/backups');
+            if (!is_dir($backupDir)) {
+                mkdir($backupDir, 0755, true);
+            }
+
+            copy($realFile, $backupDir . DIRECTORY_SEPARATOR . now()->format('Ymd_His') . '_' . basename($realFile));
+
+            $db = config('database.default');
+            DB::connection($db)->transaction(static function () use ($db, $sql): void {
+                DB::connection($db)->unprepared((string) $sql);
+            });
 
             return [
                 'success' => true,
-                'message' => 'O aplicativo foi atualizado com sucesso. Não houve atualizações de SQL.',
+                'message' => 'Arquivo SQL validado e importado com registro de backup do pacote.',
             ];
         } catch (\Throwable $e) {
             Log::error('SQL import error: ' . $e->getMessage());
 
             return [
                 'success' => false,
-                'message' => 'O aplicativo foi atualizado com sucesso, mas a importação automática de SQL falhou. Importe manualmente o arquivo SQL no banco de dados.',
+                'message' => 'Falha ao importar SQL validado. Verifique o log do sistema.',
             ];
         }
+
     }
 
     public function getLatestVersion(): array

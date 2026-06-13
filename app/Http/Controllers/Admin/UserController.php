@@ -19,6 +19,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -248,8 +249,18 @@ class UserController extends Controller
             }
 
             $user = User::findOrFail($id);
+
+            if ($user->id === Auth::id()) {
+                return response()->json(['status' => 'error', 'message' => 'Você já está autenticado como este usuário.'], 422);
+            }
+
             session()->put('impersonated_by', Auth::id());
             Auth::login($user);
+
+            Log::info('Impersonação iniciada.', [
+                'admin_id' => session('impersonated_by'),
+                'target_user_id' => $user->id,
+            ]);
 
             return response()->json([
                 'status' => 'success',
@@ -258,6 +269,33 @@ class UserController extends Controller
             ]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao impersonar usuário.'], 500);
+        }
+    }
+
+    public function stopImpersonation()
+    {
+        try {
+            $originalUserId = session('impersonated_by');
+
+            if (!$originalUserId) {
+                return redirect()->route('admin.dashboard');
+            }
+
+            $currentUserId = Auth::id();
+            $originalUser = User::findOrFail((int) $originalUserId);
+            session()->forget('impersonated_by');
+            Auth::login($originalUser);
+
+            Log::info('Impersonação encerrada.', [
+                'admin_id' => $originalUser->id,
+                'impersonated_user_id' => $currentUserId,
+            ]);
+
+            return redirect()->route('admin.dashboard')
+                ->with('success', 'Impersonação encerrada com sucesso.');
+        } catch (\Throwable $e) {
+            return redirect()->route('admin.dashboard')
+                ->with('error', 'Erro ao encerrar impersonação.');
         }
     }
 }

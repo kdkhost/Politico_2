@@ -18,6 +18,8 @@ use App\Models\Contact;
 use App\Services\SEO\SeoService;
 use App\Services\SMTP\SmtpService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
@@ -45,6 +47,7 @@ class ContatoController extends Controller
             'telefone' => 'nullable|string|max:20',
             'assunto' => 'required|string|max:255',
             'mensagem' => 'required|string|min:10|max:5000',
+            'website' => 'nullable|string|max:255',
         ], [
             'nome.required' => 'O nome é obrigatório.',
             'email.required' => 'O e-mail é obrigatório.',
@@ -59,6 +62,32 @@ class ContatoController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
+
+        if ($request->filled('website')) {
+            Log::warning('Honeypot de contato acionado.', [
+                'ip' => $request->ip(),
+                'email' => $request->input('email'),
+            ]);
+
+            return redirect()->route('site.contato')
+                ->with('success', 'Mensagem enviada com sucesso! Entraremos em contato em breve.');
+        }
+
+        $rateKey = 'contact_public_' . sha1((string) $request->ip() . '|' . strtolower((string) $request->input('email')));
+        $attempts = (int) Cache::get($rateKey, 0);
+
+        if ($attempts >= 5) {
+            Log::warning('Limite de contato público excedido.', [
+                'ip' => $request->ip(),
+                'email' => $request->input('email'),
+            ]);
+
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['email' => 'Muitas mensagens enviadas. Aguarde antes de tentar novamente.']);
+        }
+
+        Cache::put($rateKey, $attempts + 1, now()->addHour());
 
         $contact = Contact::create([
             'nome' => $request->input('nome'),
@@ -75,14 +104,14 @@ class ContatoController extends Controller
             $settings = $this->smtpService->getSettings();
 
             if ($settings && $settings->is_configured) {
-                Mail::send('emails.contact', ['contact' => $contact], function ($message) use ($contact, $settings) {
+                Mail::send('emails.contact', ['contact' => $contact], function ($message) use ($contact, $settings): void {
                     $message->to($settings->mail_from_address)
                         ->subject('Novo contato: ' . $contact->assunto)
                         ->replyTo($contact->email, $contact->nome);
                 });
             }
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning('Falha ao enviar notificação de contato por e-mail: ' . $e->getMessage());
+            Log::warning('Falha ao enviar notificação de contato por e-mail: ' . $e->getMessage());
         }
 
         return redirect()->route('site.contato')

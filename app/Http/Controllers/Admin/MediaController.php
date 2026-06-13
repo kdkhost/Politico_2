@@ -219,7 +219,7 @@ class MediaController extends Controller
             $media = Media::with(['usages'])->findOrFail($id);
 
             if (!request()->expectsJson() && !request()->ajax()) {
-                return view('admin.midia.show', compact('media'));
+                return view('admin.media.show', compact('media'));
             }
 
             $payload = $this->formatMedia($media);

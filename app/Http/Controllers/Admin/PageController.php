@@ -20,6 +20,16 @@ use Illuminate\Support\Str;
 
 class PageController extends Controller
 {
+    private const SORTABLE_FIELDS = [
+        'id',
+        'titulo',
+        'status',
+        'published_at',
+        'ordem',
+        'created_at',
+        'updated_at',
+    ];
+
     public function index()
     {
         return view('admin.paginas.index');
@@ -42,8 +52,10 @@ class PageController extends Controller
                 $query->where('status', $request->status);
             }
 
-            $sortField = $request->sort_by ?? 'created_at';
-            $sortOrder = $request->sort_order ?? 'desc';
+            $sortField = in_array((string) $request->sort_by, self::SORTABLE_FIELDS, true)
+                ? (string) $request->sort_by
+                : 'created_at';
+            $sortOrder = strtolower((string) $request->sort_order) === 'asc' ? 'asc' : 'desc';
             $query->orderBy($sortField, $sortOrder);
 
             $pages = $query->paginate(config('sistema.pagination_per_page', 15));

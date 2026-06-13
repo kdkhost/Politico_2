@@ -15,6 +15,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\FinancialCategory;
+use App\Models\FinancialTransaction;
 use App\Services\Financeiro\FinanceiroService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -185,7 +186,6 @@ class FinanceiroController extends Controller
             $filters = $request->only(['tipo', 'date_from', 'date_to', 'status', 'categoria_id']);
 
             if ($type === 'csv') {
-                $transactions = $this->financeiroService->listTransactions(array_merge($filters, ['per_page' => 999999]));
                 $filename = 'financeiro_export_' . now()->format('Ymd_His') . '.csv';
                 $path = storage_path("app/exports/{$filename}");
 
@@ -197,19 +197,23 @@ class FinanceiroController extends Controller
                 $handle = fopen($path, 'w+b');
                 fputcsv($handle, ['ID', 'Tipo', 'Descrição', 'Valor', 'Vencimento', 'Pagamento', 'Forma', 'Status', 'Categoria'], ';');
 
-                foreach ($transactions->items() as $t) {
-                    fputcsv($handle, [
-                        $t->id,
-                        $t->tipo,
-                        $t->descricao,
-                        number_format((float) $t->valor, 2, ',', '.'),
-                        $t->data_vencimento?->format('d/m/Y'),
-                        $t->data_pagamento?->format('d/m/Y'),
-                        $t->forma_pagamento,
-                        $t->status,
-                        $t->category?->nome ?? '',
-                    ], ';');
-                }
+                $this->buildExportQuery($filters)
+                    ->orderBy('id')
+                    ->chunk(500, function ($transactions) use ($handle): void {
+                        foreach ($transactions as $t) {
+                            fputcsv($handle, [
+                                $t->id,
+                                $t->tipo,
+                                $t->descricao,
+                                number_format((float) $t->valor, 2, ',', '.'),
+                                $t->data_vencimento?->format('d/m/Y'),
+                                $t->data_pagamento?->format('d/m/Y'),
+                                $t->forma_pagamento,
+                                $t->status,
+                                $t->category?->nome ?? '',
+                            ], ';');
+                        }
+                    });
 
                 fclose($handle);
 
@@ -345,5 +349,32 @@ class FinanceiroController extends Controller
         }
 
         $request->merge(['valor' => $value]);
+    }
+
+    protected function buildExportQuery(array $filters)
+    {
+        $query = FinancialTransaction::with('category:id,nome');
+
+        if (!empty($filters['tipo'])) {
+            $query->where('tipo', $filters['tipo']);
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['categoria_id'])) {
+            $query->where('categoria_id', $filters['categoria_id']);
+        }
+
+        if (!empty($filters['date_from'])) {
+            $query->whereDate('data_vencimento', '>=', $filters['date_from']);
+        }
+
+        if (!empty($filters['date_to'])) {
+            $query->whereDate('data_vencimento', '<=', $filters['date_to']);
+        }
+
+        return $query;
     }
 }

@@ -35,7 +35,7 @@ enum TipoMidiaEnum: string
     public function extensoesPermitidas(): array
     {
         return match ($this) {
-            self::IMAGEM => ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'],
+            self::IMAGEM => ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'],
             self::VIDEO => ['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm'],
             self::DOCUMENTO => ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'csv'],
             self::AUDIO => ['mp3', 'wav', 'ogg', 'aac', 'flac', 'wma'],

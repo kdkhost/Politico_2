@@ -54,15 +54,14 @@ class SeoController extends Controller
 
             if ($url) {
                 try {
-                    $parsedHost = parse_url($url, PHP_URL_HOST);
-                    $appHost = parse_url(config('app.url'), PHP_URL_HOST);
-
-                    if (!$parsedHost || !$appHost || !Str::is($appHost, $parsedHost)) {
-                        return response()->json(['status' => 'error', 'message' => 'Informe uma URL do próprio site para análise.'], 422);
+                    if (!$this->isAllowedAnalysisUrl($url)) {
+                        return response()->json(['status' => 'error', 'message' => 'Informe uma URL http/https pública e pertencente ao próprio site.'], 422);
                     }
 
-                    $response = Http::timeout(10)->get($url);
-                    $html = $response->body();
+                    $response = Http::timeout(5)
+                        ->withOptions(['allow_redirects' => ['max' => 2]])
+                        ->get($url);
+                    $html = Str::limit($response->body(), 1024 * 1024, '');
                     $result = $this->seoService->getPageScore($url, $html);
                     $result['analyzed_url'] = $url;
                 } catch (\Throwable $e) {
@@ -72,13 +71,10 @@ class SeoController extends Controller
                 $result = $this->seoService->analyzeSeo($content ?? '', $title ?? '');
             }
 
-            if ($type && $modelId) {
-                if (in_array($type, ['page', 'post'])) {
-                    $modelClass = $type === 'page' ? Page::class : Post::class;
-                    $model = $modelClass::find($modelId);
-                    $metaTags = $this->seoService->generateMetaTags($model, $type);
-                    $result['meta_tags'] = $metaTags;
-                }
+            if ($type && $modelId && in_array($type, ['page', 'post'], true)) {
+                $modelClass = $type === 'page' ? Page::class : Post::class;
+                $model = $modelClass::find($modelId);
+                $result['meta_tags'] = $this->seoService->generateMetaTags($model, $type);
             }
 
             $result['keywords'] = $this->seoService->extractKeywords($content ?? '');
@@ -134,21 +130,70 @@ class SeoController extends Controller
             $modelClass = $validated['type'] === 'page' ? Page::class : Post::class;
             $model = $modelClass::findOrFail($validated['model_id']);
 
-            $og = $this->seoService->generateOpenGraph($model, $validated['type']);
-            $twitter = $this->seoService->generateTwitterCards($model, $validated['type']);
-            $schema = $this->seoService->generateSchemaOrg($model, $validated['type']);
-
             return response()->json([
                 'status' => 'success',
                 'data' => [
-                    'open_graph' => $og,
-                    'twitter_cards' => $twitter,
-                    'schema_org' => $schema,
+                    'open_graph' => $this->seoService->generateOpenGraph($model, $validated['type']),
+                    'twitter_cards' => $this->seoService->generateTwitterCards($model, $validated['type']),
+                    'schema_org' => $this->seoService->generateSchemaOrg($model, $validated['type']),
                     'meta' => $this->seoService->generateMetaTags($model, $validated['type']),
                 ],
             ]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao gerar prévia social: ' . $e->getMessage()], 500);
         }
+    }
+
+    private function isAllowedAnalysisUrl(string $url): bool
+    {
+        $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+        $host = (string) parse_url($url, PHP_URL_HOST);
+        $appHost = (string) parse_url(config('app.url'), PHP_URL_HOST);
+
+        if (!in_array($scheme, ['http', 'https'], true) || $host === '' || $appHost === '') {
+            return false;
+        }
+
+        if (!Str::is($appHost, $host)) {
+            return false;
+        }
+
+        $records = @dns_get_record($host, DNS_A + DNS_AAAA) ?: [];
+        $ips = [];
+
+        foreach ($records as $record) {
+            if (!empty($record['ip'])) {
+                $ips[] = $record['ip'];
+            }
+
+            if (!empty($record['ipv6'])) {
+                $ips[] = $record['ipv6'];
+            }
+        }
+
+        if ($ips === []) {
+            $resolved = gethostbyname($host);
+
+            if ($resolved !== $host) {
+                $ips[] = $resolved;
+            }
+        }
+
+        foreach ($ips as $ip) {
+            if (!$this->isPublicIp($ip)) {
+                return false;
+            }
+        }
+
+        return $ips !== [];
+    }
+
+    private function isPublicIp(string $ip): bool
+    {
+        return filter_var(
+            $ip,
+            FILTER_VALIDATE_IP,
+            FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE,
+        ) !== false;
     }
 }

@@ -96,5 +96,5 @@ return [
 
     'skip_check' => (bool) env('LICENSE_SKIP_CHECK', false),
 
-    'offline_grace_days' => (int) env('LICENSE_OFFLINE_GRACE_DAYS', 7),
+    'offline_grace_days' => (int) env('LICENSE_OFFLINE_GRACE_DAYS', 3),
 ];

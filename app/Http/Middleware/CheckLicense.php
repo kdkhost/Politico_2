@@ -40,7 +40,7 @@ class CheckLicense
 
     public function handle(Request $request, Closure $next): Response
     {
-        if ($this->shouldSkip($request) || (bool) config('license.skip_check', false)) {
+        if ($this->shouldSkip($request) || ((bool) config('license.skip_check', false) && app()->environment('local'))) {
             return $next($request);
         }
 

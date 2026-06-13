@@ -152,21 +152,39 @@ class SmtpService
             'mailer' => $settings->mail_mailer,
             'host' => $settings->mail_host,
             'from_address' => $settings->mail_from_address,
-            'password_configured' => !empty($settings->getRawOriginal('mail_password')),
+            'password_configured' => !empty($settings->mail_password),
             'message' => $settings->is_configured ? 'SMTP configurado e operacional.' : 'SMTP configurado, mas não testado.',
         ];
     }
 
     protected function applyConfig(SmtpSetting|array $settings): void
     {
-        $config = $settings instanceof SmtpSetting ? $settings->toArray() : $settings;
+        $config = $settings instanceof SmtpSetting ? [
+            'mail_mailer' => $settings->mail_mailer,
+            'mail_host' => $settings->mail_host,
+            'mail_port' => $settings->mail_port,
+            'mail_username' => $settings->mail_username,
+            'mail_password' => $settings->mail_password,
+            'mail_encryption' => $settings->mail_encryption,
+            'mail_from_address' => $settings->mail_from_address,
+            'mail_from_name' => $settings->mail_from_name,
+        ] : $settings;
 
-        Config::set('mail.mailers.smtp.transport', $config['mail_mailer'] ?? 'smtp');
-        Config::set('mail.mailers.smtp.host', $config['mail_host'] ?? '');
-        Config::set('mail.mailers.smtp.port', (int) ($config['mail_port'] ?? 587));
-        Config::set('mail.mailers.smtp.username', $config['mail_username'] ?? '');
-        Config::set('mail.mailers.smtp.password', $config['mail_password'] ?? '');
-        Config::set('mail.mailers.smtp.encryption', $config['mail_encryption'] ?? 'tls');
+        $mailer = $config['mail_mailer'] ?? 'smtp';
+
+        Config::set('mail.default', $mailer);
+
+        if ($mailer === 'smtp') {
+            Config::set('mail.mailers.smtp.transport', 'smtp');
+            Config::set('mail.mailers.smtp.host', $config['mail_host'] ?? '');
+            Config::set('mail.mailers.smtp.port', (int) ($config['mail_port'] ?? 587));
+            Config::set('mail.mailers.smtp.username', $config['mail_username'] ?? '');
+            Config::set('mail.mailers.smtp.password', $config['mail_password'] ?? '');
+            Config::set('mail.mailers.smtp.encryption', $config['mail_encryption'] ?? 'tls');
+        } else {
+            Config::set("mail.mailers.{$mailer}.transport", $mailer);
+        }
+
         Config::set('mail.from.address', $config['mail_from_address'] ?? '');
         Config::set('mail.from.name', $config['mail_from_name'] ?? config('app.name'));
     }
@@ -185,10 +203,14 @@ class SmtpService
 
     protected function hasRequiredFields(SmtpSetting $settings): bool
     {
+        if (in_array($settings->mail_mailer, ['mail', 'sendmail', 'log'], true)) {
+            return !empty($settings->mail_mailer);
+        }
+
         return !empty($settings->mail_host)
             && !empty($settings->mail_port)
             && !empty($settings->mail_username)
-            && !empty($settings->getRawOriginal('mail_password'))
+            && !empty($settings->mail_password)
             && !empty($settings->mail_from_address);
     }
 }

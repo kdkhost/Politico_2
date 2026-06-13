@@ -28,18 +28,18 @@
                         </div>
                         <div class="col-md-5 mb-3">
                             <label for="mail_host" class="form-label">Host SMTP</label>
-                            <input type="text" id="mail_host" name="mail_host" class="form-control" value="{{ $settings->mail_host ?? '' }}" placeholder="smtp.seudominio.com.br" required>
+                            <input type="text" id="mail_host" name="mail_host" class="form-control smtp-required" value="{{ $settings->mail_host ?? '' }}" placeholder="smtp.seudominio.com.br">
                         </div>
                         <div class="col-md-3 mb-3">
                             <label for="mail_port" class="form-label">Porta</label>
-                            <input type="number" id="mail_port" name="mail_port" class="form-control" min="1" max="65535" value="{{ $settings->mail_port ?? 587 }}" required>
+                            <input type="number" id="mail_port" name="mail_port" class="form-control smtp-required" min="1" max="65535" value="{{ $settings->mail_port ?? 587 }}">
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="mail_username" class="form-label">Usuario</label>
-                            <input type="text" id="mail_username" name="mail_username" class="form-control" value="{{ $settings->mail_username ?? '' }}" autocomplete="username" required>
+                            <input type="text" id="mail_username" name="mail_username" class="form-control smtp-required" value="{{ $settings->mail_username ?? '' }}" autocomplete="username">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="mail_password" class="form-label">Senha</label>
@@ -58,7 +58,7 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="mail_from_address" class="form-label">E-mail remetente</label>
-                            <input type="email" id="mail_from_address" name="mail_from_address" class="form-control" value="{{ $settings->mail_from_address ?? '' }}" required>
+                            <input type="email" id="mail_from_address" name="mail_from_address" class="form-control smtp-required" value="{{ $settings->mail_from_address ?? '' }}">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="mail_from_name" class="form-label">Nome remetente</label>
@@ -106,6 +106,14 @@
 @push('scripts')
 <script>
     $(function() {
+        function syncSmtpRequiredFields() {
+            var isSmtp = $('#mail_mailer').val() === 'smtp';
+            $('.smtp-required').prop('required', isSmtp);
+        }
+
+        $('#mail_mailer').on('change', syncSmtpRequiredFields);
+        syncSmtpRequiredFields();
+
         $('#smtpForm').on('submit', function(e) {
             e.preventDefault();
             var btn = $('#btnSaveSmtp');

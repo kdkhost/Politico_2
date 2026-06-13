@@ -111,18 +111,22 @@ class AgendaService
         return (bool) Event::findOrFail($id)->delete();
     }
 
-    public function getEventsByDateRange(string $start, string $end): Collection
+    public function getEventsByDateRange(string $start, string $end, bool $onlyPublished = true): Collection
     {
-        return Event::with('creator:id,name')
-            ->where('publicado', true)
-            ->where(function ($query) use ($start, $end) {
-                $query->whereBetween('data_inicio', [$start, $end])
-                    ->orWhereBetween('data_fim', [$start, $end])
-                    ->orWhere(function ($q) use ($start, $end) {
-                        $q->where('data_inicio', '<=', $start)
-                            ->where('data_fim', '>=', $end);
-                    });
-            })
+        $query = Event::with('creator:id,name');
+
+        if ($onlyPublished) {
+            $query->where('publicado', true);
+        }
+
+        return $query->where(function ($query) use ($start, $end) {
+            $query->whereBetween('data_inicio', [$start, $end])
+                ->orWhereBetween('data_fim', [$start, $end])
+                ->orWhere(function ($q) use ($start, $end) {
+                    $q->where('data_inicio', '<=', $start)
+                        ->where('data_fim', '>=', $end);
+                });
+        })
             ->orderBy('data_inicio')
             ->get();
     }

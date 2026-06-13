@@ -30,31 +30,31 @@ class SeoService
 
         $baseUrl = url('/');
 
-        $sitemap .= "  <url>\n    <loc>{$baseUrl}</loc>\n    <priority>1.0</priority>\n  </url>\n";
+        $sitemap .= "  <url>\n    <loc>{$this->escapeXml($baseUrl)}</loc>\n    <priority>1.0</priority>\n  </url>\n";
 
         $pages = Page::where('status', 'published')->get();
         foreach ($pages as $page) {
-            $sitemap .= "  <url>\n    <loc>{$baseUrl}/" . urlencode($page->slug) . "</loc>\n";
+            $sitemap .= "  <url>\n    <loc>" . $this->escapeXml("{$baseUrl}/" . rawurlencode($page->slug)) . "</loc>\n";
             $sitemap .= "    <lastmod>" . $page->updated_at->format('Y-m-d') . "</lastmod>\n";
             $sitemap .= "    <priority>0.8</priority>\n  </url>\n";
         }
 
         $posts = Post::where('status', 'published')->get();
         foreach ($posts as $post) {
-            $sitemap .= "  <url>\n    <loc>{$baseUrl}/blog/" . urlencode($post->slug) . "</loc>\n";
+            $sitemap .= "  <url>\n    <loc>" . $this->escapeXml("{$baseUrl}/blog/" . rawurlencode($post->slug)) . "</loc>\n";
             $sitemap .= "    <lastmod>" . $post->updated_at->format('Y-m-d') . "</lastmod>\n";
             $sitemap .= "    <priority>0.6</priority>\n  </url>\n";
         }
 
         $categories = Category::where('active', true)->get();
         foreach ($categories as $category) {
-            $sitemap .= "  <url>\n    <loc>{$baseUrl}/blog/categoria/" . urlencode($category->slug) . "</loc>\n";
+            $sitemap .= "  <url>\n    <loc>" . $this->escapeXml("{$baseUrl}/categoria/" . rawurlencode($category->slug)) . "</loc>\n";
             $sitemap .= "    <priority>0.4</priority>\n  </url>\n";
         }
 
         $tags = Tag::all();
         foreach ($tags as $tag) {
-            $sitemap .= "  <url>\n    <loc>{$baseUrl}/blog/tag/" . urlencode($tag->slug) . "</loc>\n";
+            $sitemap .= "  <url>\n    <loc>" . $this->escapeXml("{$baseUrl}/tag/" . rawurlencode($tag->slug)) . "</loc>\n";
             $sitemap .= "    <priority>0.3</priority>\n  </url>\n";
         }
 
@@ -383,5 +383,10 @@ class SeoService
         }
 
         return $this->analyzeSeo($body, $title);
+    }
+
+    private function escapeXml(string $value): string
+    {
+        return htmlspecialchars($value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
     }
 }

@@ -19,6 +19,16 @@ use Illuminate\Support\Facades\Cache;
 
 class AuditoriaService
 {
+    private const SORTABLE_FIELDS = [
+        'id',
+        'tipo',
+        'acao',
+        'user_id',
+        'model_type',
+        'created_at',
+        'updated_at',
+    ];
+
     public function log(
         string $tipo,
         string $acao,
@@ -80,8 +90,10 @@ class AuditoriaService
             $query->where('model_type', $filters['model']);
         }
 
-        $sortField = $filters['sort_by'] ?? 'created_at';
-        $sortOrder = $filters['sort_order'] ?? 'desc';
+        $sortField = in_array(($filters['sort_by'] ?? 'created_at'), self::SORTABLE_FIELDS, true)
+            ? $filters['sort_by']
+            : 'created_at';
+        $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
 
         $query->orderBy($sortField, $sortOrder);
 

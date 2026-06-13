@@ -21,6 +21,18 @@ use Illuminate\Support\Facades\Response;
 
 class NewsletterController extends Controller
 {
+    private const SORTABLE_FIELDS = [
+        'id',
+        'email',
+        'nome',
+        'active',
+        'subscribed_at',
+        'confirmation_expires_at',
+        'unsubscribed_at',
+        'created_at',
+        'updated_at',
+    ];
+
     public function index()
     {
         $total = NewsletterSubscriber::count();
@@ -54,7 +66,11 @@ class NewsletterController extends Controller
                 $query->whereDate('created_at', '<=', $request->date_to);
             }
 
-            $query->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc');
+            $sortField = in_array((string) $request->sort_by, self::SORTABLE_FIELDS, true)
+                ? (string) $request->sort_by
+                : 'created_at';
+            $sortOrder = strtolower((string) $request->sort_order) === 'asc' ? 'asc' : 'desc';
+            $query->orderBy($sortField, $sortOrder);
             $subscribers = $query->paginate(config('sistema.pagination_per_page', 15));
 
             return response()->json([

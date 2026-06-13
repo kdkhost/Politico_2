@@ -205,15 +205,21 @@ class FinanceiroService
     public function getFinancialSummary(int|null $year = null): array
     {
         $year = $year ?? (int) now()->year;
+        $driver = DB::connection()->getDriverName();
+        $monthExpression = match ($driver) {
+            'sqlite' => "CAST(strftime('%m', data_pagamento) AS INTEGER)",
+            'pgsql' => 'EXTRACT(MONTH FROM data_pagamento)',
+            default => 'MONTH(data_pagamento)',
+        };
 
         $monthly = FinancialTransaction::selectRaw(
-            "EXTRACT(MONTH FROM data_pagamento) as mes,
+            "{$monthExpression} as mes,
             SUM(CASE WHEN tipo = 'receita' THEN valor ELSE 0 END) as receitas,
             SUM(CASE WHEN tipo = 'despesa' THEN valor ELSE 0 END) as despesas"
         )
             ->whereYear('data_pagamento', $year)
             ->where('status', 'pago')
-            ->groupByRaw('EXTRACT(MONTH FROM data_pagamento)')
+            ->groupByRaw($monthExpression)
             ->orderBy('mes')
             ->get()
             ->toArray();

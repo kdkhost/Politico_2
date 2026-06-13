@@ -22,6 +22,8 @@ Route::prefix('install')->name('install.')->group(function () {
 // ========== SITE / FRONTEND ROUTES ==========
 Route::name('site.')->group(function () {
     Route::get('/', [App\Http\Controllers\Site\HomeController::class, 'index'])->name('home');
+    Route::get('/sitemap.xml', [App\Http\Controllers\Site\SeoController::class, 'sitemap'])->name('sitemap');
+    Route::get('/robots.txt', [App\Http\Controllers\Site\SeoController::class, 'robots'])->name('robots');
     Route::get('/biografia', [App\Http\Controllers\Site\BiografiaController::class, 'index'])->name('biografia');
     Route::get('/agenda', [App\Http\Controllers\Site\AgendaController::class, 'index'])->name('agenda');
     Route::get('/agenda/eventos', [App\Http\Controllers\Site\AgendaController::class, 'eventos'])->name('agenda.eventos');
@@ -59,7 +61,7 @@ Route::name('site.')->group(function () {
     Route::post('/contato/enviar', [App\Http\Controllers\Site\ContatoController::class, 'enviar'])->middleware('throttle:5,1')->name('contato.enviar');
 
     // Newsletter
-    Route::post('/newsletter/inscrever', [App\Http\Controllers\Site\NewsletterController::class, 'inscrever'])->middleware('throttle:10,1')->name('newsletter.subscribe');
+    Route::post('/newsletter/inscrever', [App\Http\Controllers\Site\NewsletterController::class, 'inscrever'])->middleware('throttle:3,1')->name('newsletter.subscribe');
     Route::get('/newsletter/confirmar/{token}', [App\Http\Controllers\Site\NewsletterController::class, 'confirmar'])->name('newsletter.confirm');
     Route::get('/newsletter/cancelar/{token}', [App\Http\Controllers\Site\NewsletterController::class, 'cancelar'])->name('newsletter.cancel');
 
@@ -97,11 +99,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/logout', [App\Http\Controllers\Admin\AuthController::class, 'logout'])->name('logout');
 
         // Dashboard
-        Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard.index');
+        Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->middleware('permission:dashboard.view')->name('dashboard');
+        Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->middleware('permission:dashboard.view')->name('dashboard.index');
 
         // License
-        Route::prefix('license')->name('license.')->group(function () {
+        Route::prefix('license')->name('license.')->middleware('permission:license.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\LicenseController::class, 'index'])->name('index');
             Route::post('/activate', [App\Http\Controllers\Admin\LicenseController::class, 'activate'])->name('activate');
             Route::post('/deactivate', [App\Http\Controllers\Admin\LicenseController::class, 'deactivate'])->name('deactivate');
@@ -111,7 +113,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Settings
-        Route::prefix('configuracoes')->name('settings.')->group(function () {
+        Route::prefix('configuracoes')->name('settings.')->middleware('permission:settings.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('index');
             Route::post('/', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('update');
             Route::post('/salvar', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('save');
@@ -119,7 +121,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // SMTP
-        Route::prefix('smtp')->name('smtp.')->group(function () {
+        Route::prefix('smtp')->name('smtp.')->middleware('permission:smtp.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\SmtpController::class, 'index'])->name('index');
             Route::post('/', [App\Http\Controllers\Admin\SmtpController::class, 'update'])->name('update');
             Route::post('/salvar', [App\Http\Controllers\Admin\SmtpController::class, 'update'])->name('save');
@@ -129,10 +131,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Users
-        Route::prefix('usuarios')->name('users.')->group(function () {
+        Route::prefix('usuarios')->name('users.')->middleware('permission:users.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\UserController::class, 'list'])->name('list');
             Route::get('/data', [App\Http\Controllers\Admin\UserController::class, 'list'])->name('data');
+            Route::post('/stop-impersonation', [App\Http\Controllers\Admin\UserController::class, 'stopImpersonation'])->name('stop-impersonation');
             Route::post('/criar', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('store');
             Route::get('/{id}/editar', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('edit');
             Route::get('/{id}', [App\Http\Controllers\Admin\UserController::class, 'show'])->name('show');
@@ -141,10 +144,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/{id}/bloquear', [App\Http\Controllers\Admin\UserController::class, 'block'])->name('block');
             Route::post('/{id}/desbloquear', [App\Http\Controllers\Admin\UserController::class, 'unblock'])->name('unblock');
             Route::post('/{id}/alternar-status', [App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('toggle-status');
+            Route::post('/{id}/login-as', [App\Http\Controllers\Admin\UserController::class, 'loginAs'])->middleware('permission:users.impersonar')->name('login-as');
         });
 
         // Permissions
-        Route::prefix('permissoes')->name('permissions.')->group(function () {
+        Route::prefix('permissoes')->name('permissions.')->middleware('permission:permissions.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\PermissionController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\PermissionController::class, 'list'])->name('list');
             Route::get('/criar', [App\Http\Controllers\Admin\PermissionController::class, 'create'])->name('create');
@@ -165,7 +169,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/perfis/{id}/excluir', [App\Http\Controllers\Admin\ProfileController::class, 'destroy'])->name('profiles.destroy');
             Route::post('/perfis/{id}/permissoes', [App\Http\Controllers\Admin\ProfileController::class, 'syncPermissions'])->name('profiles.sync-permissions');
 
-            // Aliases para rotas usadas nas views
+            // Aliases legados para rotas usadas nas views; remover na v1.1.0.
             Route::get('/profile/{id}', [App\Http\Controllers\Admin\ProfileController::class, 'show'])->name('profile.show');
             Route::post('/profile/{id}/atualizar', [App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('profile.update');
             Route::post('/profile/criar', [App\Http\Controllers\Admin\ProfileController::class, 'store'])->name('profile.store');
@@ -177,7 +181,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Pages
-        Route::prefix('paginas')->name('pages.')->group(function () {
+        Route::prefix('paginas')->name('pages.')->middleware('permission:pages.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\PageController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\PageController::class, 'list'])->name('list');
             Route::get('/data', [App\Http\Controllers\Admin\PageController::class, 'list'])->name('data');
@@ -189,7 +193,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Blog
-        Route::prefix('blog')->name('blog.')->group(function () {
+        Route::prefix('blog')->name('blog.')->middleware('permission:blog.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\BlogController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\BlogController::class, 'list'])->name('list');
             Route::get('/data', [App\Http\Controllers\Admin\BlogController::class, 'list'])->name('data');
@@ -223,7 +227,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Media
-        Route::prefix('midia')->name('media.')->group(function () {
+        Route::prefix('midia')->name('media.')->middleware('permission:midia.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\MediaController::class, 'index'])->name('index');
             Route::get('/midia', [App\Http\Controllers\Admin\MediaController::class, 'index'])->name('midia.index');
             Route::get('/listar', [App\Http\Controllers\Admin\MediaController::class, 'list'])->name('list');
@@ -239,7 +243,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Agenda
-        Route::prefix('agenda')->name('agenda.')->group(function () {
+        Route::prefix('agenda')->name('agenda.')->middleware('permission:agenda.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\EventController::class, 'index'])->name('index');
             Route::get('/eventos', [App\Http\Controllers\Admin\EventController::class, 'list'])->name('list');
             Route::get('/data', [App\Http\Controllers\Admin\EventController::class, 'list'])->name('data');
@@ -254,7 +258,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Financeiro
-        Route::prefix('financeiro')->name('financeiro.')->group(function () {
+        Route::prefix('financeiro')->name('financeiro.')->middleware('permission:financeiro.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\FinanceiroController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\FinanceiroController::class, 'list'])->name('list');
             Route::get('/data', [App\Http\Controllers\Admin\FinanceiroController::class, 'list'])->name('data');
@@ -273,7 +277,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Transparencia
-        Route::prefix('transparencia')->name('transparencia.')->group(function () {
+        Route::prefix('transparencia')->name('transparencia.')->middleware('permission:transparencia.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\TransparenciaController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\TransparenciaController::class, 'list'])->name('list');
             Route::get('/data', [App\Http\Controllers\Admin\TransparenciaController::class, 'list'])->name('data');
@@ -287,17 +291,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Contatos
-        Route::prefix('contatos')->name('contatos.')->group(function () {
+        Route::prefix('contatos')->name('contatos.')->middleware('permission:contato.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\ContatoController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\ContatoController::class, 'list'])->name('list');
             Route::get('/data', [App\Http\Controllers\Admin\ContatoController::class, 'list'])->name('data');
+            Route::get('/exportar', [App\Http\Controllers\Admin\ContatoController::class, 'export'])->name('export');
             Route::get('/{id}', [App\Http\Controllers\Admin\ContatoController::class, 'show'])->name('show');
             Route::post('/{id}/responder', [App\Http\Controllers\Admin\ContatoController::class, 'reply'])->name('reply');
             Route::post('/{id}/marcar-lido', [App\Http\Controllers\Admin\ContatoController::class, 'markRead'])->name('mark-read');
             Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\ContatoController::class, 'destroy'])->name('destroy');
-            Route::get('/exportar', [App\Http\Controllers\Admin\ContatoController::class, 'export'])->name('export');
 
-            // Aliases para rotas usadas nas views (sem 's' no nome)
+            // Aliases legados para rotas usadas nas views; remover na v1.1.0.
             Route::get('/contato/index', [App\Http\Controllers\Admin\ContatoController::class, 'index'])->name('contato.index');
             Route::get('/contato/{id}', [App\Http\Controllers\Admin\ContatoController::class, 'show'])->name('contato.show');
             Route::post('/contato/{id}/responder', [App\Http\Controllers\Admin\ContatoController::class, 'reply'])->name('contato.reply');
@@ -308,7 +312,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Newsletter
-        Route::prefix('newsletter')->name('newsletter.')->group(function () {
+        Route::prefix('newsletter')->name('newsletter.')->middleware('permission:newsletter.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\NewsletterController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\NewsletterController::class, 'list'])->name('list');
             Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\NewsletterController::class, 'destroy'])->name('destroy');
@@ -317,7 +321,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Visitas
-        Route::prefix('visitas')->name('visitas.')->group(function () {
+        Route::prefix('visitas')->name('visitas.')->middleware('permission:visitas.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\VisitaController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\VisitaController::class, 'list'])->name('list');
             Route::get('/data', [App\Http\Controllers\Admin\VisitaController::class, 'list'])->name('data');
@@ -329,7 +333,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Logs
-        Route::prefix('logs')->name('logs.')->group(function () {
+        Route::prefix('logs')->name('logs.')->middleware('permission:logs.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\LogController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\LogController::class, 'list'])->name('list');
             Route::get('/data', [App\Http\Controllers\Admin\LogController::class, 'list'])->name('data');
@@ -338,7 +342,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Backup
-        Route::prefix('backup')->name('backup.')->group(function () {
+        Route::prefix('backup')->name('backup.')->middleware('permission:backup.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\BackupController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\BackupController::class, 'list'])->name('list');
             Route::post('/configurar', [App\Http\Controllers\Admin\BackupController::class, 'saveConfig'])->name('config.save');
@@ -350,7 +354,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // WAF
-        Route::prefix('waf')->name('waf.')->group(function () {
+        Route::prefix('waf')->name('waf.')->middleware('permission:waf.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\WafController::class, 'index'])->name('index');
             Route::post('/configurar', [App\Http\Controllers\Admin\WafController::class, 'updateConfig'])->name('config');
             Route::post('/salvar', [App\Http\Controllers\Admin\WafController::class, 'updateConfig'])->name('save');
@@ -362,7 +366,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Menus
-        Route::prefix('menus')->name('menus.')->group(function () {
+        Route::prefix('menus')->name('menus.')->middleware('permission:menus.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\MenuController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\MenuController::class, 'list'])->name('list');
             Route::get('/criar', [App\Http\Controllers\Admin\MenuController::class, 'create'])->name('create');
@@ -376,7 +380,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/itens/{itemId}/excluir', [App\Http\Controllers\Admin\MenuController::class, 'deleteItem'])->name('items.destroy');
             Route::post('/reordenar', [App\Http\Controllers\Admin\MenuController::class, 'reorderItems'])->name('reorder');
 
-            // Aliases para rotas usadas nas views
+            // Aliases legados para rotas usadas nas views; remover na v1.1.0.
             Route::get('/itens/{itemId}', [App\Http\Controllers\Admin\MenuController::class, 'showItem'])->name('item.show');
             Route::post('/itens/{itemId}/excluir', [App\Http\Controllers\Admin\MenuController::class, 'deleteItem'])->name('item.destroy');
             Route::post('/itens/{itemId}/atualizar', [App\Http\Controllers\Admin\MenuController::class, 'updateItem'])->name('item.update');
@@ -384,7 +388,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Modulos
-        Route::prefix('modulos')->name('modules.')->group(function () {
+        Route::prefix('modulos')->name('modules.')->middleware('permission:modules.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\ModuleController::class, 'index'])->name('index');
             Route::get('/{id}/editar', [App\Http\Controllers\Admin\ModuleController::class, 'edit'])->name('edit');
             Route::post('/{id}/alternar', [App\Http\Controllers\Admin\ModuleController::class, 'toggle'])->name('toggle');
@@ -393,7 +397,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // SEO
-        Route::prefix('seo')->name('seo.')->group(function () {
+        Route::prefix('seo')->name('seo.')->middleware('permission:seo.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\SeoController::class, 'index'])->name('index');
             Route::post('/analisar', [App\Http\Controllers\Admin\SeoController::class, 'analyze'])->name('analyze');
             Route::post('/gerar-sitemap', [App\Http\Controllers\Admin\SeoController::class, 'generateSitemap'])->name('sitemap');
@@ -402,7 +406,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Hashtags
-        Route::prefix('hashtags')->name('hashtags.')->group(function () {
+        Route::prefix('hashtags')->name('hashtags.')->middleware('permission:hashtags.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\HashtagController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\HashtagController::class, 'list'])->name('list');
             Route::get('/criar', [App\Http\Controllers\Admin\HashtagController::class, 'create'])->name('create');
@@ -414,7 +418,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         // Notificacoes
-        Route::prefix('notificacoes')->name('notificacoes.')->group(function () {
+        Route::prefix('notificacoes')->name('notificacoes.')->middleware('permission:notificacoes.view')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\NotificacaoController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\NotificacaoController::class, 'list'])->name('list');
             Route::get('/poll', [App\Http\Controllers\Admin\NotificacaoController::class, 'poll'])->name('poll');
@@ -424,7 +428,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/nao-lidas', [App\Http\Controllers\Admin\NotificacaoController::class, 'getUnreadCount'])->name('unread-count');
         });
 
-        // Aliases para rotas usadas nas views (fora dos grupos prefixados)
+        // Aliases legados para rotas usadas nas views; remover na v1.1.0.
         Route::get('midia', [App\Http\Controllers\Admin\MediaController::class, 'index'])->name('midia.index');
         Route::get('contato', [App\Http\Controllers\Admin\ContatoController::class, 'index'])->name('contato.index');
         Route::get('contato/data', [App\Http\Controllers\Admin\ContatoController::class, 'list'])->name('contato.data');

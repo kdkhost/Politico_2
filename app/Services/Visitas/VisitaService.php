@@ -93,8 +93,8 @@ class VisitaService
             $query->where('page_url', 'like', "%{$filters['page']}%");
         }
 
-        $sortField = $this->mapSortField($filters['sort_by'] ?? 'visit_time');
-        $sortOrder = $filters['sort_order'] ?? 'desc';
+        $sortField = $this->mapSortField((string) ($filters['sort_by'] ?? 'visit_time'));
+        $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
 
         $query->orderBy($sortField, $sortOrder);
 
@@ -257,12 +257,28 @@ class VisitaService
     public function getGeoStats(): array
     {
         return Cache::remember('geo_stats', 3600, function () {
-            return Visit::select('country', DB::raw('COUNT(*) as total'), DB::raw('COUNT(*) as count'))
+            $stats = Visit::select('country', DB::raw('COUNT(*) as total'), DB::raw('COUNT(*) as count'))
                 ->where('bot', false)
                 ->whereNotNull('country')
                 ->groupBy('country')
                 ->orderByDesc('total')
                 ->get()
+                ->map(function ($row): array {
+                    return [
+                        'country' => $row->country,
+                        'total' => (int) $row->total,
+                        'count' => (int) $row->count,
+                    ];
+                });
+
+            $total = max(1, $stats->sum('total'));
+
+            return $stats
+                ->map(function (array $row) use ($total): array {
+                    $row['percentage'] = round(($row['total'] / $total) * 100, 1);
+
+                    return $row;
+                })
                 ->toArray();
         });
     }

@@ -16,6 +16,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\SMTP\SmtpService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class SmtpController extends Controller
 {
@@ -33,17 +34,25 @@ class SmtpController extends Controller
     public function update(Request $request)
     {
         try {
+            $settings = $this->smtpService->getSettings();
+            $isSmtp = $request->input('mail_mailer') === 'smtp';
+            $requiresPassword = $isSmtp && empty($settings?->mail_password);
+
             $validated = $request->validate([
                 'mail_mailer' => 'required|string|in:smtp,sendmail,mail,ses,postmark,log',
-                'mail_host' => 'required|string|max:255',
-                'mail_port' => 'required|integer|min:1|max:65535',
-                'mail_username' => 'required|string|max:255',
-                'mail_password' => 'nullable|string|max:255',
+                'mail_host' => [Rule::requiredIf($isSmtp), 'nullable', 'string', 'max:255'],
+                'mail_port' => [Rule::requiredIf($isSmtp), 'nullable', 'integer', 'min:1', 'max:65535'],
+                'mail_username' => [Rule::requiredIf($isSmtp), 'nullable', 'string', 'max:255'],
+                'mail_password' => [Rule::requiredIf($requiresPassword), 'nullable', 'string', 'max:255'],
                 'mail_encryption' => 'nullable|string|in:tls,ssl,null',
-                'mail_from_address' => 'required|email|max:255',
+                'mail_from_address' => [Rule::requiredIf($isSmtp), 'nullable', 'email', 'max:255'],
                 'mail_from_name' => 'nullable|string|max:255',
                 'test_recipient' => 'nullable|email|max:255',
             ]);
+
+            if (($validated['mail_encryption'] ?? null) === 'null') {
+                $validated['mail_encryption'] = null;
+            }
 
             $settings = $this->smtpService->updateSettings($validated);
 

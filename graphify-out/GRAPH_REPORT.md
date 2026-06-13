@@ -1,16 +1,16 @@
 # Graph Report - Político 2  (2026-06-13)
 
 ## Corpus Check
-- 353 files · ~141,896 words
+- 358 files · ~139,904 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1972 nodes · 2001 edges · 346 communities (261 shown, 85 thin omitted)
-- Extraction: 90% EXTRACTED · 10% INFERRED · 0% AMBIGUOUS · INFERRED: 200 edges (avg confidence: 0.8)
+- 2002 nodes · 2048 edges · 351 communities (265 shown, 86 thin omitted)
+- Extraction: 90% EXTRACTED · 10% INFERRED · 0% AMBIGUOUS · INFERRED: 202 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `71dc0d6c`
+- Built from commit: `1e5b1a04`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -164,23 +164,24 @@
 - [[_COMMUNITY_Community 188|Community 188]]
 - [[_COMMUNITY_Community 189|Community 189]]
 - [[_COMMUNITY_Community 190|Community 190]]
+- [[_COMMUNITY_Community 349|Community 349]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `Post` - 34 edges
 2. `Tabelas` - 31 edges
-3. `InstaladorService` - 25 edges
+3. `InstaladorService` - 26 edges
 4. `Visit` - 23 edges
 5. `Endpoints` - 22 edges
 6. `Page` - 21 edges
 7. `VisitaService` - 21 edges
 8. `Roadmap de Implementação` - 21 edges
-9. `MediaController` - 19 edges
-10. `FinanceiroController` - 18 edges
+9. `FinanceiroController` - 19 edges
+10. `MediaController` - 19 edges
 
 ## Surprising Connections (you probably didn't know these)
 - None detected - all connections are within the same source files.
 
-## Communities (346 total, 85 thin omitted)
+## Communities (351 total, 86 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.06
@@ -239,8 +240,8 @@ Cohesion: 0.06
 Nodes (31): code:bash (# 1. Clone o repositório), Contato, Credenciais Padrão, Funcionalidades, Instalação Rápida, Licença, Requisitos, Roadmap de Implementação (+23 more)
 
 ### Community 14 - "Community 14"
-Cohesion: 0.07
-Nodes (29): 2026-06-13, 2026-06-13 - `11646ec` - Organiza projeto e corrige deploy web, 2026-06-13 - `33426d5` - adiciona scripts e relatorio de auditoria administrativa, 2026-06-13 - `6326bf6` - fix: remove CDN duplicados (ja no Vite), corrige rota de módulos, limpa views órfãs, 2026-06-13 - `9927c85` - Corrige fluxo admin do blog, 2026-06-13 - `9c74fd9` - Padroniza menus e funcoes AdminLTE 4, 2026-06-13 - `bb7d7e3` - fix: cria views ausentes e corrige rotas quebradas, 2026-06-13 - `bd6fa95` - completa paginas administrativas e padroniza layout (+21 more)
+Cohesion: 0.06
+Nodes (30): 2026-06-13, 2026-06-13 - `11646ec` - Organiza projeto e corrige deploy web, 2026-06-13 - `33426d5` - adiciona scripts e relatorio de auditoria administrativa, 2026-06-13 - `6326bf6` - fix: remove CDN duplicados (ja no Vite), corrige rota de módulos, limpa views órfãs, 2026-06-13 - `9927c85` - Corrige fluxo admin do blog, 2026-06-13 - `9c74fd9` - Padroniza menus e funcoes AdminLTE 4, 2026-06-13 - atualiza artefatos do Graphify do projeto, 2026-06-13 - `bb7d7e3` - fix: cria views ausentes e corrige rotas quebradas (+22 more)
 
 ### Community 15 - "Community 15"
 Cohesion: 0.07
@@ -311,8 +312,8 @@ Cohesion: 0.20
 Nodes (10): 6. Usuários, Atualizar Usuário, code:block41 (GET /admin/users), code:block42 (POST /admin/users), code:json ({), code:block44 (PUT /admin/users/{id}), code:block45 (DELETE /admin/users/{id}), Criar Usuário (+2 more)
 
 ### Community 54 - "Community 54"
-Cohesion: 0.20
-Nodes (9): 6. Link Simbólico de Storage, 8. Configuração de Cron Jobs (Filas), Checklist de Deploy, code:bash (cp -r storage/app/public/* public/storage/), code:block13 (/usr/local/bin/php /home/seu_usuario/public_html/artisan sch), code:block14 (* * * * * /usr/local/bin/php /home/seu_usuario/public_html/a), code:bash (cd ~/public_html), Guia de Deploy em cPanel — Sistema Político CMS (+1 more)
+Cohesion: 0.18
+Nodes (10): 6. Link Simbólico de Storage, 9.1 Proteger Diretórios com Senha, 9.2 Bloquear via .htaccess, 9. Proteger Diretórios Sensíveis, Checklist de Deploy, code:bash (cp -r storage/app/public/* public/storage/), code:apache (<IfModule mod_rewrite.c>), code:bash (cd ~/public_html) (+2 more)
 
 ### Community 57 - "Community 57"
 Cohesion: 0.22
@@ -414,10 +415,6 @@ Nodes (4): site.partials.cookies, site.partials.footer, site.partials.header, si
 Cohesion: 0.50
 Nodes (4): require, laravel/framework, laravel/tinker, php
 
-### Community 114 - "Community 114"
-Cohesion: 0.50
-Nodes (4): 9.1 Proteger Diretórios com Senha, 9.2 Bloquear via .htaccess, 9. Proteger Diretórios Sensíveis, code:apache (<IfModule mod_rewrite.c>)
-
 ### Community 115 - "Community 115"
 Cohesion: 0.50
 Nodes (4): 10. Configuração LiteSpeed, Ativar Rewrite Rules, code:apache (<IfModule LiteSpeed>), Configuração via .htaccess
@@ -438,25 +435,29 @@ Nodes (3): autoload-dev, psr-4, Tests\\
 Cohesion: 0.67
 Nodes (3): extra, laravel, dont-discover
 
+### Community 349 - "Community 349"
+Cohesion: 0.67
+Nodes (3): 8. Configuração de Cron Jobs (Filas), code:block13 (/usr/local/bin/php /home/seu_usuario/public_html/artisan sch), code:block14 (* * * * * /usr/local/bin/php /home/seu_usuario/public_html/a)
+
 ## Knowledge Gaps
-- **457 isolated node(s):** `$schema`, `name`, `type`, `description`, `keywords` (+452 more)
+- **458 isolated node(s):** `$schema`, `name`, `type`, `description`, `keywords` (+453 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **85 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **86 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Post` connect `Community 18` to `Community 2`, `Community 101`, `Community 102`, `Community 41`, `Community 42`, `Community 119`, `Community 120`, `Community 121`, `Community 62`?**
-  _High betweenness centrality (0.019) - this node is a cross-community bridge._
+  _High betweenness centrality (0.015) - this node is a cross-community bridge._
 - **Why does `Page` connect `Community 34` to `Community 97`, `Community 98`, `Community 99`, `Community 100`, `Community 101`, `Community 102`, `Community 103`, `Community 104`, `Community 9`, `Community 42`, `Community 62`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+  _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **Why does `FinancialTransaction` connect `Community 4` to `Community 2`?**
-  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+  _High betweenness centrality (0.006) - this node is a cross-community bridge._
 - **Are the 23 inferred relationships involving `Post` (e.g. with `.edit()` and `.show()`) actually correct?**
   _`Post` has 23 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 15 inferred relationships involving `Visit` (e.g. with `.index()` and `.index()`) actually correct?**
   _`Visit` has 15 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `$schema`, `name`, `type` to the rest of the system?**
-  _457 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _458 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.06382978723404255 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06377551020408163 - nodes in this community are weakly interconnected._

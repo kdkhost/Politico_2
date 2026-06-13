@@ -43,7 +43,7 @@ Route::middleware(['force.json', 'throttle:60,1'])->group(function () {
     });
 
     // Newsletter — inscrição pública
-    Route::middleware('throttle:10,1')->post('newsletter', function (Illuminate\Http\Request $request) {
+    Route::middleware('throttle:3,1')->post('newsletter', function (Illuminate\Http\Request $request) {
         $validated = $request->validate([
             'email' => 'required|email|unique:newsletter_subscribers,email',
             'nome' => 'nullable|string|max:255',
@@ -56,7 +56,7 @@ Route::middleware(['force.json', 'throttle:60,1'])->group(function () {
                 'token' => \Illuminate\Support\Str::random(32),
                 'active' => false,
                 'subscribed_at' => now(),
-                'confirmation_expires_at' => now()->addDays(2),
+                'confirmation_expires_at' => now()->addHours(24),
             ]);
 
             return response()->json([
@@ -84,11 +84,33 @@ Route::middleware(['force.json', 'throttle:60,1'])->group(function () {
         ]);
 
         if (!empty($validated['website'])) {
+            \Illuminate\Support\Facades\Log::warning('Honeypot de contato API acionado.', [
+                'ip' => $request->ip(),
+                'email' => $validated['email'] ?? null,
+            ]);
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'Requisição inválida.',
             ], 422);
         }
+
+        $rateKey = 'contact_api_' . sha1((string) $request->ip() . '|' . strtolower((string) ($validated['email'] ?? '')));
+        $attempts = (int) \Illuminate\Support\Facades\Cache::get($rateKey, 0);
+
+        if ($attempts >= 5) {
+            \Illuminate\Support\Facades\Log::warning('Limite de contato API excedido.', [
+                'ip' => $request->ip(),
+                'email' => $validated['email'] ?? null,
+            ]);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Muitas mensagens enviadas. Aguarde antes de tentar novamente.',
+            ], 429);
+        }
+
+        \Illuminate\Support\Facades\Cache::put($rateKey, $attempts + 1, now()->addHour());
 
         try {
             $contact = App\Models\Contact::create([

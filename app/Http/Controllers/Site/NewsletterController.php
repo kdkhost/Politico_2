@@ -16,6 +16,8 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Models\NewsletterSubscriber;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -37,32 +39,27 @@ class NewsletterController extends Controller
                 ->withInput();
         }
 
-        $email = $request->input('email');
+        $email = strtolower((string) $request->input('email'));
         $existing = NewsletterSubscriber::where('email', $email)->first();
+        $token = Str::random(64);
 
         if ($existing) {
             if ($existing->active) {
                 return redirect()->back()->with('info', 'Este e-mail já está inscrito em nossa newsletter.');
             }
 
-            $token = Str::random(64);
             $existing->update([
                 'token' => $token,
                 'active' => false,
                 'subscribed_at' => null,
+                'confirmation_expires_at' => now()->addHours(24),
                 'unsubscribed_at' => null,
             ]);
 
-            try {
-                $this->sendConfirmationEmail($existing);
-            } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::warning('Falha ao enviar e-mail de confirmação: ' . $e->getMessage());
-            }
+            $this->sendConfirmationSafely($existing);
 
             return redirect()->back()->with('success', 'Enviamos um link de confirmação para seu e-mail. Verifique sua caixa de entrada.');
         }
-
-        $token = Str::random(64);
 
         $subscriber = NewsletterSubscriber::create([
             'email' => $email,
@@ -70,25 +67,28 @@ class NewsletterController extends Controller
             'token' => $token,
             'active' => false,
             'subscribed_at' => null,
+            'confirmation_expires_at' => now()->addHours(24),
             'unsubscribed_at' => null,
         ]);
 
-        try {
-            $this->sendConfirmationEmail($subscriber);
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning('Falha ao enviar e-mail de confirmação: ' . $e->getMessage());
-        }
+        $this->sendConfirmationSafely($subscriber);
 
         return redirect()->back()->with('success', 'Enviamos um link de confirmação para seu e-mail. Verifique sua caixa de entrada.');
     }
 
-    public function confirmar($token)
+    public function confirmar(string $token)
     {
         $subscriber = NewsletterSubscriber::where('token', $token)->firstOrFail();
+
+        if ($subscriber->confirmation_expires_at && $subscriber->confirmation_expires_at->isPast()) {
+            return redirect()->route('site.home')
+                ->with('error', 'Link de confirmação expirado. Faça uma nova inscrição para receber outro link.');
+        }
 
         $subscriber->update([
             'active' => true,
             'subscribed_at' => now(),
+            'confirmation_expires_at' => null,
             'unsubscribed_at' => null,
         ]);
 
@@ -96,7 +96,7 @@ class NewsletterController extends Controller
             ->with('success', 'Inscrição confirmada com sucesso! Agora você receberá nossas novidades.');
     }
 
-    public function cancelar($token)
+    public function cancelar(string $token)
     {
         $subscriber = NewsletterSubscriber::where('token', $token)->firstOrFail();
 
@@ -107,6 +107,15 @@ class NewsletterController extends Controller
 
         return redirect()->route('site.home')
             ->with('success', 'Você cancelou sua inscrição na newsletter. Sentiremos sua falta!');
+    }
+
+    protected function sendConfirmationSafely(NewsletterSubscriber $subscriber): void
+    {
+        try {
+            $this->sendConfirmationEmail($subscriber);
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao enviar e-mail de confirmação: ' . $e->getMessage());
+        }
     }
 
     protected function sendConfirmationEmail(NewsletterSubscriber $subscriber): void
@@ -120,11 +129,11 @@ class NewsletterController extends Controller
         $confirmUrl = route('site.newsletter.confirm', $subscriber->token);
         $cancelUrl = route('site.newsletter.cancel', $subscriber->token);
 
-        \Illuminate\Support\Facades\Mail::send('emails.newsletter-confirmation', [
+        Mail::send('emails.newsletter-confirmation', [
             'subscriber' => $subscriber,
             'confirmUrl' => $confirmUrl,
             'cancelUrl' => $cancelUrl,
-        ], function ($message) use ($subscriber, $settings) {
+        ], function ($message) use ($subscriber): void {
             $message->to($subscriber->email, $subscriber->nome)
                 ->subject('Confirme sua inscrição na Newsletter');
         });

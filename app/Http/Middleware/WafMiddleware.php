@@ -26,6 +26,7 @@ class WafMiddleware
         'install',
         'storage',
         'build',
+        'assets',
         'vendor',
     ];
 
@@ -155,6 +156,9 @@ class WafMiddleware
                 $regex = "#{$pattern}#i";
 
                 if (@preg_match($regex, '') === false) {
+                    Log::warning('Regra WAF ignorada por regex inválida.', [
+                        'pattern' => $pattern,
+                    ]);
                     continue;
                 }
 

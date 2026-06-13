@@ -17,6 +17,28 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-13 - aplica auditoria completa de seguranca, rotas e dados
+
+- execucao do roteiro anexado como checklist de correcao do Politico 2
+- remocao de secrets versionados e fallback fixo de `APP_KEY`
+- reforco do licenciamento com cache, tolerancia offline limitada, mascaramento de dados sensiveis e bloqueio do atualizador remoto automatico
+- protecao da importacao SQL de updates com pasta segura, extensao `.sql`, comandos bloqueados e aprovacao manual por marcador
+- correcao do FullCalendar admin/site para CDN valido `fullcalendar@6.1.15` e locale PT-BR valido
+- agenda admin passou a listar eventos publicados e internos, enquanto site/API continuam somente com publicados
+- filtro e gravacao de categoria da agenda corrigidos
+- dashboard corrigido para usar campos reais do banco em PT-BR
+- graficos de visitas e estatisticas por pais ajustados para retorno coerente
+- senha SMTP criptografada e formulario corrigido para mailers nao SMTP
+- sitemap e robots passaram a responder por rotas publicas dedicadas
+- SSRF do analisador SEO mitigado com validacao de host/IP publico, timeout e limite de resposta
+- uploads SVG bloqueados em config, enum e service
+- ordenacoes por `sort_by/sort_order` protegidas por whitelist nos modulos auditados
+- WAF reforcado com bypass seguro para assets/instalador e regex tolerante a erro
+- permissoes admin semeadas com slugs usados pelas rotas e aliases temporarios documentados para remocao na v1.1.0
+- criado `AUDITORIA_CORRECAO_COMPLETA_2026_06_13.md`
+- validacoes locais executadas: `composer dump-autoload`, limpeza de caches Artisan, `migrate`, `db:seed --class=PermissionSeeder`, `route:list`, `php artisan test`, `npm install`, `npm run build`, `git diff --check` e varredura sem BOM
+- `graphify update` executado e `graphify .` tentado; `graphify .` exige API key de LLM no ambiente
+
 ### 2026-06-13 - atualiza artefatos do Graphify do projeto
 
 - execucao de `graphify update .` na raiz do projeto para reextrair o grafo local sem LLM

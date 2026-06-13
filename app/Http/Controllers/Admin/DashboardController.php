@@ -38,20 +38,18 @@ class DashboardController extends Controller
         $visitsMonth = $this->visitaService->getUniqueVisitors('month');
         $totalVisits = Visit::count();
 
-        $postsCount = Post::count();
         $publishedPosts = Post::where('status', 'published')->count();
+        $postsCount = $publishedPosts;
         $draftPosts = Post::where('status', 'draft')->count();
         $scheduledPosts = Post::where('status', 'scheduled')->count();
 
-        $eventsCount = Event::where('publicado', true)->count();
-        $upcomingEvents = Event::where('publicado', true)
-            ->whereDate('data_inicio', '>=', now())
+        $eventsCount = Event::count();
+        $upcomingEvents = Event::whereDate('data_inicio', '>=', now())
             ->orderBy('data_inicio')
             ->limit(5)
             ->get();
 
-        $todayEvents = Event::where('publicado', true)
-            ->whereDate('data_inicio', now()->toDateString())
+        $todayEvents = Event::whereDate('data_inicio', now()->toDateString())
             ->orderBy('data_inicio')
             ->get();
 

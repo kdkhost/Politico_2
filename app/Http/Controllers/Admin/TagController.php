@@ -20,6 +20,14 @@ use Illuminate\Support\Str;
 
 class TagController extends Controller
 {
+    private const SORTABLE_FIELDS = [
+        'id',
+        'nome',
+        'slug',
+        'created_at',
+        'updated_at',
+    ];
+
     public function index()
     {
         return view('admin.tags.index');
@@ -38,7 +46,11 @@ class TagController extends Controller
                 });
             }
 
-            $query->orderBy($request->sort_by ?? 'nome', $request->sort_order ?? 'asc');
+            $sortField = in_array((string) $request->sort_by, self::SORTABLE_FIELDS, true)
+                ? (string) $request->sort_by
+                : 'nome';
+            $sortOrder = strtolower((string) $request->sort_order) === 'desc' ? 'desc' : 'asc';
+            $query->orderBy($sortField, $sortOrder);
             $tags = $query->paginate(config('sistema.pagination_per_page', 15));
 
             return response()->json([

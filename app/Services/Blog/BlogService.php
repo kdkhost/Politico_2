@@ -21,6 +21,17 @@ use Illuminate\Support\Str;
 
 class BlogService
 {
+    private const SORTABLE_FIELDS = [
+        'id',
+        'titulo',
+        'status',
+        'published_at',
+        'scheduled_for',
+        'created_at',
+        'updated_at',
+        'views_count',
+    ];
+
     public function listPosts(array $filters = []): LengthAwarePaginator
     {
         $query = Post::with(['author:id,name', 'category:id,nome,slug', 'tags:id,nome,slug']);
@@ -66,8 +77,10 @@ class BlogService
             $query->where('formato', $filters['formato']);
         }
 
-        $sortField = $filters['sort_by'] ?? 'created_at';
-        $sortOrder = $filters['sort_order'] ?? 'desc';
+        $sortField = in_array(($filters['sort_by'] ?? 'created_at'), self::SORTABLE_FIELDS, true)
+            ? $filters['sort_by']
+            : 'created_at';
+        $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
 
         $query->orderBy($sortField, $sortOrder);
 

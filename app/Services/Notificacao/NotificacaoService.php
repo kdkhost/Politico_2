@@ -19,6 +19,24 @@ use Illuminate\Support\Facades\Schema;
 
 class NotificacaoService
 {
+    private const LEGACY_SORTABLE_FIELDS = [
+        'id',
+        'tipo',
+        'titulo',
+        'lida',
+        'lida_at',
+        'created_at',
+        'updated_at',
+    ];
+
+    private const NOTIFICATION_SORTABLE_FIELDS = [
+        'id',
+        'type',
+        'read_at',
+        'created_at',
+        'updated_at',
+    ];
+
     private function usesLegacyColumns(): bool
     {
         return Schema::hasColumn('notifications', 'user_id')
@@ -168,8 +186,14 @@ class NotificacaoService
             $query->whereDate('created_at', '<=', $filters['date_to']);
         }
 
-        $sortField = $filters['sort_by'] ?? 'created_at';
-        $sortOrder = $filters['sort_order'] ?? 'desc';
+        $sortableFields = $this->usesLegacyColumns()
+            ? self::LEGACY_SORTABLE_FIELDS
+            : self::NOTIFICATION_SORTABLE_FIELDS;
+
+        $sortField = in_array(($filters['sort_by'] ?? 'created_at'), $sortableFields, true)
+            ? $filters['sort_by']
+            : 'created_at';
+        $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
 
         $query->orderBy($sortField, $sortOrder);
 

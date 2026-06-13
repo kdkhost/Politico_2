@@ -20,6 +20,16 @@ use Illuminate\Support\Str;
 
 class HashtagController extends Controller
 {
+    private const SORTABLE_FIELDS = [
+        'id',
+        'nome',
+        'slug',
+        'tipo',
+        'usage_count',
+        'created_at',
+        'updated_at',
+    ];
+
     public function index()
     {
         return view('admin.hashtags.index');
@@ -42,7 +52,11 @@ class HashtagController extends Controller
                 $query->where('tipo', $request->tipo);
             }
 
-            $query->orderBy($request->sort_by ?? 'usage_count', $request->sort_order ?? 'desc');
+            $sortField = in_array((string) $request->sort_by, self::SORTABLE_FIELDS, true)
+                ? (string) $request->sort_by
+                : 'usage_count';
+            $sortOrder = strtolower((string) $request->sort_order) === 'asc' ? 'asc' : 'desc';
+            $query->orderBy($sortField, $sortOrder);
             $hashtags = $query->paginate(config('sistema.pagination_per_page', 15));
 
             return response()->json([

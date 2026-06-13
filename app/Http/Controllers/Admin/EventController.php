@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Services\Agenda\AgendaService;
 use Illuminate\Http\Request;
 
@@ -25,7 +26,9 @@ class EventController extends Controller
 
     public function index()
     {
-        return view('admin.agenda.index');
+        $categories = Category::orderBy('nome')->get(['id', 'nome']);
+
+        return view('admin.agenda.index', compact('categories'));
     }
 
     public function create()
@@ -39,7 +42,7 @@ class EventController extends Controller
             $start = $request->input('start', now()->startOfMonth()->toDateString());
             $end = $request->input('end', now()->endOfMonth()->toDateString());
 
-            $events = $this->agendaService->getEventsByDateRange($start, $end);
+            $events = $this->agendaService->getEventsByDateRange($start, $end, false);
 
             if ($request->filled('category_id')) {
                 $events = $events->where('categoria_id', (int) $request->input('category_id'));
@@ -97,6 +100,7 @@ class EventController extends Controller
                 'data_fim' => 'required|date|after_or_equal:data_inicio',
                 'cor' => 'nullable|string|max:20',
                 'tipo' => 'nullable|string|max:50',
+                'categoria_id' => 'nullable|integer|exists:categories,id',
                 'all_day' => 'boolean',
                 'publicado' => 'boolean',
                 'link_externo' => 'nullable|url|max:500',
@@ -130,6 +134,7 @@ class EventController extends Controller
                 'data_fim' => 'required|date|after_or_equal:data_inicio',
                 'cor' => 'nullable|string|max:20',
                 'tipo' => 'nullable|string|max:50',
+                'categoria_id' => 'nullable|integer|exists:categories,id',
                 'all_day' => 'boolean',
                 'publicado' => 'boolean',
                 'link_externo' => 'nullable|url|max:500',

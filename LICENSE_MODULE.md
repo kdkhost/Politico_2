@@ -180,7 +180,7 @@ Arquivo: `config/license.php`
 return [
     'product_code'       => 'C73B74F0',
     'api_url'            => 'https://servidor.licenca/',
-    'api_key'            => '8D7D3C0AE370A633F0D6',
+    'api_key'            => '',
     'language'           => 'portuguese',
     'version'            => 'v1.0.0',
     'verification_type'  => 'proprietary',

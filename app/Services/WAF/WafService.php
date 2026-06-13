@@ -17,9 +17,19 @@ use App\Models\WafLog;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class WafService
 {
+    private const SORTABLE_FIELDS = [
+        'id',
+        'ip',
+        'type',
+        'method',
+        'created_at',
+        'updated_at',
+    ];
+
     public function isEnabled(): bool
     {
         return config('waf.enabled', true);
@@ -128,13 +138,18 @@ class WafService
 
         $patterns = config('waf.block_patterns', []);
 
+        $value = mb_substr($input, 0, 5000);
+
         foreach ($patterns as $pattern) {
-            try {
-                if (preg_match("/{$pattern}/i", $input)) {
-                    return true;
-                }
-            } catch (\Throwable) {
+            $result = @preg_match("/{$pattern}/i", $value);
+
+            if ($result === false) {
+                Log::warning('Regra WAF ignorada por regex invalida.', ['pattern' => $pattern]);
                 continue;
+            }
+
+            if ($result === 1) {
+                return true;
             }
         }
 
@@ -215,8 +230,10 @@ class WafService
             });
         }
 
-        $sortField = $filters['sort_by'] ?? 'created_at';
-        $sortOrder = $filters['sort_order'] ?? 'desc';
+        $sortField = in_array(($filters['sort_by'] ?? 'created_at'), self::SORTABLE_FIELDS, true)
+            ? $filters['sort_by']
+            : 'created_at';
+        $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
 
         $query->orderBy($sortField, $sortOrder);
 

@@ -21,6 +21,18 @@ use Illuminate\Support\Facades\DB;
 
 class MidiaService
 {
+    private const SORTABLE_FIELDS = [
+        'id',
+        'nome',
+        'nome_original',
+        'tipo',
+        'extensao',
+        'tamanho',
+        'pasta',
+        'created_at',
+        'updated_at',
+    ];
+
     public function listAll(array $filters = []): LengthAwarePaginator
     {
         $query = Media::query()->with('user:id,name');
@@ -54,8 +66,10 @@ class MidiaService
             $query->whereDate('created_at', '<=', $filters['date_to']);
         }
 
-        $sortField = $filters['sort_by'] ?? 'created_at';
-        $sortOrder = $filters['sort_order'] ?? 'desc';
+        $sortField = in_array(($filters['sort_by'] ?? 'created_at'), self::SORTABLE_FIELDS, true)
+            ? $filters['sort_by']
+            : 'created_at';
+        $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
 
         $query->orderBy($sortField, $sortOrder);
 

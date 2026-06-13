@@ -20,7 +20,7 @@
                     <select id="categoryFilter" class="form-select">
                         <option value="">Todas</option>
                         @foreach($categories ?? [] as $cat)
-                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                            <option value="{{ $cat->id }}">{{ $cat->nome }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -86,7 +86,7 @@
                                 <select id="event_category" name="category_id" class="form-select">
                                     <option value="">Sem categoria</option>
                                     @foreach($categories ?? [] as $cat)
-                                        <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                                        <option value="{{ $cat->id }}">{{ $cat->nome }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -127,15 +127,14 @@
 </div>
 
 @push('styles')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6/dist/main.min.css">
 <style>
     #calendar { min-height: 600px; padding: 15px; }
 </style>
 @endpush
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6/dist/index.global.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6/dist/locales/pt-br.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.15/locales/pt-br.global.min.js"></script>
 <script>
     var calendar;
     $(function() {
@@ -157,7 +156,7 @@
             editable: true,
             selectable: true,
             selectHelper: true,
-            eventLimit: true,
+            dayMaxEvents: true,
             events: {
                 url: '{{ route("admin.agenda.data") }}',
                 method: 'GET',

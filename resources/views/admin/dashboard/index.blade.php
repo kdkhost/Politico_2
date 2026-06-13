@@ -125,14 +125,14 @@
                     @forelse($todayEvents ?? [] as $event)
                         <div class="list-group-item">
                             <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">{{ $event->title }}</h6>
+                                <h6 class="mb-1">{{ data_get($event, 'titulo', data_get($event, 'title', '-')) }}</h6>
                                 <small>
-                                    @if($event->data_inicio ?? $event->start_time)
-                                        {{ \Carbon\Carbon::parse($event->data_inicio ?? $event->start_time)->format('H:i') }}
+                                    @if(data_get($event, 'data_inicio') ?? data_get($event, 'start_time'))
+                                        {{ \Carbon\Carbon::parse(data_get($event, 'data_inicio') ?? data_get($event, 'start_time'))->format('H:i') }}
                                     @endif
                                 </small>
                             </div>
-                            <p class="mb-0 text-muted small">{{ Str::limit($event->description, 80) }}</p>
+                            <p class="mb-0 text-muted small">{{ Str::limit(data_get($event, 'descricao', data_get($event, 'description', '')), 80) }}</p>
                         </div>
                     @empty
                         <div class="list-group-item text-center text-muted py-4">
@@ -156,10 +156,10 @@
                     @forelse($latestContacts ?? [] as $contact)
                         <div class="list-group-item">
                             <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">{{ $contact->name }}</h6>
-                                <small class="text-muted">{{ $contact->created_at->diffForHumans() }}</small>
+                                <h6 class="mb-1">{{ data_get($contact, 'nome', data_get($contact, 'name', '-')) }}</h6>
+                                <small class="text-muted">{{ data_get($contact, 'created_at') ? \Carbon\Carbon::parse(data_get($contact, 'created_at'))->diffForHumans() : '-' }}</small>
                             </div>
-                            <p class="mb-0 text-muted small">{{ Str::limit($contact->message, 60) }}</p>
+                            <p class="mb-0 text-muted small">{{ Str::limit(data_get($contact, 'mensagem', data_get($contact, 'message', '')), 60) }}</p>
                         </div>
                     @empty
                         <div class="list-group-item text-center text-muted py-4">
