@@ -290,11 +290,13 @@ class UploadService
 
     public function organizeByDate(string $pasta): string
     {
-        $pasta = trim($pasta);
+        $pasta = trim($pasta, '/');
         $pasta = str_replace('\\', '/', $pasta);
+        $pasta = str_replace(['../', '..\\', './', '.\\'], '', $pasta);
         $pasta = preg_replace('#/+#', '/', $pasta) ?? $pasta;
         $pasta = trim($pasta, '/.');
         $pasta = preg_replace('/[^A-Za-z0-9_\/-]/', '', $pasta) ?? '';
+        $pasta = preg_replace('#/+#', '/', $pasta) ?? $pasta;
 
         if ($pasta === '') {
             $pasta = 'uploads';

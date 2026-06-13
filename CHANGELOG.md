@@ -17,6 +17,18 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-13 - reforca licenciamento, APP_KEY e permissoes granulares
+
+- ajustada a verificacao de licenca para chamar a API quando o cache expira, sem depender do controle de sessao interno do client antigo
+- `LICENSE_API_KEY` vazio agora retorna falha clara na verificacao de licenca, sem chamada externa e sem tolerancia silenciosa
+- tolerancia offline de licenca ficou restrita a falha de comunicacao/API indisponivel, sem liberar resposta de licenca negada
+- `CheckPermission` passou a liberar automaticamente apenas `is_super_admin`; demais perfis administrativos dependem das permissoes do perfil
+- rotas administrativas receberam middlewares por acao (`view`, `create`, `edit`, `delete`) nos CRUDs principais e aliases legados sensiveis
+- rotas legadas de contato `marcar-todos-lidos` e `lidos/excluir` foram reposicionadas antes das rotas com `{id}`
+- adicionada tela segura para `APP_KEY` ausente apos instalacao incompleta
+- sanitizacao da pasta de upload ficou explicita contra `../`, `..\\`, `./` e `.\\`
+- validacoes locais executadas: `composer dump-autoload`, limpeza de caches Artisan, `migrate`, `db:seed --class=PermissionSeeder`, `route:list`, `php artisan test`, `npm install`, `npm run build`, `git diff --check`, `php -l`, varredura de secrets antigos, SVG e arquivos compactados
+
 ### 2026-06-13 - aplica auditoria completa de seguranca, rotas e dados
 
 - execucao do roteiro anexado como checklist de correcao do Politico 2

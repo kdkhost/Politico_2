@@ -116,10 +116,13 @@ class LicenseService
         }
 
         if (!$this->hasApiKey()) {
-            return $this->verifyOfflineGrace('Chave da API de licenciamento não configurada.');
+            return [
+                'valid' => false,
+                'message' => 'Chave da API de licenciamento não configurada.',
+            ];
         }
 
-        $response = $this->api->verifyLicense(true);
+        $response = $this->api->verifyLicense(false);
 
         if (!empty($response['status'])) {
             Cache::put($cacheKey, true, now()->addSeconds(config('license.cache_ttl', 86400)));
@@ -138,14 +141,21 @@ class LicenseService
 
         Cache::forget($cacheKey);
 
+        $message = $this->normalizeMessage($response['message'] ?? 'Licença inválida ou expirada.');
+
+        if ($this->isUnavailableLicenseResponse($response)) {
+            return $this->verifyOfflineGrace($message);
+        }
+
         LicenseSetting::where('status', 'active')->update([
             'last_verified_at' => now(),
             'status' => 'invalid',
         ]);
 
-        return $this->verifyOfflineGrace(
-            $this->normalizeMessage($response['message'] ?? 'Licença inválida ou expirada.')
-        );
+        return [
+            'valid' => false,
+            'message' => $message,
+        ];
     }
 
     public function deactivate(): array
@@ -245,6 +255,23 @@ class LicenseService
     private function hasApiKey(): bool
     {
         return trim((string) config('license.api_key', '')) !== '';
+    }
+
+    private function isUnavailableLicenseResponse(array $response): bool
+    {
+        if ($response === []) {
+            return true;
+        }
+
+        $message = mb_strtolower($this->normalizeMessage((string) ($response['message'] ?? '')));
+
+        foreach (['servidor', 'indispon', 'timeout', 'temporariamente', 'conexão', 'conexao', 'connection', 'curl'] as $needle) {
+            if (str_contains($message, $needle)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function sanitizeLicenseResponse(array $response): array

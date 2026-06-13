@@ -108,3 +108,15 @@ Nao foram gerados arquivos ZIP.
 - [x] SMTP admin validado em `/admin/smtp`.
 - [x] SEO publico validado em `/robots.txt` e `/sitemap.xml`.
 - [x] Nenhum ZIP foi criado durante a auditoria e publicacao.
+
+## 10. Rodada complementar - permissoes e licenca
+
+- [x] `CheckPermission` agora libera automaticamente apenas `is_super_admin`.
+- [x] Rotas administrativas receberam permissao por acao nos CRUDs principais.
+- [x] Aliases legados sensiveis tambem receberam middleware por acao.
+- [x] Rotas especificas de contato foram ordenadas antes das rotas com `{id}`.
+- [x] Verificacao de licenca deixou de usar tolerancia offline para `LICENSE_API_KEY` ausente.
+- [x] Verificacao de licenca passou a distinguir falha de comunicacao da API e resposta de licenca negada.
+- [x] `APP_KEY` ausente passa a renderizar tela segura em vez de erro bruto.
+- [x] Pasta de upload recebeu sanitizacao explicita contra subida de diretorio.
+- [x] Validacoes locais refeitas: `composer dump-autoload`, caches Artisan, `migrate`, `db:seed --class=PermissionSeeder`, `route:list`, `php artisan test`, `npm install`, `npm run build`, `php -l`, `git diff --check`, varredura de secrets antigos, SVG e arquivos compactados.

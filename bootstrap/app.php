@@ -60,4 +60,16 @@ return Application::configure(basePath: dirname(__DIR__))
 
             return response()->view('errors.404', [], 404);
         });
+
+        $exceptions->render(function (\Illuminate\Encryption\MissingAppKeyException $e, Request $request) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'status' => 'error',
+                    'success' => false,
+                    'message' => 'APP_KEY ausente. Execute o instalador ou gere uma nova chave antes de acessar o sistema.',
+                ], 500);
+            }
+
+            return response()->view('errors.app-key-missing', [], 500);
+        });
     })->create();
