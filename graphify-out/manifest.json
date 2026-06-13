@@ -1,0 +1,1817 @@
+{
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\artisan": {
+    "mtime": 1779736312.0,
+    "ast_hash": "e66bb13691f6184c762c196427d8e685",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\audit_complete.php": {
+    "mtime": 1781364233.998723,
+    "ast_hash": "d063512b65f0efe98bfe3ce6e0a60d57",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\audit_system.php": {
+    "mtime": 1781364211.7872934,
+    "ast_hash": "add36cee49a93cf1ceb2e850befe3349",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\composer.json": {
+    "mtime": 1781361144.6457078,
+    "ast_hash": "3b5f5a3cd4e74ec2e0c482ed33bf7c3c",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\create_missing_views.php": {
+    "mtime": 1781364247.583411,
+    "ast_hash": "13b40f0d631406e76adc0fbc65665a91",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\package.json": {
+    "mtime": 1781274268.0637345,
+    "ast_hash": "6f106e8c30d34709cf5a845332e9e094",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\verify_controllers.php": {
+    "mtime": 1781364247.585417,
+    "ast_hash": "27e3763cd1bed5fc2bcb0ce571a44b3f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\vite.config.js": {
+    "mtime": 1781350822.195271,
+    "ast_hash": "1b60654c2d3dde9f722d0b0088a8c169",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Casts\\DataBrasilCast.php": {
+    "mtime": 1781271909.0147467,
+    "ast_hash": "71c939b7a42082470f97b5f6e8ae1cfe",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Casts\\MoedaBrasilCast.php": {
+    "mtime": 1781271911.304127,
+    "ast_hash": "192d3498aba0dd754ef15d48dfaa533e",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Enums\\PerfilEnum.php": {
+    "mtime": 1781271903.2889788,
+    "ast_hash": "0b10b8b660f01519d832a4493dfede75",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Enums\\StatusEnum.php": {
+    "mtime": 1781271894.9750001,
+    "ast_hash": "8378f82e95d6a99369ab5b1da24bc567",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Enums\\TipoLogEnum.php": {
+    "mtime": 1781271906.0478127,
+    "ast_hash": "e735d04ecc252bad8f15f04159927b18",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Enums\\TipoMidiaEnum.php": {
+    "mtime": 1781271897.901698,
+    "ast_hash": "040d0d7f0e58ceb1ca2ac83c0a5c3593",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Enums\\TipoNotificacaoEnum.php": {
+    "mtime": 1781271900.158486,
+    "ast_hash": "0ad50afe51f73b2553b0e1add46dea81",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Helpers\\helpers.php": {
+    "mtime": 1781350821.9932048,
+    "ast_hash": "4333ae87edfe85eeacfb15718e6dec7b",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Controller.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "25a307335c0719bc9a91b3f7babd186d",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\InstallerController.php": {
+    "mtime": 1781350822.0007236,
+    "ast_hash": "430d6769c4cde8f2e10c8d626d57e9fe",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\AuthController.php": {
+    "mtime": 1781281058.684983,
+    "ast_hash": "769c78e050aefdc74cad6321b8c66286",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\BackupController.php": {
+    "mtime": 1781361752.107141,
+    "ast_hash": "80dc64168c684a24046b30ee3cdd8c52",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\BlogController.php": {
+    "mtime": 1781360246.3807745,
+    "ast_hash": "d2daa80db007561ee1729cebe2087136",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\CategoryController.php": {
+    "mtime": 1781272827.1501884,
+    "ast_hash": "a5f569820141f3ac452292f2636529fb",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\ContatoController.php": {
+    "mtime": 1781360271.5545268,
+    "ast_hash": "123b4f8389a2c81a3a938c6f04eb3a53",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\DashboardController.php": {
+    "mtime": 1781366659.9205346,
+    "ast_hash": "80509b462c5b4ceeb0178d3ffa7fe66b",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\EventController.php": {
+    "mtime": 1781361702.8817089,
+    "ast_hash": "e4b8fbca685f78eb614175146a8db286",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\FinanceiroController.php": {
+    "mtime": 1781361874.5543656,
+    "ast_hash": "b7c4a3ebfb3bcbe59cb5f19dc4863907",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\HashtagController.php": {
+    "mtime": 1781272960.0998905,
+    "ast_hash": "c728dbfe0dd0736177f51ea84fc98364",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\LicenseController.php": {
+    "mtime": 1781350821.9972167,
+    "ast_hash": "8b6ce7eae708828accbc05012ec886ca",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\LogController.php": {
+    "mtime": 1781360265.5403566,
+    "ast_hash": "51e383fe7828f6b4e4079cf2eaabdbe4",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\MediaController.php": {
+    "mtime": 1781361331.9538095,
+    "ast_hash": "c56cc356d2634f0c525e46e809550728",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\MenuController.php": {
+    "mtime": 1781360258.0629456,
+    "ast_hash": "089c6108a09b7b1886966f87ec1f93d3",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\ModuleController.php": {
+    "mtime": 1781361428.3954747,
+    "ast_hash": "9177f0864e68299664f54a5a2f9bd43b",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\NewsletterController.php": {
+    "mtime": 1781360275.1456797,
+    "ast_hash": "1e04895b15bc0d69eb2dd4578e2dfb32",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\NotificacaoController.php": {
+    "mtime": 1781290574.513002,
+    "ast_hash": "bb4114088566ee4ce0e936793a9eac88",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\PageController.php": {
+    "mtime": 1781360000.1989305,
+    "ast_hash": "f2c52c19531647d490b682f2db1d695b",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\PermissionController.php": {
+    "mtime": 1781360692.5655148,
+    "ast_hash": "a02ade35f8e57d88e65a35b793bb3b70",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\ProfileController.php": {
+    "mtime": 1781360092.7448146,
+    "ast_hash": "8589c21c7423261c0aea9f1877a48c8e",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\SeoController.php": {
+    "mtime": 1781272969.6189523,
+    "ast_hash": "490bd52d1f29df307d9870ee0f20b07f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\SettingController.php": {
+    "mtime": 1781350821.999218,
+    "ast_hash": "39579788930ecf9a24edf2ae6e281d12",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\SmtpController.php": {
+    "mtime": 1781298187.7226095,
+    "ast_hash": "58233ae0dee1464b4d60b1731e46b757",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\TagController.php": {
+    "mtime": 1781272833.7482882,
+    "ast_hash": "3f56cde50fd7de3b54b08c778c270ab4",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\TransparenciaController.php": {
+    "mtime": 1781360235.863659,
+    "ast_hash": "48c3253fd8820a6396707e313d0fcc6d",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\UserController.php": {
+    "mtime": 1781359996.6969082,
+    "ast_hash": "62a1acd68212f8c5a84150bc824ce8bd",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\VisitaController.php": {
+    "mtime": 1781365994.6283796,
+    "ast_hash": "cda866823a7119afa9b78a508acc50f3",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Admin\\WafController.php": {
+    "mtime": 1781290538.394316,
+    "ast_hash": "418142250b964c52b1a2257254dd00fa",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\AcessibilidadeController.php": {
+    "mtime": 1781273796.2628906,
+    "ast_hash": "72c58caafcb5bd97d34011561f9f075a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\AgendaController.php": {
+    "mtime": 1781350822.003731,
+    "ast_hash": "73779aef6a4f02e0f1d3e6a5d2680370",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\BiografiaController.php": {
+    "mtime": 1781350822.0053098,
+    "ast_hash": "acc0c7032d272c6e70a30f743f9a255e",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\BlogController.php": {
+    "mtime": 1781279779.7746,
+    "ast_hash": "efa831aaa016a2a70d07230cfa1d9f64",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\ContatoController.php": {
+    "mtime": 1781350822.007317,
+    "ast_hash": "aed4f274c6c3c78cd89e356d2e554190",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\DocumentosController.php": {
+    "mtime": 1781279884.647537,
+    "ast_hash": "bb587e66f5a452e40a093f4808d3887a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\EquipeController.php": {
+    "mtime": 1781279907.5813515,
+    "ast_hash": "6d96acdf3c400b582f096d99de023e86",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\FaqController.php": {
+    "mtime": 1781350822.0093172,
+    "ast_hash": "aab050e710941ac9f62a0dd31a178b46",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\GaleriaController.php": {
+    "mtime": 1781279842.4358172,
+    "ast_hash": "ae70cebcc82fac91cf7d5893c7e6ce6b",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\HomeController.php": {
+    "mtime": 1781282088.9440782,
+    "ast_hash": "4d2a0f2fd05f5493d32e215cac265732",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\ImprensaController.php": {
+    "mtime": 1781279918.7283428,
+    "ast_hash": "7cdc8ab8d1c3dde437537a2521ed92c1",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\NewsletterController.php": {
+    "mtime": 1781350822.0113168,
+    "ast_hash": "eea9e7c46c45666eec16f2abfb91abb8",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\NoticiasController.php": {
+    "mtime": 1781273751.3582563,
+    "ast_hash": "7373db6c9d3dff5783083ecbe73d6a0d",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\PageController.php": {
+    "mtime": 1781278295.4446814,
+    "ast_hash": "7f7d258879ba4c768934001e5a1e7bea",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\PrivacidadeController.php": {
+    "mtime": 1781273792.63366,
+    "ast_hash": "d7e86c4ed0e2b5a6abaa60de60e087a6",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\ProjetosController.php": {
+    "mtime": 1781279857.939445,
+    "ast_hash": "0d9c0e4562c718797a14ee9a4c7063cc",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\PropostasController.php": {
+    "mtime": 1781350822.0133166,
+    "ast_hash": "37678a6276dcfe7e037416f2b5dac414",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\TermosController.php": {
+    "mtime": 1781273794.4597585,
+    "ast_hash": "5e6452f195b2d78762c4535548e21a70",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\TransparenciaController.php": {
+    "mtime": 1781273764.6377668,
+    "ast_hash": "ba018aa3fd2064c81cdf812312e52652",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Controllers\\Site\\VideosController.php": {
+    "mtime": 1781273770.8005726,
+    "ast_hash": "0fb57a08d4fd5b0233b84963f5e4a1df",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Middleware\\AdminMiddleware.php": {
+    "mtime": 1781272272.763864,
+    "ast_hash": "60008706fbdfd327937300092c439db9",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Middleware\\CheckLicense.php": {
+    "mtime": 1781350822.0148208,
+    "ast_hash": "76e8167723ac2c5351db411e8235bac3",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Middleware\\CheckModuleActive.php": {
+    "mtime": 1781272252.286867,
+    "ast_hash": "8d848694bdcede90edf158eb642aae18",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Middleware\\CheckPermission.php": {
+    "mtime": 1781350822.0171666,
+    "ast_hash": "3be1d22edd9f8ba077bd370ec4786a08",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Middleware\\ForceJsonResponse.php": {
+    "mtime": 1781272266.1960802,
+    "ast_hash": "71e9da8dd598801446acd8b7f5b965e1",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Middleware\\LocalizationMiddleware.php": {
+    "mtime": 1781272281.6159084,
+    "ast_hash": "313bd1de72faef9e7999ca43942a132f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Middleware\\LogRequests.php": {
+    "mtime": 1781272269.398787,
+    "ast_hash": "7c623a6fe5281a1f60502815519f9bee",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Middleware\\MaintenanceMiddleware.php": {
+    "mtime": 1781272277.6254535,
+    "ast_hash": "4788d456b2e32c89693ee9ebff9abe29",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Http\\Middleware\\WafMiddleware.php": {
+    "mtime": 1781274968.803193,
+    "ast_hash": "7e7b3ea8a04d226285af205f5fd9cd58",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Backup.php": {
+    "mtime": 1781272134.2964058,
+    "ast_hash": "ac985ab453203973a117d8dac449282b",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Category.php": {
+    "mtime": 1781272106.0000281,
+    "ast_hash": "cca6a255dfe1e2b60fc642cef44a8c5d",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Contact.php": {
+    "mtime": 1781272131.4602263,
+    "ast_hash": "faa4f62a69cb1386c0e68ced35338e80",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Event.php": {
+    "mtime": 1781272118.7611377,
+    "ast_hash": "83a065ac18bbf8942caba8528681f5f4",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\FinancialCategory.php": {
+    "mtime": 1781272120.1364,
+    "ast_hash": "748d24144332b91599f4c33096b08524",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\FinancialTransaction.php": {
+    "mtime": 1781272124.3772264,
+    "ast_hash": "c8792875f340c80a716be9b7c4591f74",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Hashtag.php": {
+    "mtime": 1781272142.3591125,
+    "ast_hash": "392b46a3ed23aa93cee5cfd8b3f29dab",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\LicenseSetting.php": {
+    "mtime": 1781350822.0197666,
+    "ast_hash": "5c6e58f650d980d73c3917ef9d766a77",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Log.php": {
+    "mtime": 1781280983.7535827,
+    "ast_hash": "79ef3b26d4d4961d8e1e81fa2b64b307",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Media.php": {
+    "mtime": 1781272115.0269153,
+    "ast_hash": "c8cf28b2d0d3be09b7d904d54dbe450c",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\MediaUsage.php": {
+    "mtime": 1781290212.0653982,
+    "ast_hash": "95abd025fc663ed6570bae36f8444b78",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Menu.php": {
+    "mtime": 1781272138.5736866,
+    "ast_hash": "e687fda1d2da82143b1465a4ac9bf092",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\MenuItem.php": {
+    "mtime": 1781272140.7102802,
+    "ast_hash": "62020acdc4e11d409d4a434dcc0a4082",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Module.php": {
+    "mtime": 1781272097.3730168,
+    "ast_hash": "e3eb984606851d5d06edc1a4c83ca460",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\NewsletterSubscriber.php": {
+    "mtime": 1781272132.8844092,
+    "ast_hash": "b5d0d9ee0f46ca114ceb2094aadbbc6f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Notification.php": {
+    "mtime": 1781366034.3916693,
+    "ast_hash": "4c794fca666d2ca9cf374f8b9dbb2c99",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Page.php": {
+    "mtime": 1781272112.7785015,
+    "ast_hash": "8f12b125715671e273e1d3060b98e7a7",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\PasswordResetToken.php": {
+    "mtime": 1781273924.846483,
+    "ast_hash": "6a5cb1794a096c58b57c853c41f49663",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Post.php": {
+    "mtime": 1781272110.655708,
+    "ast_hash": "92346a44667c9e4e9b63b7b8a7a9ee14",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Setting.php": {
+    "mtime": 1781272098.525211,
+    "ast_hash": "f6048d04988d2c7f7139dee844e34814",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\SmtpSetting.php": {
+    "mtime": 1781272100.2437952,
+    "ast_hash": "2d2590f03fd59eca89e84f6a9fe0683c",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Tag.php": {
+    "mtime": 1781272107.319814,
+    "ast_hash": "2313b4c5361f9fd3dd7cdb13614b926a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\TransparencyItem.php": {
+    "mtime": 1781272126.2312748,
+    "ast_hash": "6a49a9a909b819df225d59b56e8acc26",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\User.php": {
+    "mtime": 1781272090.6556048,
+    "ast_hash": "84eb24ae76feed4c3b018ec7a6eae013",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Visit.php": {
+    "mtime": 1781350822.0218413,
+    "ast_hash": "c5778e380c2eec2b70ef42d60152236c",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\WafLog.php": {
+    "mtime": 1781272135.442727,
+    "ast_hash": "be00d7691526aa279018e3cf3b66b270",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Permissions\\Permission.php": {
+    "mtime": 1781272095.995097,
+    "ast_hash": "8a6bea3732e08d96eb39aabb7d00663a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Permissions\\PermissionGroup.php": {
+    "mtime": 1781272094.1617386,
+    "ast_hash": "1a12066dd5d4a6f7abe78a818346b719",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Models\\Permissions\\Profile.php": {
+    "mtime": 1781272092.7640252,
+    "ast_hash": "3b9427345daf77bfb86a70ef8cc863b3",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Providers\\AppServiceProvider.php": {
+    "mtime": 1781350822.0243864,
+    "ast_hash": "9403cea5ea590eda418a736c61c45f22",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\Agenda\\AgendaService.php": {
+    "mtime": 1781272432.3900912,
+    "ast_hash": "d701a40c923b21da510168321f4265c6",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\Auditoria\\AuditoriaService.php": {
+    "mtime": 1781272492.5341916,
+    "ast_hash": "c3f47e6531528d4dbfccb846a7b1b49e",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\Blog\\BlogService.php": {
+    "mtime": 1781350822.0265448,
+    "ast_hash": "e19051086993d37c9d68833c7fa59ec5",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\Financeiro\\FinanceiroService.php": {
+    "mtime": 1781360227.2126112,
+    "ast_hash": "967ab5cff239344117ec1e34f698ed1b",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\Instalador\\InstaladorService.php": {
+    "mtime": 1781350822.0286636,
+    "ast_hash": "6738ba5d8fc17cc398f04d529a014185",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\License\\LicenseBoxExternalAPI.php": {
+    "mtime": 1781350822.0312557,
+    "ast_hash": "4f0484bf9323d9f0c6a06dd88e30d317",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\License\\LicenseService.php": {
+    "mtime": 1781350822.034961,
+    "ast_hash": "4a8410ddcb98cd7e1bca2033dccc74d5",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\Midia\\MidiaService.php": {
+    "mtime": 1781272295.2384677,
+    "ast_hash": "a36c140726566345e0ce739c320b9154",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\Notificacao\\NotificacaoService.php": {
+    "mtime": 1781366024.8904054,
+    "ast_hash": "e8ab8da819601d693e432b3bbd3e2109",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\Permissoes\\PerfilService.php": {
+    "mtime": 1781272260.530397,
+    "ast_hash": "5ab112d4e379f9ad669321830e78827a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\Permissoes\\PermissaoService.php": {
+    "mtime": 1781360159.3981104,
+    "ast_hash": "e2c5fb23b809e9afcad3b7a5d9b5da19",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\SEO\\SeoService.php": {
+    "mtime": 1781272372.9509356,
+    "ast_hash": "da0f046d5bdfc8d68ff9925926df6820",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\Sistema\\ConfiguracaoService.php": {
+    "mtime": 1781272538.7869654,
+    "ast_hash": "04fee9647ab97e87cd4a6460c16f7baf",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\Sistema\\MenuService.php": {
+    "mtime": 1781272554.7210724,
+    "ast_hash": "3fad091d4344ef087e80df09a002733a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\SMTP\\SmtpService.php": {
+    "mtime": 1781272577.749023,
+    "ast_hash": "9706a37f7480759720de136fa978e8fe",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\Transparencia\\TransparenciaService.php": {
+    "mtime": 1781360240.5693083,
+    "ast_hash": "29c0ddf8c3419930b033438ea96dbfbe",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\Upload\\UploadService.php": {
+    "mtime": 1781272284.0349064,
+    "ast_hash": "8fd74a1cbb510fbaf9bd3cfc70221d6e",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\Visitas\\VisitaService.php": {
+    "mtime": 1781350822.0386405,
+    "ast_hash": "b4d0154ffc40b0b234d1eaffbbdc7170",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\app\\Services\\WAF\\WafService.php": {
+    "mtime": 1781272507.4375298,
+    "ast_hash": "dde054c48454b1807c45fe90d56d09d1",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\bootstrap\\app.php": {
+    "mtime": 1781350822.0412652,
+    "ast_hash": "6ede32958ae570e95ad1c1d9f563dc35",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\bootstrap\\providers.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "888c810b5a4720916f07aa05dd2c2dd3",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\bootstrap\\cache\\packages.php": {
+    "mtime": 1781291768.8933659,
+    "ast_hash": "c7701fd88951ca715258a3d8a1b2c450",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\bootstrap\\cache\\services.php": {
+    "mtime": 1781291768.9198232,
+    "ast_hash": "e7660aeb273ff7225ab3ff93fc7c4870",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\app.php": {
+    "mtime": 1781350822.0433464,
+    "ast_hash": "7347baf50e522b4ecc6c4f190e5aa26f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\auditoria.php": {
+    "mtime": 1781271921.3888593,
+    "ast_hash": "227d06c6ccc00cbc0e13cb15e00b5142",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\auth.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "26354511ab860b301f2a3554bc388b91",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\cache.php": {
+    "mtime": 1781350822.045914,
+    "ast_hash": "b378f1b422f6f3f93e643c0e9f820f60",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\database.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "594a01554ab7583541a8fb05a69f935f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\filesystems.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "bde1aa1027f0448f17348dbd93f3d7ea",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\license.php": {
+    "mtime": 1781350822.0484293,
+    "ast_hash": "3f437f42e5d6460e4e4f9f686739ef07",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\logging.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "d8255a5c07d3da72c7c9363f0c44bddd",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\mail.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "18601a927b48d38337ba2077426a7d60",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\modules.php": {
+    "mtime": 1781271882.5015554,
+    "ast_hash": "da9407ceb9b38a5db570980f64902976",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\queue.php": {
+    "mtime": 1781350822.051471,
+    "ast_hash": "7d6e5c65e4e95cb2b75ccf63fc05866d",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\seo.php": {
+    "mtime": 1781271891.2150905,
+    "ast_hash": "42794d97fadbe8e5aa98c09f9fbbcb78",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\services.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "534a1b7af7009c373ea4ebfa18823d57",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\session.php": {
+    "mtime": 1781350822.05452,
+    "ast_hash": "4f4cdd5e1af9c8cec6aecb844954b460",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\sistema.php": {
+    "mtime": 1781271897.9936976,
+    "ast_hash": "ffa83e86c17214c0f77877e2e67db7de",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\transparencia.php": {
+    "mtime": 1781271914.947528,
+    "ast_hash": "b889cba1340cdbce08aac62051a4cd55",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\config\\waf.php": {
+    "mtime": 1781275434.3939822,
+    "ast_hash": "501a49058afd7adea5a1a94151e01242",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\factories\\UserFactory.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "1c9f381f9c2bc3027971a3bfdbe99164",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\0001_01_01_000000_create_users_table.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "138280095e9d19f2ba6fb830415602e2",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\0001_01_01_000001_create_cache_table.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "6952fb360e8d8b84e6f47573e4459d48",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\0001_01_01_000002_create_jobs_table.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "b0603b9fa0a27473971da76bb0c42ee1",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_000001_create_profiles_table.php": {
+    "mtime": 1781275588.2780685,
+    "ast_hash": "c96607c922ca813cdfa0ead4d31c8ac0",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_000002_create_permission_groups_table.php": {
+    "mtime": 1781275536.8015723,
+    "ast_hash": "a01d948390cdc0ff2eb5224801e4a9a8",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_000003_create_permissions_table.php": {
+    "mtime": 1781275536.8025723,
+    "ast_hash": "e9ad4cf9b0101e5a62554c9f2144f15d",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_000004_add_profile_fields_to_users_table.php": {
+    "mtime": 1781272035.776388,
+    "ast_hash": "05c7f7af58132264009176f212951109",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_000005_create_profile_permissions_table.php": {
+    "mtime": 1781275536.8035753,
+    "ast_hash": "4ba2204e8c233785109624300cbf767e",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_100002_create_modules_table.php": {
+    "mtime": 1781275536.806573,
+    "ast_hash": "bc09ffc02d7b5c481c4cc287eecf1195",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_100003_create_settings_table.php": {
+    "mtime": 1781275536.807573,
+    "ast_hash": "d7fe38a3e0c5068491d93155fb268714",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_100004_create_smtp_settings_table.php": {
+    "mtime": 1781275536.8095734,
+    "ast_hash": "d14e2ed54933bfd14fb304bc1b02e584",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_100005_create_license_settings_table.php": {
+    "mtime": 1781275536.8105743,
+    "ast_hash": "cd726123fcdbe65a3ceb76d6b5ce1444",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_200001_create_categories_table.php": {
+    "mtime": 1781275536.811574,
+    "ast_hash": "3c94c01b691238b7017dffba3178399f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_200002_create_tags_table.php": {
+    "mtime": 1781275536.8135724,
+    "ast_hash": "21b40467594c3442e43a96db90738e4a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_200003_create_posts_table.php": {
+    "mtime": 1781275536.8155746,
+    "ast_hash": "032100513f6da071d6096830936368fb",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_200004_create_post_tag_table.php": {
+    "mtime": 1781275536.8165734,
+    "ast_hash": "655d6aaeb800217ae79c536150a3f55f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_200005_create_pages_table.php": {
+    "mtime": 1781275536.8185735,
+    "ast_hash": "02c5f4ee090bd44079da8f5fcadfcde1",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_300001_create_media_table.php": {
+    "mtime": 1781275536.8195724,
+    "ast_hash": "fe5901e42b4f85c414121a8e1dd400a5",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_300002_create_media_usage_table.php": {
+    "mtime": 1781275536.8205726,
+    "ast_hash": "3ad4faa02b7b062eb4779c5787cdcddf",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_400001_create_events_table.php": {
+    "mtime": 1781275536.8225718,
+    "ast_hash": "5a769f6b71144d8a7c56f5d083e8f0d9",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_500001_create_financial_categories_table.php": {
+    "mtime": 1781275536.8235724,
+    "ast_hash": "8aadb15864cfcbdad3a94af83eaa2b3b",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_500002_create_financial_transactions_table.php": {
+    "mtime": 1781275536.8255732,
+    "ast_hash": "aeac1bb765268466ee206bf88c2b36c7",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_500003_create_transparency_items_table.php": {
+    "mtime": 1781275536.8265717,
+    "ast_hash": "9aefe0a0463379c95d0fff4f219077d6",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_600001_create_visits_table.php": {
+    "mtime": 1781275536.8275728,
+    "ast_hash": "3669003cf192648269a1a5bd83c4ee74",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_600002_create_logs_table.php": {
+    "mtime": 1781275536.8295727,
+    "ast_hash": "9186fe9432b2b1f0d185ee1ff21d82b7",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_700001_create_notifications_table.php": {
+    "mtime": 1781275536.830574,
+    "ast_hash": "34751775954c9ce0197a073ca02bd2ab",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_700002_create_contacts_table.php": {
+    "mtime": 1781275536.8325741,
+    "ast_hash": "25193773451c7b41445dca180c035a10",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_700003_create_newsletter_subscribers_table.php": {
+    "mtime": 1781275536.8335726,
+    "ast_hash": "7e7c93836bb2749439c7abeebfa6ba08",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_700004_create_backups_table.php": {
+    "mtime": 1781275536.8355744,
+    "ast_hash": "5aac71535afb30f7aba1aec57fb2da20",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_700005_create_waf_logs_table.php": {
+    "mtime": 1781275536.8365722,
+    "ast_hash": "231b21090b5108b72af4e2d5dc1c6ebf",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_800001_create_menus_table.php": {
+    "mtime": 1781275536.8385732,
+    "ast_hash": "45641694e9fbe5f128e8100e37716c01",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_800002_create_menu_items_table.php": {
+    "mtime": 1781275536.8405716,
+    "ast_hash": "490544e55844c82643c66fde3b6b0f45",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_800003_create_hashtags_table.php": {
+    "mtime": 1781275536.8415725,
+    "ast_hash": "1bbfc84a381b4e75171022f8118c061f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2024_01_01_800004_create_hashtag_ables_table.php": {
+    "mtime": 1781275536.8435733,
+    "ast_hash": "00b0cea414b3862a5c9e0d820d899e28",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2026_06_12_000001_create_media_usages_table.php": {
+    "mtime": 1781290157.2451982,
+    "ast_hash": "5f061f48b4da8214caf713563430f142",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2026_06_12_131500_add_timestamps_to_logs_table.php": {
+    "mtime": 1781280997.6949942,
+    "ast_hash": "031dbb2e23908f4208a9082be1e02e95",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2026_06_12_220000_add_standard_timestamps_to_legacy_tables.php": {
+    "mtime": 1781350822.0560634,
+    "ast_hash": "d162171041c34ddbdfadbbdb01e23df1",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\migrations\\2026_06_13_000001_add_timestamps_to_post_tag_table.php": {
+    "mtime": 1781350822.058572,
+    "ast_hash": "416d03952affec3edce9fcde4e20e4bc",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\seeders\\CategorySeeder.php": {
+    "mtime": 1781275892.629444,
+    "ast_hash": "1c366d0b9bf4d51453ca815136e2d11a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\seeders\\DatabaseSeeder.php": {
+    "mtime": 1781273369.393532,
+    "ast_hash": "c57cf1acc081ecaf9792e1d9ae19aa3c",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\seeders\\MenuSeeder.php": {
+    "mtime": 1781275853.635327,
+    "ast_hash": "021ca5a454b05eae180849316c8fcad1",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\seeders\\ModuleSeeder.php": {
+    "mtime": 1781275828.0216775,
+    "ast_hash": "1f407a79a709835de662940112028c7a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\seeders\\PageSeeder.php": {
+    "mtime": 1781275882.6771948,
+    "ast_hash": "016e20c157b2a7e0763889ddae66c32e",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\seeders\\PermissionSeeder.php": {
+    "mtime": 1781275805.929079,
+    "ast_hash": "8e53d7fcaee84aac2e587ab5c5a4d522",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\seeders\\ProfileSeeder.php": {
+    "mtime": 1781275577.2955818,
+    "ast_hash": "e825254063b3b65ddfac396c6e886b4b",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\seeders\\SettingSeeder.php": {
+    "mtime": 1781275842.9644747,
+    "ast_hash": "de36e500230d5f10af119caf6a934d06",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\database\\seeders\\UserSeeder.php": {
+    "mtime": 1781286591.2172582,
+    "ast_hash": "71e639435b69d26b3af1f609f8f58e84",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\public\\index.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "d8eda274115af5fd2aaa8230af329ef7",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\public\\js\\site\\site.js": {
+    "mtime": 1781350822.1192522,
+    "ast_hash": "eb7c3a1f028b2f173805d5650233b4e0",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\js\\app.js": {
+    "mtime": 1779736312.0,
+    "ast_hash": "b519d08ef66fd54910edbedba6181ec2",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\js\\admin\\admin.js": {
+    "mtime": 1781365918.264734,
+    "ast_hash": "669afc3f8f6c829f50d425aee1458eb4",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\js\\site\\site.js": {
+    "mtime": 1781350822.1292782,
+    "ast_hash": "b5bee7709a4478eb7f33a8d625a08f30",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\welcome.blade.php": {
+    "mtime": 1781290596.8379476,
+    "ast_hash": "b933b97d3a98ddcb083a6c76d1b46e4f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\agenda\\create.blade.php": {
+    "mtime": 1781361675.886518,
+    "ast_hash": "c687fe7a49aa5180fc5b1845a0c7798e",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\agenda\\edit.blade.php": {
+    "mtime": 1781361676.2264485,
+    "ast_hash": "e1c373ec1e8161b8036755f27c037fac",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\agenda\\index.blade.php": {
+    "mtime": 1781366501.9842222,
+    "ast_hash": "8d5e6c6c45075892b0e717f001f4a4b0",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\agenda\\show.blade.php": {
+    "mtime": 1781360838.0645044,
+    "ast_hash": "05948fcbedcafad472d9bfa73a6efacf",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\auth\\forgot.blade.php": {
+    "mtime": 1781273963.7573843,
+    "ast_hash": "ccecd2cc5fd53c749e7785a8e16b0777",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\auth\\login.blade.php": {
+    "mtime": 1781273947.1204255,
+    "ast_hash": "1e79ff70cf83c5ea190b98cb5dd8dcc8",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\auth\\reset.blade.php": {
+    "mtime": 1781273982.0203614,
+    "ast_hash": "f43ca680f671f077e74f4cefec2fb06d",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\backups\\create.blade.php": {
+    "mtime": 1781361770.76274,
+    "ast_hash": "7b01f24b9f3c7108d55bd80ae3ff3909",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\backups\\index.blade.php": {
+    "mtime": 1781366042.897916,
+    "ast_hash": "6a2741b05de7acd519a3057637a2e9bf",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\blog\\create.blade.php": {
+    "mtime": 1781350822.1327853,
+    "ast_hash": "c9a9e360bf19af5b9bbff6ae0ae507bd",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\blog\\edit.blade.php": {
+    "mtime": 1781297624.079152,
+    "ast_hash": "69db1dfb8c7c3f96c83438be091841ea",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\blog\\form.blade.php": {
+    "mtime": 1781366042.9019163,
+    "ast_hash": "e99de878102d1506f55140626bf76d88",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\blog\\index.blade.php": {
+    "mtime": 1781350822.137535,
+    "ast_hash": "ea4d25003e148adbcab794624d4145af",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\blog\\show.blade.php": {
+    "mtime": 1781360794.361735,
+    "ast_hash": "d8563724af6649b4e7638711d787000f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\categorias\\create.blade.php": {
+    "mtime": 1781361556.7290707,
+    "ast_hash": "1d80c9ed09d74e400296b593b8b0e97a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\categorias\\edit.blade.php": {
+    "mtime": 1781361557.0755546,
+    "ast_hash": "d8d9cf7998635826e033b977d97ac3c4",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\categorias\\index.blade.php": {
+    "mtime": 1781366042.9059162,
+    "ast_hash": "0e2aa57e09f9093fe12981def17c700a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\configuracoes\\edit.blade.php": {
+    "mtime": 1781361499.950729,
+    "ast_hash": "f8fea6ba14cc5abe6595996ca3ebe99a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\configuracoes\\index.blade.php": {
+    "mtime": 1781350822.140119,
+    "ast_hash": "a36cac674ef0af63523efff9b4c163b8",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\configuracoes\\smtp.blade.php": {
+    "mtime": 1781361498.9099674,
+    "ast_hash": "80a77d6c9cc5fa553f7d455f5936f6fc",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\configuracoes.smtp\\edit.blade.php": {
+    "mtime": 1781361499.6151335,
+    "ast_hash": "991e9c269bce05f014955359d17a304d",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\configuracoes.smtp\\index.blade.php": {
+    "mtime": 1781361499.270562,
+    "ast_hash": "991e9c269bce05f014955359d17a304d",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\contato\\index.blade.php": {
+    "mtime": 1781366042.9299147,
+    "ast_hash": "4d4f42b3f84f7183384a2d7e69076b41",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\contato\\show.blade.php": {
+    "mtime": 1781273107.365149,
+    "ast_hash": "d82b7d4fe6bb8c51417064fc3b6c3fb7",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\dashboard\\index.blade.php": {
+    "mtime": 1781366871.5439994,
+    "ast_hash": "0ed9814f49e466551ed358bab77ceb3d",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\docs\\index.blade.php": {
+    "mtime": 1781350822.1452944,
+    "ast_hash": "be6d4624d587750ac1779f8105f37f39",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\financeiro\\categorias.blade.php": {
+    "mtime": 1781366042.934916,
+    "ast_hash": "e7b1817630cba55b432acf1f4686e734",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\financeiro\\create.blade.php": {
+    "mtime": 1781350822.1468787,
+    "ast_hash": "8d28baf528b6780b249ffce9483964c5",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\financeiro\\edit.blade.php": {
+    "mtime": 1781350822.1489544,
+    "ast_hash": "0e8d07c616292c21f322d701d523a269",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\financeiro\\form.blade.php": {
+    "mtime": 1781366042.9379165,
+    "ast_hash": "8c3faf38f3acd4ec0bce7204aa47fbba",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\financeiro\\index.blade.php": {
+    "mtime": 1781273057.468779,
+    "ast_hash": "5d4b9e64caa9160072789a1b9c880d24",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\financeiro\\show.blade.php": {
+    "mtime": 1781360795.0574045,
+    "ast_hash": "aad682c0de36930ac92beb0883593c36",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\hashtags\\create.blade.php": {
+    "mtime": 1781361614.999674,
+    "ast_hash": "3391578b0ec779dbfe5b5bf77701d4a1",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\hashtags\\edit.blade.php": {
+    "mtime": 1781361615.3397634,
+    "ast_hash": "f3a0b1a451e4a869bb18196b5737b0b2",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\hashtags\\index.blade.php": {
+    "mtime": 1781366042.9419162,
+    "ast_hash": "ceaabf7ccbba14a570b5f9be4950fcb0",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\layouts\\footer.blade.php": {
+    "mtime": 1781350822.1515481,
+    "ast_hash": "da0c75a8ad333a2a6f0c21cacabf24fc",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\layouts\\master.blade.php": {
+    "mtime": 1781366652.7732959,
+    "ast_hash": "e0d8cbe2eb136db9c8d974d378436a55",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\layouts\\navbar.blade.php": {
+    "mtime": 1781365240.1715243,
+    "ast_hash": "8ff34bb4f45ceef976a3fec2df40192f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\layouts\\scripts.blade.php": {
+    "mtime": 1781366042.9479158,
+    "ast_hash": "348d191d6281bb056789f6c583f80125",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\layouts\\sidebar.blade.php": {
+    "mtime": 1781350822.1619895,
+    "ast_hash": "e35a2ed8eb432077fff4c409a43bff4b",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\licenca\\index.blade.php": {
+    "mtime": 1781361500.2906365,
+    "ast_hash": "e88745043181a3f7c2b13af4280bb274",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\license\\activate.blade.php": {
+    "mtime": 1781350822.1644924,
+    "ast_hash": "991407868af0ca91f2262a63c9d20122",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\license\\index.blade.php": {
+    "mtime": 1781366042.9509156,
+    "ast_hash": "5e55f423ed9dac1cf1fba0f1f7d5e225",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\logs\\index.blade.php": {
+    "mtime": 1781366042.9539158,
+    "ast_hash": "35504aeda19979fd48da0fbb2b03bd58",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\logs\\show.blade.php": {
+    "mtime": 1781361809.1124585,
+    "ast_hash": "21e9ecb02bf4f345ed5a773aac7414dd",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\media\\browse.blade.php": {
+    "mtime": 1781350822.169564,
+    "ast_hash": "2bb864ce29c3e06b67bdabb076fae15d",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\media\\index.blade.php": {
+    "mtime": 1781366042.957916,
+    "ast_hash": "e65f670fda498f5681fa27227723d9cf",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\menus\\create.blade.php": {
+    "mtime": 1781350822.1715708,
+    "ast_hash": "c84c72b46a31153a1cc55f42c68c7601",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\menus\\edit.blade.php": {
+    "mtime": 1781350822.1730766,
+    "ast_hash": "7b49fc33dc0fdf263251f9af1740e777",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\menus\\index.blade.php": {
+    "mtime": 1781366042.9609158,
+    "ast_hash": "8bdd864b57a1bb6c4cf00ff9b2a651c6",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\menus\\show.blade.php": {
+    "mtime": 1781360838.7563367,
+    "ast_hash": "28552f450ed0577aaad4203e12d48401",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\midia\\index.blade.php": {
+    "mtime": 1781361500.6475255,
+    "ast_hash": "91ce238d03775c48db2737a6658eb269",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\midia\\show.blade.php": {
+    "mtime": 1781360838.4152505,
+    "ast_hash": "e8d49208e1b5ada90989f462ddb2f73e",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\modulos\\edit.blade.php": {
+    "mtime": 1781361790.3163967,
+    "ast_hash": "3481dc26bc18a9ffe7771311b2af570c",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\modulos\\index.blade.php": {
+    "mtime": 1781350822.1765914,
+    "ast_hash": "e08a5911e872d6fc190a977b009ad37e",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\newsletter\\index.blade.php": {
+    "mtime": 1781360519.10339,
+    "ast_hash": "8722a6b36fbe6876552787631cb69789",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\notificacoes\\index.blade.php": {
+    "mtime": 1781350822.1791031,
+    "ast_hash": "e1a2fd47cf77dde78b153ebe45dc6698",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\pages\\form.blade.php": {
+    "mtime": 1781366042.967915,
+    "ast_hash": "6ce43797b2c7cc644edac9910f87a1f2",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\paginas\\create.blade.php": {
+    "mtime": 1781297631.6401803,
+    "ast_hash": "8e62daf046c08529a1a46eb0ae3aa24e",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\paginas\\edit.blade.php": {
+    "mtime": 1781297639.4597452,
+    "ast_hash": "d740aad71d883424158c5582dc701979",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\paginas\\form.blade.php": {
+    "mtime": 1781366042.971921,
+    "ast_hash": "6ce43797b2c7cc644edac9910f87a1f2",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\paginas\\index.blade.php": {
+    "mtime": 1781272939.164649,
+    "ast_hash": "3dc9b46f9132deade74a453b69240989",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\perfis\\create.blade.php": {
+    "mtime": 1781362147.642489,
+    "ast_hash": "74b665a553dbcdc820ba1228aa21859f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\perfis\\edit.blade.php": {
+    "mtime": 1781362147.9888308,
+    "ast_hash": "a0313d3ca1a70ab68d283fcfce962b9e",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\perfis\\index.blade.php": {
+    "mtime": 1781366042.975921,
+    "ast_hash": "08727739902f72e9736b7761a2c032e2",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\perfis\\list.blade.php": {
+    "mtime": 1781297744.8043375,
+    "ast_hash": "892b574f03a65d8acabebda131d2d28b",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\perfis\\profiles.blade.php": {
+    "mtime": 1781366042.9789207,
+    "ast_hash": "88ec69f5bd5983efb7a6d2e31771b8d4",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\perfis\\show.blade.php": {
+    "mtime": 1781360796.102131,
+    "ast_hash": "342c888ac314bb90f272631926930394",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\permissoes\\create.blade.php": {
+    "mtime": 1781360698.1647997,
+    "ast_hash": "bbece9a0935a4604325b146eda758071",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\permissoes\\edit.blade.php": {
+    "mtime": 1781360706.190406,
+    "ast_hash": "354c0aaa3f16480bfb6a46d3d125849f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\permissoes\\index.blade.php": {
+    "mtime": 1781366042.9819205,
+    "ast_hash": "a6c6d1177130a82eb110234d23d28fb9",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\permissoes\\list.blade.php": {
+    "mtime": 1781297744.8043375,
+    "ast_hash": "892b574f03a65d8acabebda131d2d28b",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\permissoes\\profiles.blade.php": {
+    "mtime": 1781366042.986099,
+    "ast_hash": "88ec69f5bd5983efb7a6d2e31771b8d4",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\seo\\index.blade.php": {
+    "mtime": 1781350822.182104,
+    "ast_hash": "06affd15b83347916019fb1f745afad0",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\tags\\create.blade.php": {
+    "mtime": 1781361614.315496,
+    "ast_hash": "233e5e47be048d3d918d81b8f4bc1055",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\tags\\edit.blade.php": {
+    "mtime": 1781361614.6570983,
+    "ast_hash": "f799a64af6a416c38d0ddd05fda93ef9",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\tags\\index.blade.php": {
+    "mtime": 1781366042.9901044,
+    "ast_hash": "1191f66d6b9c37f2c3b86392d062fb81",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\transparencia\\create.blade.php": {
+    "mtime": 1781297680.9428227,
+    "ast_hash": "53eadb3bfd04f96f5b6658fde894fe7d",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\transparencia\\edit.blade.php": {
+    "mtime": 1781297688.3009765,
+    "ast_hash": "f145fda8bdd7d1dd23fedc019e5098c3",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\transparencia\\form.blade.php": {
+    "mtime": 1781366042.9931052,
+    "ast_hash": "3827d3347e1b1095b8eeedb80b132356",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\transparencia\\index.blade.php": {
+    "mtime": 1781273076.577254,
+    "ast_hash": "d3d30a31bd02639c05d08d7dcd485cda",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\transparencia\\show.blade.php": {
+    "mtime": 1781360795.4044805,
+    "ast_hash": "bc1ba1b73f09653a4b9421ec98520ca1",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\users\\form.blade.php": {
+    "mtime": 1781366042.9961052,
+    "ast_hash": "00b2780a54de2f5ebe994eba8b39791a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\usuarios\\create.blade.php": {
+    "mtime": 1781297655.7540824,
+    "ast_hash": "cde399cd9069ecfa718947bd9befc715",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\usuarios\\edit.blade.php": {
+    "mtime": 1781297673.570028,
+    "ast_hash": "40313c1abf73148139963d34f15f8a40",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\usuarios\\form.blade.php": {
+    "mtime": 1781366043.0001106,
+    "ast_hash": "00b2780a54de2f5ebe994eba8b39791a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\usuarios\\index.blade.php": {
+    "mtime": 1781366043.00311,
+    "ast_hash": "2faefc430d6f277a466bb020893a0f28",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\usuarios\\show.blade.php": {
+    "mtime": 1781360794.7078142,
+    "ast_hash": "c15cbbfd2277fd1ad5d94aef4ad77174",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\visitas\\index.blade.php": {
+    "mtime": 1781273124.1192572,
+    "ast_hash": "63ba5b9d4bae77d6b5ad62e7cb34206b",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\admin\\waf\\index.blade.php": {
+    "mtime": 1781366043.0061104,
+    "ast_hash": "21d6dbcc1b6f503683461d166bd25daf",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\emails\\contact.blade.php": {
+    "mtime": 1781279976.8658855,
+    "ast_hash": "b2e01b40e7b6948961cce51264980305",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\emails\\newsletter-confirmation.blade.php": {
+    "mtime": 1781279982.046022,
+    "ast_hash": "60c50b254efc7e463785774083847e03",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\errors\\403.blade.php": {
+    "mtime": 1781273069.023731,
+    "ast_hash": "f25e2b3b1545e91b15e2def6189d8118",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\errors\\404.blade.php": {
+    "mtime": 1781273073.8562546,
+    "ast_hash": "408d061d41b434a5277cbbca2930a02a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\errors\\500.blade.php": {
+    "mtime": 1781273078.563408,
+    "ast_hash": "64f06dc82d9a59af0ed694021c63c223",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\errors\\maintenance.blade.php": {
+    "mtime": 1781273083.5363183,
+    "ast_hash": "387ccfe196a096b08f5203a08fe4a4f6",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\installer\\admin.blade.php": {
+    "mtime": 1781274715.3410573,
+    "ast_hash": "e01ff7bb5475f13e635141b24d64c72e",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\installer\\database.blade.php": {
+    "mtime": 1781286039.2672524,
+    "ast_hash": "baffa0b5d2af9e96bdc00010d6c8f0eb",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\installer\\finish.blade.php": {
+    "mtime": 1781274723.6712644,
+    "ast_hash": "94699c237d20bc6da6ec32049806caa7",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\installer\\index.blade.php": {
+    "mtime": 1781274694.630432,
+    "ast_hash": "a97146dc54fbe1d18c49cd361da4814f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\installer\\migrate.blade.php": {
+    "mtime": 1781286750.7253656,
+    "ast_hash": "4bd1feb5fd4ad50a483f9d81fefdf804",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\installer\\requirements.blade.php": {
+    "mtime": 1781350822.1872263,
+    "ast_hash": "2e686993a153c984999c2b8a414766f1",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\acessibilidade\\index.blade.php": {
+    "mtime": 1781273063.8307607,
+    "ast_hash": "6d7d21faf37c81b6794473f5fe446154",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\agenda\\index.blade.php": {
+    "mtime": 1781272899.9787848,
+    "ast_hash": "16fe802799fd1bb9964b7067b22024db",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\biografia\\index.blade.php": {
+    "mtime": 1781272886.8522735,
+    "ast_hash": "4da02f57bfaaf1b9fb0402e95314cfaf",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\blog\\category.blade.php": {
+    "mtime": 1781279798.1739345,
+    "ast_hash": "171d1b23890b2901d4c5979ec6ca8e3a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\blog\\index.blade.php": {
+    "mtime": 1781279746.9866772,
+    "ast_hash": "42130177b11f12abd181c6fb56fa4f9d",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\blog\\show.blade.php": {
+    "mtime": 1781272926.2777932,
+    "ast_hash": "2ea566445c8e9c39ddcc2144fe7b7bc0",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\blog\\tag.blade.php": {
+    "mtime": 1781279806.8899596,
+    "ast_hash": "ea79733541bd91b1fd4f0d11fe5a3d11",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\contato\\index.blade.php": {
+    "mtime": 1781273009.0951035,
+    "ast_hash": "d48ce965628510844845b5ff5679347e",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\documentos\\index.blade.php": {
+    "mtime": 1781272993.9258296,
+    "ast_hash": "738a10b3c7ea49a59afe72502c566870",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\equipe\\index.blade.php": {
+    "mtime": 1781272972.9293118,
+    "ast_hash": "fbb57623dae7b5d6070f1628f9ef8e3f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\faq\\index.blade.php": {
+    "mtime": 1781273029.196905,
+    "ast_hash": "5987c6dc49132cfbeded3e93411ba149",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\galeria\\index.blade.php": {
+    "mtime": 1781272982.6682005,
+    "ast_hash": "4f382cc1eec727a57b45b1ef684e45a2",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\home\\index.blade.php": {
+    "mtime": 1781277186.253579,
+    "ast_hash": "d40d251de0ea19b9c9ca104a2ce854aa",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\imprensa\\index.blade.php": {
+    "mtime": 1781273024.092354,
+    "ast_hash": "6428c0e11e0bd8745a37e448dd8abbce",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\layouts\\master.blade.php": {
+    "mtime": 1781350822.1892338,
+    "ast_hash": "c93f064a819cef03d4b3c5adda0beced",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\newsletter\\confirm.blade.php": {
+    "mtime": 1781273015.5554526,
+    "ast_hash": "229a234bafda734fde36d03e314f7293",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\noticias\\index.blade.php": {
+    "mtime": 1781272931.2423935,
+    "ast_hash": "69278e078f2d26330dda4a71550f0b5a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\pages\\contact.blade.php": {
+    "mtime": 1781278283.1844387,
+    "ast_hash": "2f50c68533587f6c1aca4fd742c11bd7",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\pages\\default.blade.php": {
+    "mtime": 1781278266.499856,
+    "ast_hash": "493002bb9b08b3b91ff97ab02d3c96ba",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\pages\\full-width.blade.php": {
+    "mtime": 1781278273.2784665,
+    "ast_hash": "498982422456d51744f900f333b554e5",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\pages\\landing.blade.php": {
+    "mtime": 1781278279.9891806,
+    "ast_hash": "7c1883baed64d7c668cb210f7402ca51",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\pages\\sidebar.blade.php": {
+    "mtime": 1781278278.01625,
+    "ast_hash": "d2aa8f860db180691ba69774c10b7235",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\partials\\comments.blade.php": {
+    "mtime": 1781279973.8047523,
+    "ast_hash": "667b126a9c699c21fc5c6b2478195489",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\partials\\cookies.blade.php": {
+    "mtime": 1781272831.7826138,
+    "ast_hash": "4d1b41366d87d9fe33d16421980bd028",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\partials\\footer.blade.php": {
+    "mtime": 1781272828.634672,
+    "ast_hash": "e36ab6c09aa7040b6b9289311a9ead92",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\partials\\header.blade.php": {
+    "mtime": 1781350822.190748,
+    "ast_hash": "bb98e9dff1469358245dac76aedd2815",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\partials\\whatsapp.blade.php": {
+    "mtime": 1781272833.3932924,
+    "ast_hash": "dc40349bcde3d377c1374bc24991bb2c",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\privacidade\\index.blade.php": {
+    "mtime": 1781273044.2218595,
+    "ast_hash": "f1eaa1b9c8242c77bd618165754c77d8",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\projetos\\index.blade.php": {
+    "mtime": 1781272936.2581427,
+    "ast_hash": "af89416f90c7f8dda8629a4c79c942e5",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\propostas\\index.blade.php": {
+    "mtime": 1781272940.838339,
+    "ast_hash": "0b7d30cada3bc82f272b542d120badae",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\termos\\index.blade.php": {
+    "mtime": 1781273053.2138853,
+    "ast_hash": "2ba3e66745a4fa2233a6a8cad044131a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\transparencia\\index.blade.php": {
+    "mtime": 1781279995.9641993,
+    "ast_hash": "e354b875db177ac84eb8c2d505ad6df5",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\transparencia\\show.blade.php": {
+    "mtime": 1781272969.145677,
+    "ast_hash": "a256ca0c25f56d40aacaa9781673417f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\resources\\views\\site\\videos\\index.blade.php": {
+    "mtime": 1781272986.8761797,
+    "ast_hash": "6e2d418a6b52593610ef227d5ce76630",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\routes\\api.php": {
+    "mtime": 1781274101.8561788,
+    "ast_hash": "ea94850b829c6948e3a7b59bcbf35f94",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\routes\\console.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "3c6ce2e6d16444282b24a9aa63885563",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\routes\\web.php": {
+    "mtime": 1781361752.2589583,
+    "ast_hash": "dbdb8dce657c22e52feeaf51826cfc47",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\tests\\TestCase.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "7e567dc27e68d5b57bae16af07f68907",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\tests\\Feature\\ExampleTest.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "0f4d91c9c5bbcd4e2f46cf885acb7fb6",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\tests\\Unit\\ExampleTest.php": {
+    "mtime": 1779736312.0,
+    "ast_hash": "3f679e9508c834f0ad95943455fcd836",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\API.md": {
+    "mtime": 1781273577.4033961,
+    "ast_hash": "93db20969623e848d711d56bf349e21f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\AUDITORIA_CORRECAO_2026_06_12.md": {
+    "mtime": 1781291203.1941812,
+    "ast_hash": "b080b6fefabdbe25eb89dd5ae34abe5d",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\CHANGELOG.md": {
+    "mtime": 1781366067.015794,
+    "ast_hash": "e2383b9d2f270c119915eaf9f39b39a2",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\CPANEL_DEPLOY.md": {
+    "mtime": 1781273513.1745734,
+    "ast_hash": "8dbd42b81eba2dbac723f424712eff95",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\DATABASE.md": {
+    "mtime": 1781273637.4296052,
+    "ast_hash": "b6175e3591c03835243812f9312bb549",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\INSTALL.md": {
+    "mtime": 1781273435.1533446,
+    "ast_hash": "88d8dbf2d0a5b7a877a56e5f02ba79b7",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\LICENSE_MODULE.md": {
+    "mtime": 1781293013.3379953,
+    "ast_hash": "ec280749886a14720872aebd23fd005c",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\MODULES.md": {
+    "mtime": 1781273534.717413,
+    "ast_hash": "e57f2981b3e71187900e5e0d27d0ca0a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\PERMISSIONS.md": {
+    "mtime": 1781273557.562474,
+    "ast_hash": "b075dcf8289341ba410a97a821844b0d",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\README.md": {
+    "mtime": 1781292856.0239594,
+    "ast_hash": "9dd6273a002346a694213baf94b79c40",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\routes_admin.txt": {
+    "mtime": 1781364262.7458324,
+    "ast_hash": "b7f80aa5cb38f9c53e436744ba7ecbd5",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\SECURITY.md": {
+    "mtime": 1781273460.009425,
+    "ast_hash": "e1d9fed7fc462f4aa7e6130abd9dc07b",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\docs\\GRAPHIFY.md": {
+    "mtime": 1781293013.3395,
+    "ast_hash": "dccbbf3efcf1e9c44aa808b3a2e77b34",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\docs\\INSTALADOR.md": {
+    "mtime": 1781273673.580122,
+    "ast_hash": "50420c657638e9ea9b53df4856d51fd1",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\public\\robots.txt": {
+    "mtime": 1779736312.0,
+    "ast_hash": "b6216d61c03e6ce0c9aea6ca7808f7ca",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\public\\img\\about-placeholder.jpg": {
+    "mtime": 1781350822.0931394,
+    "ast_hash": "0cd109c8b4efe0118e36141fde3b4b71",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\public\\img\\apple-touch-icon.png": {
+    "mtime": 1781350822.0961545,
+    "ast_hash": "a8d39b00c5dfb3a98a43d051e2d9e8eb",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\public\\img\\blog-placeholder.jpg": {
+    "mtime": 1781350822.099159,
+    "ast_hash": "d695a02910ec6460aa0921a66c8f9a6f",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\public\\img\\default-avatar.png": {
+    "mtime": 1781350822.101668,
+    "ast_hash": "018416cf9ee461d6ee2ddea8bce5e44a",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\public\\img\\logo.png": {
+    "mtime": 1781350822.1052306,
+    "ast_hash": "a8d39b00c5dfb3a98a43d051e2d9e8eb",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\public\\img\\og-default.jpg": {
+    "mtime": 1781350822.1072347,
+    "ast_hash": "ccc26715054b747f370d33fc4a44dd48",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\public\\img\\politician-placeholder.jpg": {
+    "mtime": 1781350822.1107397,
+    "ast_hash": "323f49cd272e4f91faf318679a36098c",
+    "semantic_hash": ""
+  },
+  "G:\\Tudo\\MEU-SISTEMA\\POLITICO\\Pol\u00edtico 2\\public\\img\\team-placeholder.jpg": {
+    "mtime": 1781350822.1152537,
+    "ast_hash": "88dfb198b83317276e7efee321f55ee0",
+    "semantic_hash": ""
+  }
+}

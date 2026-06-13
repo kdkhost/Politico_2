@@ -19,6 +19,7 @@ error_log
 /public/fonts-manifest.dev.json
 /public/hot
 /public/storage
+/graphify-out/cache
 /storage/*.key
 /storage/framework/views
 /storage/pail

@@ -17,6 +17,12 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-13 - atualiza artefatos do Graphify do projeto
+
+- execucao de `graphify update .` na raiz do projeto para reextrair o grafo local sem LLM
+- geracao e versionamento dos artefatos principais em `graphify-out/`
+- exclusao do cache operacional do Graphify do versionamento via `.gitignore`
+
 ### 2026-06-13 - corrige shell do admin no tema claro e padroniza sidebar
 
 - remoção da dependência do toggle nativo quebrado da sidebar no layout administrativo
