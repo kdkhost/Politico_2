@@ -50,8 +50,15 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        $todayEvents = Event::where('publicado', true)
+            ->whereDate('data_inicio', now()->toDateString())
+            ->orderBy('data_inicio')
+            ->get();
+
         $contactsUnread = Contact::where('lido', false)->count();
         $contactsTotal = Contact::count();
+
+        $latestContacts = Contact::orderBy('created_at', 'desc')->limit(5)->get();
 
         $recentActivity = $this->auditoriaService->getRecent(10);
 
@@ -70,6 +77,27 @@ class DashboardController extends Controller
             ->orderBy('date')
             ->get();
 
+        $chartLabels = $visitsByDay->pluck('date')->map(fn($d) => \Carbon\Carbon::parse($d)->format('d/m'))->toArray();
+        $visitsData = $visitsByDay->pluck('total')->toArray();
+
+        $financeLabels = [];
+        $revenuesData = [];
+        $expensesData = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $financeLabels[] = $month->format('M/Y');
+            $revenuesData[] = FinancialTransaction::where('tipo', 'receita')
+                ->where('status', 'pago')
+                ->whereYear('created_at', $month->year)
+                ->whereMonth('created_at', $month->month)
+                ->sum('valor') ?? 0;
+            $expensesData[] = FinancialTransaction::where('tipo', 'despesa')
+                ->where('status', 'pago')
+                ->whereYear('created_at', $month->year)
+                ->whereMonth('created_at', $month->month)
+                ->sum('valor') ?? 0;
+        }
+
         $phpVersion = phpversion();
         $laravelVersion = app()->version();
         $dbDriver = config('database.default');
@@ -79,11 +107,12 @@ class DashboardController extends Controller
         return view('admin.dashboard.index', compact(
             'visitsToday', 'visitsWeek', 'visitsMonth', 'totalVisits',
             'postsCount', 'publishedPosts', 'draftPosts', 'scheduledPosts',
-            'eventsCount', 'upcomingEvents',
-            'contactsUnread', 'contactsTotal',
+            'eventsCount', 'upcomingEvents', 'todayEvents',
+            'contactsUnread', 'contactsTotal', 'latestContacts',
             'recentActivity',
             'pendingTransactions', 'totalRevenue', 'totalExpenses', 'balance',
             'topPages', 'trafficSources', 'visitsByDay',
+            'chartLabels', 'visitsData', 'financeLabels', 'revenuesData', 'expensesData',
             'phpVersion', 'laravelVersion', 'dbDriver', 'serverOs', 'memoryUsage',
         ));
     }

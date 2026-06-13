@@ -159,7 +159,7 @@
             selectHelper: true,
             eventLimit: true,
             events: {
-                url: '{{ route("admin.agenda.events") }}',
+                url: '{{ route("admin.agenda.data") }}',
                 method: 'GET',
                 failure: function() { toastr.error('Erro ao carregar eventos.'); }
             },
