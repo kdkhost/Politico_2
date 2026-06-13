@@ -17,7 +17,7 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
-### 2026-06-13 - `c412e67` - corrige shell do admin no tema claro e padroniza sidebar
+### 2026-06-13 - corrige shell do admin no tema claro e padroniza sidebar
 
 - remoção da dependência do toggle nativo quebrado da sidebar no layout administrativo
 - criação de estado próprio para sidebar desktop e mobile em `resources/js/admin/admin.js`
