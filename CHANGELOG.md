@@ -38,6 +38,9 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 - criado `AUDITORIA_CORRECAO_COMPLETA_2026_06_13.md`
 - validacoes locais executadas: `composer dump-autoload`, limpeza de caches Artisan, `migrate`, `db:seed --class=PermissionSeeder`, `route:list`, `php artisan test`, `npm install`, `npm run build`, `git diff --check` e varredura sem BOM
 - `graphify update` executado e `graphify .` tentado; `graphify .` exige API key de LLM no ambiente
+- publicado no Git e sincronizado no servidor remoto em `2026-06-13` a partir do commit funcional `d5a399d`
+- comandos remotos executados sem erro: `composer dump-autoload --no-interaction --optimize`, `php artisan migrate --force`, `php artisan db:seed --class=PermissionSeeder --force` e `php artisan optimize:clear`
+- validacao remota executada apos deploy: login admin, dashboard, agenda admin, eventos do FullCalendar, grafico de visitas, notificacoes, API publica de agenda, SMTP, `robots.txt` e `sitemap.xml` responderam com sucesso
 
 ### 2026-06-13 - atualiza artefatos do Graphify do projeto
 

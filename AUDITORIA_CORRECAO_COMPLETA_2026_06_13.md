@@ -89,3 +89,22 @@ Nao foram gerados arquivos ZIP.
 - [x] FullCalendar usa URLs CDN com HTTP 200.
 - [x] Chart.js usa URL CDN com HTTP 200.
 - [x] Nenhuma chave antiga de licenciamento permaneceu no repositório.
+
+## 9. Validacao remota
+
+- [x] Git remoto recebeu o commit `d5a399d`.
+- [x] Servidor `/home/politicosite/public_html` validado no commit funcional `d5a399d`.
+- [x] `composer dump-autoload --no-interaction --optimize` executado no servidor.
+- [x] `php artisan migrate --force` executado no servidor.
+- [x] `php artisan db:seed --class=PermissionSeeder --force` executado no servidor.
+- [x] `php artisan optimize:clear` executado no servidor.
+- [x] Login admin validado em `https://politico.km.site.nom.br/admin/login`.
+- [x] Dashboard admin validado em `/admin`.
+- [x] Agenda admin validada em `/admin/agenda`.
+- [x] Eventos do FullCalendar validados em `/admin/agenda/events?start=2026-06-01&end=2026-06-30`.
+- [x] Grafico de visitas validado em `/admin/visitas/grafico`.
+- [x] Notificacoes validadas em `/admin/notificacoes/poll`.
+- [x] API publica de agenda validada em `/api/agenda/eventos?start=2026-06-01&end=2026-06-30`.
+- [x] SMTP admin validado em `/admin/smtp`.
+- [x] SEO publico validado em `/robots.txt` e `/sitemap.xml`.
+- [x] Nenhum ZIP foi criado durante a auditoria e publicacao.
