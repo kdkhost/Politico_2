@@ -120,3 +120,9 @@ Nao foram gerados arquivos ZIP.
 - [x] `APP_KEY` ausente passa a renderizar tela segura em vez de erro bruto.
 - [x] Pasta de upload recebeu sanitizacao explicita contra subida de diretorio.
 - [x] Validacoes locais refeitas: `composer dump-autoload`, caches Artisan, `migrate`, `db:seed --class=PermissionSeeder`, `route:list`, `php artisan test`, `npm install`, `npm run build`, `php -l`, `git diff --check`, varredura de secrets antigos, SVG e arquivos compactados.
+- [x] Git remoto recebeu o commit funcional `3c2d0c0`.
+- [x] Servidor `/home/politicosite/public_html` sincronizado no commit funcional `3c2d0c0`.
+- [x] Pos-deploy remoto executado: `composer dump-autoload --no-interaction --optimize`, `php artisan migrate --force`, `php artisan db:seed --class=PermissionSeeder --force` e `php artisan optimize:clear`.
+- [x] Validacao HTTP remota passou para `/admin/login`, `/admin`, `/admin/usuarios`, `/admin/agenda`, `/admin/agenda/events`, `/admin/visitas/grafico`, `/admin/notificacoes/poll`, `/admin/smtp`, `/api/agenda/eventos`, `/robots.txt` e `/sitemap.xml`.
+- [x] WAF remoto bloqueou tentativa XSS em `/blog`.
+- [x] `UploadService` bloqueou arquivo `.svg` em validacao local.

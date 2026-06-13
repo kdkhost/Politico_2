@@ -28,6 +28,9 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 - adicionada tela segura para `APP_KEY` ausente apos instalacao incompleta
 - sanitizacao da pasta de upload ficou explicita contra `../`, `..\\`, `./` e `.\\`
 - validacoes locais executadas: `composer dump-autoload`, limpeza de caches Artisan, `migrate`, `db:seed --class=PermissionSeeder`, `route:list`, `php artisan test`, `npm install`, `npm run build`, `git diff --check`, `php -l`, varredura de secrets antigos, SVG e arquivos compactados
+- publicado no Git e sincronizado no servidor remoto em `2026-06-13` a partir do commit funcional `3c2d0c0`
+- validacao remota executada apos deploy: login admin, dashboard, usuarios, agenda admin, eventos do FullCalendar, grafico de visitas, notificacoes, SMTP, API publica de agenda, `robots.txt`, `sitemap.xml` e WAF responderam conforme esperado
+- validacao local especifica confirmou bloqueio de upload SVG pelo `UploadService`
 
 ### 2026-06-13 - aplica auditoria completa de seguranca, rotas e dados
 
