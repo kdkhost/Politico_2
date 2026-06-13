@@ -168,7 +168,7 @@
                     <p><strong>Visitas:</strong> {{ number_format((int) ($post->views_count ?? 0), 0, ',', '.') }}</p>
                     <hr>
                     @if($post->status === 'published' && $post->slug)
-                        <a href="{{ route('blog.show', $post->slug) }}" target="_blank" class="btn btn-sm btn-info"><i class="fas fa-external-link-alt me-1"></i>Ver Post</a>
+                        <a href="{{ route('site.blog.show', $post->slug) }}" target="_blank" class="btn btn-sm btn-info"><i class="fas fa-external-link-alt me-1"></i>Ver Post</a>
                     @endif
                 @else
                     <p class="text-muted">Preencha o formulário para criar uma nova postagem.</p>

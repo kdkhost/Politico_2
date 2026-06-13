@@ -147,7 +147,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::prefix('permissoes')->name('permissions.')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\PermissionController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\PermissionController::class, 'list'])->name('list');
+            Route::get('/criar', [App\Http\Controllers\Admin\PermissionController::class, 'create'])->name('create');
             Route::post('/criar', [App\Http\Controllers\Admin\PermissionController::class, 'store'])->name('store');
+            Route::get('/{id}/editar', [App\Http\Controllers\Admin\PermissionController::class, 'edit'])->name('edit');
             Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\PermissionController::class, 'update'])->name('update');
             Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\PermissionController::class, 'destroy'])->name('destroy');
             Route::get('/grupos', [App\Http\Controllers\Admin\PermissionController::class, 'getByGroup'])->name('grupos');
@@ -349,7 +351,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::prefix('menus')->name('menus.')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\MenuController::class, 'index'])->name('index');
             Route::get('/listar', [App\Http\Controllers\Admin\MenuController::class, 'list'])->name('list');
+            Route::get('/criar', [App\Http\Controllers\Admin\MenuController::class, 'create'])->name('create');
             Route::post('/criar', [App\Http\Controllers\Admin\MenuController::class, 'store'])->name('store');
+            Route::get('/{id}/editar', [App\Http\Controllers\Admin\MenuController::class, 'edit'])->name('edit');
             Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\MenuController::class, 'update'])->name('update');
             Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\MenuController::class, 'destroy'])->name('destroy');
             Route::get('/{id}', [App\Http\Controllers\Admin\MenuController::class, 'show'])->name('show');

@@ -146,7 +146,7 @@
                         url: url,
                         type: 'DELETE',
                         success: function(res) {
-                            if (res.success) {
+                            if (res.success || res.status === 'success') {
                                 toastr.success(res.message || 'Registro excluído com sucesso!');
                                 if (typeof table !== 'undefined') table.ajax.reload();
                             } else {

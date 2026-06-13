@@ -281,7 +281,7 @@
                 processData: false,
                 contentType: false,
                 success: function(res) {
-                    if (res.success) {
+                    if (res.status === 'success') {
                         toastr.success(res.message || 'Configurações salvas com sucesso!');
                     } else {
                         toastr.error(res.message || 'Erro ao salvar configurações.');
