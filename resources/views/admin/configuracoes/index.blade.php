@@ -190,6 +190,18 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
+                                        <label for="default_theme" class="form-label">Tema do Frontend</label>
+                                        <select id="default_theme" name="default_theme" class="form-select">
+                                            <option value="default" @selected(settings('default_theme', 'default') === 'default')>Padrão do sistema</option>
+                                            <option value="premium" @selected(settings('default_theme') === 'premium')>Premium institucional</option>
+                                        </select>
+                                        <div class="form-text">As cores deste tema seguem a paleta primária e secundária definida abaixo.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
                                         <label for="primary_color" class="form-label">Cor Primária</label>
                                         <div class="input-group">
                                             <input type="color" id="primary_color" name="primary_color" class="form-control form-control-color" value="{{ settings('primary_color') ?? '#0d6efd' }}">

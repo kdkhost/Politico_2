@@ -1,8 +1,13 @@
+@php
+  $siteLogo = settings('logo') ?: config('app.logo') ?: asset('img/logo.png');
+  $siteName = settings('site_name') ?: config('app.name');
+@endphp
+
 <nav class="navbar navbar-expand-lg navbar-site fixed-top" role="navigation" aria-label="Navegação principal">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-      <img src="{{ config('app.logo') ?: asset('img/logo.png') }}" alt="{{ config('app.name') }}" loading="eager" width="44" height="44">
-      <span class="d-none d-md-inline ms-2">{{ config('app.name') }}</span>
+      <img src="{{ $siteLogo }}" alt="{{ $siteName }}" loading="eager" width="44" height="44">
+      <span class="d-none d-md-inline ms-2">{{ $siteName }}</span>
     </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Abrir menu">
@@ -12,9 +17,9 @@
     <div class="collapse navbar-collapse" id="navbarMain">
       <div class="navbar-mobile-head d-lg-none">
         <a class="navbar-mobile-brand d-flex align-items-center" href="{{ url('/') }}">
-          <img src="{{ config('app.logo') ?: asset('img/logo.png') }}" alt="{{ config('app.name') }}" loading="eager" width="52" height="52">
+          <img src="{{ $siteLogo }}" alt="{{ $siteName }}" loading="eager" width="52" height="52">
           <div class="navbar-mobile-brand-text">
-            <strong>{{ config('app.name') }}</strong>
+            <strong>{{ $siteName }}</strong>
             <span>Menu principal</span>
           </div>
         </a>

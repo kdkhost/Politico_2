@@ -17,6 +17,15 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-14 - adiciona segundo tema visual no frontend publico
+
+- reaproveitada a chave `default_theme` como seletor do frontend publico, com suporte a `default` e `premium`
+- painel administrativo passou a permitir trocar o tema visual do frontend em `Configuracoes > Tema`, mantendo a mesma paleta primaria e secundaria definida no admin
+- layout publico agora injeta variaveis CSS a partir de `primary_color` e `secondary_color`, derivando tons claros e escuros para o tema escolhido
+- frontend passou a respeitar `site_name`, `logo` e `favicon` salvos no painel nas views principais do layout publico
+- criada camada CSS `premium` em `resources/css/site/site.css` com identidade institucional, glass header, hero premium, cards elevados, botoes arredondados e footer refinado sem alterar rotas, conteudo ou estrutura Blade existente
+- adicionada migration `2026_06_14_160000_ensure_frontend_theme_setting.php` para garantir a configuracao `default_theme` em instalacoes antigas
+
 ### 2026-06-14 - corrige 500 da agenda pública
 
 - corrigido `app/Http/Controllers/Site/AgendaController.php` para tratar `Collection` do `AgendaService` com `->map()->values()` em vez de `array_map()`

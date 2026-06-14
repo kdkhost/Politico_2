@@ -1,3 +1,7 @@
+@php
+  $siteName = settings('site_name') ?: config('app.name');
+@endphp
+
 <footer class="site-footer" role="contentinfo">
   <div class="container">
     <div class="row g-4">
@@ -71,7 +75,7 @@
     <div class="footer-bottom text-center">
       <div class="row align-items-center">
         <div class="col-md-6 text-md-start">
-          &copy; {{ date('Y') }} {{ config('app.name') }}. Todos os direitos reservados.
+          &copy; {{ date('Y') }} {{ $siteName }}. Todos os direitos reservados.
         </div>
         <div class="col-md-6 text-md-end mt-2 mt-md-0">
           Desenvolvido por <a href="https://kdkhost.com.br" target="_blank" rel="noopener">KDK Host</a>

@@ -64,7 +64,7 @@ class SettingController extends Controller
                     'contact_email' => 'contato', 'contact_phone' => 'contato', 'contact_address' => 'contato', 'contact_whatsapp' => 'contato',
                     'social_facebook' => 'social', 'social_instagram' => 'social', 'social_twitter' => 'social', 'social_youtube' => 'social', 'social_linkedin' => 'social',
                     'seo_title' => 'seo', 'seo_description' => 'seo', 'seo_keywords' => 'seo',
-                    'primary_color' => 'tema', 'secondary_color' => 'tema', 'dark_mode' => 'tema', 'dark_mode_default' => 'tema',
+                    'default_theme' => 'tema', 'primary_color' => 'tema', 'secondary_color' => 'tema', 'dark_mode' => 'tema', 'dark_mode_default' => 'tema',
                     'cookie_banner_enabled' => 'lgpd', 'lgpd_privacy_page' => 'lgpd',
                     'recaptcha_enabled' => 'seguranca', 'recaptcha_version' => 'seguranca', 'recaptcha_site_key' => 'seguranca',
                     'recaptcha_secret_key' => 'seguranca', 'recaptcha_min_score' => 'seguranca',
