@@ -548,30 +548,54 @@ $(document).on('click', '[data-admin-sidebar-backdrop]', function () {
     document.body?.classList.remove('admin-sidebar-open');
 });
 
-$(document).on('click', '.admin-sidebar .nav-item > .nav-link', function (event) {
+function getDirectSidebarTree(item) {
+    if (!item) return null;
+    return Array.from(item.children).find(function (child) {
+        return child.classList?.contains('nav-treeview');
+    }) || null;
+}
+
+function getDirectSidebarLink(item) {
+    if (!item) return null;
+    return Array.from(item.children).find(function (child) {
+        return child.classList?.contains('nav-link');
+    }) || null;
+}
+
+function setSidebarTreeState(item, open) {
+    const link = getDirectSidebarLink(item);
+
+    item.classList.toggle('menu-open', open);
+    link?.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+$(document).on('click', '.admin-sidebar [data-admin-tree-toggle]', function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
     const link = this;
     const item = link.closest('.nav-item');
-    const tree = item?.querySelector(':scope > .nav-treeview');
-    const href = link.getAttribute('href');
+    const tree = getDirectSidebarTree(item);
 
-    if (!item || !tree || href !== '#') {
+    if (!item || !tree) {
         return;
     }
 
-    event.preventDefault();
+    if (window.innerWidth >= 992 && document.body?.classList.contains('admin-sidebar-collapsed')) {
+        document.body.classList.remove('admin-sidebar-collapsed');
+        localStorage.setItem('admin-sidebar-collapsed', '0');
+    }
 
     const isOpen = item.classList.contains('menu-open');
-    const siblings = item.parentElement?.querySelectorAll(':scope > .nav-item.menu-open') || [];
-
-    siblings.forEach(function (sibling) {
-        if (sibling !== item) {
-            sibling.classList.remove('menu-open');
-            sibling.querySelector(':scope > .nav-treeview')?.setAttribute('style', 'display:none;');
-        }
+    const siblings = Array.from(item.parentElement?.children || []).filter(function (sibling) {
+        return sibling !== item && sibling.classList?.contains('menu-open');
     });
 
-    item.classList.toggle('menu-open', !isOpen);
-    tree.setAttribute('style', isOpen ? 'display:none;' : 'display:block;');
+    siblings.forEach(function (sibling) {
+        setSidebarTreeState(sibling, false);
+    });
+
+    setSidebarTreeState(item, !isOpen);
 });
 
 window.addEventListener('resize', syncSidebarState);
@@ -679,9 +703,7 @@ $(function () {
     if (sidebar) {
         var activeItems = sidebar.querySelectorAll('.nav-item.menu-open');
         activeItems.forEach(function (item) {
-            item.querySelectorAll('.nav-treeview').forEach(function (tree) {
-                tree.style.display = 'block';
-            });
+            setSidebarTreeState(item, true);
         });
     }
     $('table.data-table').each(function () {

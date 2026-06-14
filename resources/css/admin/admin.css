@@ -17,6 +17,13 @@
     --admin-header-height: 60px;
     --admin-badge-font-size: 0.7rem;
     --admin-border-color: #e9ecef;
+    --admin-scrollbar-size: 10px;
+    --admin-scrollbar-track: #e7edf5;
+    --admin-scrollbar-thumb: var(--admin-primary);
+    --admin-scrollbar-thumb-hover: var(--admin-primary-dark);
+    --admin-sidebar-scrollbar-track: rgba(255, 255, 255, 0.08);
+    --admin-sidebar-scrollbar-thumb: rgba(255, 255, 255, 0.32);
+    --admin-sidebar-scrollbar-thumb-hover: var(--admin-secondary-light);
 }
 
 [data-bs-theme="dark"] {
@@ -25,6 +32,9 @@
     --admin-header-bg: #1a1a2e;
     --admin-card-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
     --admin-border-color: #2d2d44;
+    --admin-scrollbar-track: #0f172a;
+    --admin-scrollbar-thumb: var(--admin-primary-light);
+    --admin-scrollbar-thumb-hover: var(--admin-secondary-light);
 }
 
 body {
@@ -1467,6 +1477,13 @@ textarea.form-control {
     --admin-shadow-lift: 0 18px 44px rgba(21, 32, 51, 0.12);
     --admin-transition: 180ms ease;
     --admin-font: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+    --admin-scrollbar-size: 10px;
+    --admin-scrollbar-track: #e7edf5;
+    --admin-scrollbar-thumb: var(--admin-primary);
+    --admin-scrollbar-thumb-hover: var(--admin-primary-dark);
+    --admin-sidebar-scrollbar-track: rgba(255, 255, 255, 0.08);
+    --admin-sidebar-scrollbar-thumb: rgba(255, 255, 255, 0.32);
+    --admin-sidebar-scrollbar-thumb-hover: var(--admin-secondary-light);
 }
 
 html[data-bs-theme="light"],
@@ -1491,6 +1508,61 @@ body.admin-premium {
 body.admin-premium,
 body.admin-premium * {
     letter-spacing: 0;
+}
+
+html,
+body.admin-premium,
+body.admin-premium .admin-main,
+body.admin-premium .admin-content,
+body.admin-premium .modal,
+body.admin-premium .modal-body,
+body.admin-premium .table-responsive,
+body.admin-premium .dropdown-menu {
+    scrollbar-width: thin;
+    scrollbar-color: var(--admin-scrollbar-thumb) var(--admin-scrollbar-track);
+}
+
+body.admin-premium::-webkit-scrollbar,
+body.admin-premium .admin-main::-webkit-scrollbar,
+body.admin-premium .admin-content::-webkit-scrollbar,
+body.admin-premium .modal::-webkit-scrollbar,
+body.admin-premium .modal-body::-webkit-scrollbar,
+body.admin-premium .table-responsive::-webkit-scrollbar,
+body.admin-premium .dropdown-menu::-webkit-scrollbar {
+    width: var(--admin-scrollbar-size);
+    height: var(--admin-scrollbar-size);
+}
+
+body.admin-premium::-webkit-scrollbar-track,
+body.admin-premium .admin-main::-webkit-scrollbar-track,
+body.admin-premium .admin-content::-webkit-scrollbar-track,
+body.admin-premium .modal::-webkit-scrollbar-track,
+body.admin-premium .modal-body::-webkit-scrollbar-track,
+body.admin-premium .table-responsive::-webkit-scrollbar-track,
+body.admin-premium .dropdown-menu::-webkit-scrollbar-track {
+    background: var(--admin-scrollbar-track);
+}
+
+body.admin-premium::-webkit-scrollbar-thumb,
+body.admin-premium .admin-main::-webkit-scrollbar-thumb,
+body.admin-premium .admin-content::-webkit-scrollbar-thumb,
+body.admin-premium .modal::-webkit-scrollbar-thumb,
+body.admin-premium .modal-body::-webkit-scrollbar-thumb,
+body.admin-premium .table-responsive::-webkit-scrollbar-thumb,
+body.admin-premium .dropdown-menu::-webkit-scrollbar-thumb {
+    background: var(--admin-scrollbar-thumb);
+    border: 2px solid var(--admin-scrollbar-track);
+    border-radius: 999px;
+}
+
+body.admin-premium::-webkit-scrollbar-thumb:hover,
+body.admin-premium .admin-main::-webkit-scrollbar-thumb:hover,
+body.admin-premium .admin-content::-webkit-scrollbar-thumb:hover,
+body.admin-premium .modal::-webkit-scrollbar-thumb:hover,
+body.admin-premium .modal-body::-webkit-scrollbar-thumb:hover,
+body.admin-premium .table-responsive::-webkit-scrollbar-thumb:hover,
+body.admin-premium .dropdown-menu::-webkit-scrollbar-thumb:hover {
+    background: var(--admin-scrollbar-thumb-hover);
 }
 
 .admin-premium .preloader {
@@ -1675,15 +1747,25 @@ body.admin-premium * {
     padding: 14px 0 22px;
     overflow-x: hidden;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--admin-sidebar-scrollbar-thumb) var(--admin-sidebar-scrollbar-track);
 }
 
 .admin-sidebar .sidebar-wrapper::-webkit-scrollbar {
     width: 8px;
 }
 
+.admin-sidebar .sidebar-wrapper::-webkit-scrollbar-track {
+    background: var(--admin-sidebar-scrollbar-track);
+}
+
 .admin-sidebar .sidebar-wrapper::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.18);
+    background: var(--admin-sidebar-scrollbar-thumb);
     border-radius: 999px;
+}
+
+.admin-sidebar .sidebar-wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--admin-sidebar-scrollbar-thumb-hover);
 }
 
 .admin-sidebar .sidebar-menu {
@@ -1760,9 +1842,14 @@ body.admin-premium * {
 }
 
 .admin-sidebar .nav-treeview {
+    display: none;
     margin: 0 12px 8px 22px;
     padding: 5px 0 5px 8px;
     border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-sidebar .menu-open > .nav-treeview {
+    display: block;
 }
 
 .admin-sidebar .nav-treeview .nav-link {
@@ -2198,6 +2285,12 @@ body.admin-premium.dark-mode {
     --admin-ink: #f8fafc;
     --admin-muted: #cbd5e1;
     --admin-line: rgba(255, 255, 255, 0.1);
+    --admin-scrollbar-track: #0f172a;
+    --admin-scrollbar-thumb: var(--admin-primary-light);
+    --admin-scrollbar-thumb-hover: var(--admin-secondary-light);
+    --admin-sidebar-scrollbar-track: rgba(255, 255, 255, 0.08);
+    --admin-sidebar-scrollbar-thumb: rgba(255, 255, 255, 0.36);
+    --admin-sidebar-scrollbar-thumb-hover: var(--admin-secondary-light);
 }
 
 [data-bs-theme="dark"] .admin-premium .card,

@@ -20,6 +20,27 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     @vite(['resources/css/admin/admin.css', 'resources/js/admin/admin.js'])
+    @php
+        $adminPrimaryColor = settings('primary_color') ?: '#002776';
+        $adminSecondaryColor = settings('secondary_color') ?: '#009c3b';
+
+        if (!is_string($adminPrimaryColor) || !preg_match('/^#[0-9a-fA-F]{6}$/', $adminPrimaryColor)) {
+            $adminPrimaryColor = '#002776';
+        }
+
+        if (!is_string($adminSecondaryColor) || !preg_match('/^#[0-9a-fA-F]{6}$/', $adminSecondaryColor)) {
+            $adminSecondaryColor = '#009c3b';
+        }
+    @endphp
+    <style>
+        :root {
+            --admin-primary: {{ $adminPrimaryColor }};
+            --admin-primary-light: color-mix(in srgb, {{ $adminPrimaryColor }} 82%, #ffffff);
+            --admin-primary-dark: color-mix(in srgb, {{ $adminPrimaryColor }} 76%, #000000);
+            --admin-secondary: {{ $adminSecondaryColor }};
+            --admin-secondary-light: color-mix(in srgb, {{ $adminSecondaryColor }} 82%, #ffffff);
+        }
+    </style>
     @stack('styles')
 </head>
 <body class="layout-fixed fixed-header admin-premium {{ settings('dark_mode') ? 'dark-mode' : '' }}" data-bs-theme="{{ settings('dark_mode') ? 'dark' : 'light' }}">

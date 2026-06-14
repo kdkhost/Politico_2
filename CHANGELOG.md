@@ -17,6 +17,18 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-14 - corrige submenus da sidebar e scrollbar temática
+
+- removida a dependência do treeview nativo do AdminLTE na sidebar para impedir conflito com o handler próprio do painel
+- itens com submenu agora usam `data-admin-tree-toggle` e `aria-expanded`, com abertura/fechamento controlados por `resources/js/admin/admin.js`
+- submenus fechados e abertos passaram a ter estado visual definido por CSS (`.nav-treeview` e `.menu-open > .nav-treeview`)
+- scrollbars do painel, conteúdo, modais, tabelas, dropdowns e sidebar passaram a usar variáveis do tema (`--admin-primary` e `--admin-secondary`)
+- o layout admin agora injeta `primary_color` e `secondary_color` configurados no painel como variáveis CSS globais
+- recompilado o bundle Vite do admin com os assets `public/build/assets/admin-qNBfT3dF.css` e `public/build/assets/admin-BaAyvTfR.js`
+- validações locais executadas: `npm run build`, `php artisan view:cache`, `php artisan view:clear`, `php artisan test`, `git diff --check`, `node --check resources/js/admin/admin.js` e varredura de BOM/mojibake
+- varredura final confirmou `BOM_COUNT 0` e nenhum padrão real de mojibake restante nos arquivos versionados de texto
+- publicado no Git e sincronizado no servidor remoto em `2026-06-14`
+
 ### 2026-06-14 - corrige alinhamento do tema claro e normaliza UTF-8 sem BOM
 
 - corrigida a geometria do shell administrativo no tema claro para sincronizar `--lte-sidebar-width`, `--admin-sidebar-width`, sidebar, header, conteúdo principal e footer

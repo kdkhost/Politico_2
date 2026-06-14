@@ -260,7 +260,7 @@
 @endphp
 
 <nav class="mt-2">
-    <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+    <ul class="nav sidebar-menu flex-column" data-admin-treeview role="menu" data-accordion="false">
         @foreach($sections as $section)
             @php
                 $visibleItems = [];
@@ -315,7 +315,7 @@
                 @endphp
 
                 <li class="nav-item {{ $isTree && $isActive ? 'menu-open' : '' }}">
-                    <a href="{{ $isTree ? '#' : $urlFor($item['route']) }}" class="nav-link {{ $isActive ? 'active' : '' }}">
+                    <a href="{{ $isTree ? '#' : $urlFor($item['route']) }}" class="nav-link {{ $isActive ? 'active' : '' }}" @if($isTree) data-admin-tree-toggle aria-expanded="{{ $isActive ? 'true' : 'false' }}" @endif>
                         <i class="nav-icon {{ $item['icon'] }}"></i>
                         <p>
                             {{ $item['label'] }}
