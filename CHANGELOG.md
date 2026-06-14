@@ -26,6 +26,9 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 - removido o cache de models e collections Eloquent nas controllers publicas do blog, equipe, imprensa, paginas institucionais, noticias e projetos para evitar objetos incompletos no cache de arquivo do cPanel
 - ajustado o WAF para nao bloquear `PUT`, `PATCH` e `DELETE` legitimos do proprio sistema e corrigido o padrao regex de path traversal com barra invertida
 - corrigido o blog publico para aceitar busca por `q`, links reais de categoria e tag, e filtro por `tag_slug` no service
+- refeito o tema `premium` do frontend com estrutura visual alinhada ao modelo institucional enviado pelo usuario: header glass, hero executivo, cards de pilares, bloco de eventos, CTA lateral e footer escuro premium
+- header, footer e home agora renderizam HTML proprio para o tema `premium`, em vez de apenas herdar pequenas variacoes do tema padrao
+- a paleta continua vinculada ao painel administrativo via `primary_color` e `secondary_color`, mas o layout passou a refletir o modelo solicitado de forma visivel no site
 - validacao local executada: `php artisan optimize:clear` e leitura direta de `settings('default_theme')` com cache repovoado no formato correto
 
 ### 2026-06-14 - adiciona segundo tema visual no frontend publico

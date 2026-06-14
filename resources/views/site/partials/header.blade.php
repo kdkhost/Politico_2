@@ -1,8 +1,81 @@
 @php
   $siteLogo = settings('logo') ?: config('app.logo') ?: asset('img/logo.png');
   $siteName = settings('site_name') ?: config('app.name');
+  $siteTheme = settings('default_theme') ?: 'default';
+  $siteSlogan = settings('site_slogan') ?: 'Gestão com Excelência';
+  $navItems = [];
+
+  if (isset($menuItems) && $menuItems->count()) {
+      foreach ($menuItems as $item) {
+          $itemPath = trim((string) parse_url($item->url, PHP_URL_PATH), '/');
+          $navItems[] = [
+              'label' => $item->titulo,
+              'url' => $item->url,
+              'icon' => $item->icone,
+              'target' => $item->target ?? '_self',
+              'active' => $itemPath !== '' && request()->is($itemPath),
+          ];
+      }
+  } else {
+      $navItems = [
+          ['label' => 'Início', 'url' => url('/'), 'icon' => null, 'target' => '_self', 'active' => request()->routeIs('site.home')],
+          ['label' => 'Sobre', 'url' => route('site.biografia'), 'icon' => null, 'target' => '_self', 'active' => request()->routeIs('site.biografia')],
+          ['label' => 'Propostas', 'url' => route('site.propostas'), 'icon' => null, 'target' => '_self', 'active' => request()->routeIs('site.propostas')],
+          ['label' => 'Contato', 'url' => route('site.contato'), 'icon' => null, 'target' => '_self', 'active' => request()->routeIs('site.contato')],
+      ];
+  }
 @endphp
 
+@if($siteTheme === 'premium')
+<nav class="navbar navbar-expand-lg navbar-site navbar-site-premium fixed-top" role="navigation" aria-label="Navegação principal">
+  <div class="container premium-navbar-shell">
+    <a class="navbar-brand premium-brand d-flex align-items-center gap-3" href="{{ url('/') }}">
+      <span class="premium-brand-mark">
+        <img src="{{ $siteLogo }}" alt="{{ $siteName }}" loading="eager" width="44" height="44">
+      </span>
+      <span class="premium-brand-text">
+        <strong>{{ $siteName }}</strong>
+        <small>{{ $siteSlogan }}</small>
+      </span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Abrir menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarMain">
+      <div class="navbar-mobile-head d-lg-none">
+        <a class="navbar-mobile-brand d-flex align-items-center" href="{{ url('/') }}">
+          <img src="{{ $siteLogo }}" alt="{{ $siteName }}" loading="eager" width="52" height="52">
+          <div class="navbar-mobile-brand-text">
+            <strong>{{ $siteName }}</strong>
+            <span>{{ $siteSlogan }}</span>
+          </div>
+        </a>
+        <button class="navbar-mobile-close" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Fechar menu">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <ul class="navbar-nav mx-auto premium-nav-list">
+        @foreach($navItems as $item)
+          <li class="nav-item">
+            <a class="nav-link {{ $item['active'] ? 'active' : '' }}" href="{{ $item['url'] }}" target="{{ $item['target'] }}">
+              {{ $item['label'] }}
+            </a>
+          </li>
+        @endforeach
+      </ul>
+
+      <div class="premium-navbar-actions d-flex align-items-center gap-3">
+        <a href="{{ route('site.contato') }}" class="btn premium-cta-btn">
+          <i class="fas fa-user-check me-2"></i>Participe
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+@else
 <nav class="navbar navbar-expand-lg navbar-site fixed-top" role="navigation" aria-label="Navegação principal">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
@@ -68,6 +141,7 @@
     </div>
   </div>
 </nav>
+@endif
 
 <div class="navbar-mobile-backdrop d-lg-none" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-hidden="true"></div>
 

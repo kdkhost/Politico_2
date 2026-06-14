@@ -7,13 +7,159 @@ Início
 @section('og_title', config('app.name') . ' - ' . config('sistema.app_description'))
 
 @section('content')
+@php
+  $siteTheme = settings('default_theme') ?: 'default';
+  $politicianName = $politician->nome ?? $politician->name ?? 'Nome do Gestor';
+  $politicianPhoto = $politician->foto ?? $politician->avatar_url ?? asset('img/politician-placeholder.jpg');
+@endphp
 
+@if($siteTheme === 'premium')
+<div class="premium-home-shell" style="--premium-watermark-image: url('{{ $politicianPhoto }}');">
+  <section class="premium-hero-section" itemscope itemtype="https://schema.org/Person">
+    <div class="container">
+      <div class="premium-hero-content">
+        <div class="premium-badges">
+          <span>#Excelência</span>
+          <span>#Resultados</span>
+        </div>
+
+        <h1 class="premium-hero-title" itemprop="name">
+          Construindo um novo futuro para todos
+        </h1>
+
+        <p class="premium-hero-subtitle" itemprop="description">
+          {{ $politician->slogan ?? 'Com planejamento estratégico, transparência e gestão eficiente, estamos transformando nossa cidade em referência nacional.' }}
+        </p>
+
+        <div class="premium-hero-actions">
+          <a href="{{ route('site.propostas') }}" class="btn premium-cta-btn">
+            <i class="fas fa-chalkboard-user me-2"></i>Conheça as propostas
+          </a>
+          <a href="{{ route('site.biografia') }}" class="btn premium-outline-btn">
+            <i class="fas fa-play-circle me-2"></i>Ver plano de governo
+          </a>
+        </div>
+
+        <div class="premium-stats-grid">
+          <div>
+            <div class="premium-stat-number">{{ $stats->projetos ?? 15 }}+</div>
+            <div class="premium-stat-label">Projetos concluídos</div>
+          </div>
+          <div>
+            <div class="premium-stat-number">{{ $stats->obras ?? 50 }}k+</div>
+            <div class="premium-stat-label">Cidadãos atendidos</div>
+          </div>
+          <div>
+            <div class="premium-stat-number">{{ $stats->anos ?? 98 }}%</div>
+            <div class="premium-stat-label">Índice de satisfação</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-padding premium-section-white">
+    <div class="container">
+      <div class="premium-section-heading text-center">
+        <h2 class="premium-section-title">Pilares da Gestão</h2>
+        <div class="premium-line mx-auto"></div>
+        <p>Quatro compromissos que norteiam nossa administração</p>
+      </div>
+
+      <div class="row g-4">
+        @foreach(($propostas ?? collect())->take(4) as $proposta)
+          <div class="col-lg-3 col-md-6">
+            <div class="premium-card premium-pillar-card text-center h-100">
+              <div class="premium-card-icon">
+                <i class="{{ $proposta->icone ?? 'fas fa-chart-line' }}"></i>
+              </div>
+              <h3>{{ $proposta->titulo }}</h3>
+              <p>{{ $proposta->resumo }}</p>
+            </div>
+          </div>
+        @endforeach
+      </div>
+    </div>
+  </section>
+
+  <section class="section-padding premium-section-soft">
+    <div class="container">
+      <div class="row g-4 align-items-stretch">
+        <div class="col-lg-7">
+          <h2 class="premium-section-title text-start">Próximos Eventos</h2>
+          <div class="premium-line"></div>
+          <p class="premium-section-copy">Acompanhe a agenda pública e participe.</p>
+
+          @php $firstEvent = $eventos->first(); @endphp
+          <div class="premium-card premium-event-card">
+            @if($firstEvent)
+              <div class="premium-event-date">
+                <strong>{{ $firstEvent->data_inicio->format('d') }}</strong>
+                <span>{{ strtoupper($firstEvent->data_inicio->translatedFormat('M')) }}</span>
+              </div>
+              <div class="premium-event-body">
+                <h3>{{ $firstEvent->titulo }}</h3>
+                <p>{{ $firstEvent->local ?: 'Evento público com participação da população.' }}</p>
+                <div class="premium-event-meta">
+                  <span><i class="far fa-clock me-1"></i>{{ $firstEvent->data_inicio->format('H\hi') }}</span>
+                  @if($firstEvent->local)
+                    <span><i class="fas fa-location-dot me-1"></i>{{ $firstEvent->local }}</span>
+                  @endif
+                </div>
+              </div>
+            @else
+              <div class="premium-event-body w-100">
+                <h3>Nenhum evento agendado</h3>
+                <p>A agenda pública será atualizada em breve.</p>
+              </div>
+            @endif
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="premium-card premium-contact-card h-100">
+            <i class="fas fa-envelope-open-text"></i>
+            <h3>Quer falar conosco?</h3>
+            <p>Sua opinião é fundamental para construirmos uma cidade melhor.</p>
+            <a href="{{ route('site.contato') }}" class="btn premium-cta-btn">Fale com o gestor</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  @if(isset($ultimasNoticias) && $ultimasNoticias->count())
+  <section class="section-padding premium-section-white">
+    <div class="container">
+      <div class="premium-section-heading text-center">
+        <h2 class="premium-section-title">Últimas Publicações</h2>
+        <div class="premium-line mx-auto"></div>
+      </div>
+      <div class="row g-4">
+        @foreach($ultimasNoticias->take(3) as $post)
+          <div class="col-lg-4">
+            <article class="premium-card premium-post-card h-100">
+              <img src="{{ $post->imagem_destaque ?: asset('img/blog-placeholder.jpg') }}" alt="{{ $post->titulo }}" class="premium-post-image" loading="lazy">
+              <div class="premium-post-content">
+                <h3>{{ $post->titulo }}</h3>
+                <p>{{ Str::limit($post->resumo, 110) }}</p>
+                <a href="{{ route('site.blog.show', $post->slug) }}" class="premium-post-link">Ler mais</a>
+              </div>
+            </article>
+          </div>
+        @endforeach
+      </div>
+    </div>
+  </section>
+  @endif
+</div>
+@else
 <section class="hero-section" itemscope itemtype="https://schema.org/Person">
   <div class="container hero-content">
     <div class="row align-items-center">
       <div class="col-lg-6">
         <span class="hero-badge"><i class="fas fa-check-circle me-1"></i>Confiança e Trabalho</span>
-        <h1 class="hero-title" itemprop="name">{{ $politician->nome ?? 'Nome do Vereador' }}</h1>
+        <h1 class="hero-title" itemprop="name">{{ $politicianName }}</h1>
         <p class="hero-subtitle" itemprop="description">{{ $politician->slogan ?? 'Trabalhando por uma cidade melhor para todos. Com responsabilidade, transparência e compromisso social.' }}</p>
         <div class="d-flex flex-wrap gap-3">
           <a href="{{ route('site.propostas') }}" class="btn btn-green"><i class="fas fa-file-alt me-2"></i>Conheça nossas propostas</a>
@@ -30,7 +176,7 @@ Início
       </div>
       <div class="col-lg-5 offset-lg-1">
         <div class="hero-image">
-          <img src="{{ $politician->foto ?? asset('img/politician-placeholder.jpg') }}" alt="{{ $politician->nome ?? 'Vereador' }}" itemprop="image" class="img-fluid" loading="eager">
+          <img src="{{ $politicianPhoto }}" alt="{{ $politicianName }}" itemprop="image" class="img-fluid" loading="eager">
         </div>
       </div>
     </div>
@@ -256,5 +402,5 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 @endpush
-
+@endif
 @endsection
