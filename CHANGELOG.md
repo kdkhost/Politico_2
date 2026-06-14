@@ -17,6 +17,14 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-14 - corrige 500 da agenda pública
+
+- corrigido `app/Http/Controllers/Site/AgendaController.php` para tratar `Collection` do `AgendaService` com `->map()->values()` em vez de `array_map()`
+- removido o acesso por array nos eventos públicos da agenda, padronizando leitura por propriedades do model (`$event->titulo`, `$event->data_inicio`, etc.)
+- `eventosJson` da view pública passou a ser gerado com `toJson(JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)` para manter compatibilidade com FullCalendar e evitar ruído de acentuação
+- adicionados testes de regressão em `tests/Feature/Site/AgendaControllerTest.php` cobrindo a montagem da página `/agenda` e o endpoint público `/agenda/eventos` com retorno em `Collection`
+- validação local executada: `php -l app/Http/Controllers/Site/AgendaController.php` e `php artisan test` com `4` testes e `10` assertions aprovadas
+
 ### 2026-06-14 - corrige exportações Excel sem quebra de acentuação
 
 - substituídos os exports administrativos baseados em CSV puro por planilha Excel XML `.xls` compatível com Excel, mantendo UTF-8 sem BOM no código-fonte

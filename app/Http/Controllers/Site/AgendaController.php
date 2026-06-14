@@ -45,21 +45,24 @@ class AgendaController extends Controller
 
         $upcomingEvents = $this->agendaService->getUpcomingEvents(5);
 
-        $eventosJson = json_encode(array_map(function ($event) {
-            return [
-                'id' => $event['id'],
-                'title' => $event['titulo'],
-                'start' => $event['data_inicio'],
-                'end' => $event['data_fim'] ?? $event['data_inicio'],
-                'color' => $event['cor'] ?? '#009c3b',
-                'textColor' => '#ffffff',
-                'allDay' => (bool) ($event['all_day'] ?? false),
-                'url' => $event['link_externo'] ?? null,
-                'description' => $event['descricao'] ?? '',
-                'location' => $event['local'] ?? '',
-                'link' => $event['link_externo'] ?? null,
-            ];
-        }, $upcomingEvents));
+        $eventosJson = $upcomingEvents
+            ->map(function ($event): array {
+                return [
+                    'id' => $event->id,
+                    'title' => $event->titulo,
+                    'start' => $event->data_inicio,
+                    'end' => $event->data_fim ?? $event->data_inicio,
+                    'color' => $event->cor ?? '#009c3b',
+                    'textColor' => '#ffffff',
+                    'allDay' => (bool) ($event->all_day ?? false),
+                    'url' => $event->link_externo ?? null,
+                    'description' => $event->descricao ?? '',
+                    'location' => $event->local ?? '',
+                    'link' => $event->link_externo ?? null,
+                ];
+            })
+            ->values()
+            ->toJson(JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         $meta = $this->seoService->generateMetaTags(null, 'page');
         $meta['title'] = 'Agenda - ' . config('app.name');
@@ -80,20 +83,20 @@ class AgendaController extends Controller
             $request->input('end'),
         );
 
-        $formatted = array_map(function ($event) {
+        $formatted = $events->map(function ($event): array {
             return [
-                'id' => $event['id'],
-                'title' => $event['titulo'],
-                'start' => $event['data_inicio'],
-                'end' => $event['data_fim'],
-                'color' => $event['cor'] ?? '#3b82f6',
+                'id' => $event->id,
+                'title' => $event->titulo,
+                'start' => $event->data_inicio,
+                'end' => $event->data_fim,
+                'color' => $event->cor ?? '#3b82f6',
                 'textColor' => '#ffffff',
-                'allDay' => (bool) ($event['all_day'] ?? false),
-                'url' => $event['link_externo'] ?? null,
-                'description' => $event['descricao'] ?? '',
-                'local' => $event['local'] ?? '',
+                'allDay' => (bool) ($event->all_day ?? false),
+                'url' => $event->link_externo ?? null,
+                'description' => $event->descricao ?? '',
+                'local' => $event->local ?? '',
             ];
-        }, $events);
+        })->values();
 
         return response()->json($formatted);
     }
