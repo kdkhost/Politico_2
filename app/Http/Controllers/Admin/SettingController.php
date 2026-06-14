@@ -104,7 +104,7 @@ class SettingController extends Controller
                     }
 
                     $filename = Str::random(40) . '.' . strtolower((string) $file->getClientOriginalExtension());
-                    $path = $this->storeSettingUpload($file, $filename);
+                    $path = $this->storeSettingUpload($key, $file, $filename);
 
                     $settingsData[$key] = [
                         'valor' => '/storage/' . ltrim(str_replace('\\', '/', $path), '/'),
@@ -194,14 +194,16 @@ class SettingController extends Controller
         return null;
     }
 
-    private function storeSettingUpload(\Illuminate\Http\UploadedFile $file, string $filename): string
+    private function storeSettingUpload(string $key, \Illuminate\Http\UploadedFile $file, string $filename): string
     {
-        $relativeDirectory = 'settings';
+        $relativeDirectory = 'settings/' . Str::slug($key);
         $targetDirectory = storage_path('app/public/' . $relativeDirectory);
 
         if (!is_dir($targetDirectory) && !mkdir($targetDirectory, 0755, true) && !is_dir($targetDirectory)) {
             throw new \RuntimeException('Nao foi possivel criar o diretorio de uploads das configuracoes.');
         }
+
+        $this->deleteExistingSettingFile($key);
 
         $targetPath = $targetDirectory . DIRECTORY_SEPARATOR . $filename;
         $sourcePath = $file->getRealPath();
@@ -217,5 +219,21 @@ class SettingController extends Controller
         @chmod($targetPath, 0644);
 
         return $relativeDirectory . '/' . $filename;
+    }
+
+    private function deleteExistingSettingFile(string $key): void
+    {
+        $currentValue = (string) settings($key, '');
+
+        if ($currentValue === '' || !str_starts_with($currentValue, '/storage/')) {
+            return;
+        }
+
+        $relativePath = ltrim(substr($currentValue, strlen('/storage/')), '/');
+        $absolutePath = storage_path('app/public/' . $relativePath);
+
+        if (is_file($absolutePath)) {
+            @unlink($absolutePath);
+        }
     }
 }
