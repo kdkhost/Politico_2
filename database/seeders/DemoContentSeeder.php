@@ -25,9 +25,12 @@ class DemoContentSeeder extends Seeder
     public function run(): void
     {
         $now = now();
-        $userId = DB::table('users')->orderBy('id')->value('id') ?? 1;
+        $userId = (int) (DB::table('users')->orderBy('id')->value('id') ?? 1);
 
         $this->seedPosts($userId, $now);
+        $this->seedEvents($userId, $now);
+        $this->seedContacts($now);
+        $this->seedNewsletter($now);
         $this->seedTransparency($userId, $now);
         $this->seedVisits($now);
     }
@@ -98,6 +101,130 @@ class DemoContentSeeder extends Seeder
                 'orgao_responsavel' => 'Gabinete',
                 'arquivos' => json_encode([]),
                 'status' => 'active',
+                'new_created_at' => $now,
+                'new_updated_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+        }
+    }
+
+    private function seedEvents(int $userId, $now): void
+    {
+        if (DB::table('events')->count() > 0) {
+            return;
+        }
+
+        $events = [
+            [
+                'titulo' => 'Audiencia publica sobre mobilidade',
+                'slug' => 'audiencia-publica-mobilidade',
+                'descricao' => 'Encontro com a comunidade para discutir mobilidade urbana.',
+                'local' => 'Camara Municipal',
+                'endereco' => 'Centro Civico, 100',
+                'data_inicio' => $now->copy()->addDays(2)->setTime(18, 0),
+                'data_fim' => $now->copy()->addDays(2)->setTime(20, 0),
+                'cor' => '#1e88e5',
+            ],
+            [
+                'titulo' => 'Prestacao de contas do gabinete',
+                'slug' => 'prestacao-de-contas-gabinete',
+                'descricao' => 'Apresentacao publica dos indicadores e gastos do gabinete.',
+                'local' => 'Plenario Principal',
+                'endereco' => 'Av. da Transparencia, 250',
+                'data_inicio' => $now->copy()->addDays(5)->setTime(10, 0),
+                'data_fim' => $now->copy()->addDays(5)->setTime(12, 0),
+                'cor' => '#009c3b',
+            ],
+        ];
+
+        foreach ($events as $event) {
+            DB::table('events')->insert([
+                'user_id' => $userId,
+                'titulo' => $event['titulo'],
+                'slug' => $event['slug'],
+                'descricao' => $event['descricao'],
+                'local' => $event['local'],
+                'endereco' => $event['endereco'],
+                'data_inicio' => $event['data_inicio'],
+                'data_fim' => $event['data_fim'],
+                'cor' => $event['cor'],
+                'tipo' => 'publico',
+                'all_day' => false,
+                'status' => 'active',
+                'participants' => json_encode([]),
+                'attachments' => json_encode([]),
+                'publicado' => true,
+                'new_created_at' => $now,
+                'new_updated_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+        }
+    }
+
+    private function seedContacts($now): void
+    {
+        if (DB::table('contacts')->count() > 0) {
+            return;
+        }
+
+        $contacts = [
+            [
+                'nome' => 'Monique Motta',
+                'email' => 'monique@example.com',
+                'telefone' => '(21) 98888-1111',
+                'assunto' => 'Sugestao para comunicacao',
+                'mensagem' => 'Poderia melhorar a comunicacao do sistema em algumas paginas.',
+                'lido' => true,
+            ],
+            [
+                'nome' => 'Marcelo',
+                'email' => 'marcelo@example.com',
+                'telefone' => '(21) 97777-2222',
+                'assunto' => 'Teste de formulario',
+                'mensagem' => 'Mensagem de teste para validar o fluxo do formulario principal.',
+                'lido' => false,
+            ],
+        ];
+
+        foreach ($contacts as $contact) {
+            DB::table('contacts')->insert([
+                'nome' => $contact['nome'],
+                'email' => $contact['email'],
+                'telefone' => $contact['telefone'],
+                'assunto' => $contact['assunto'],
+                'mensagem' => $contact['mensagem'],
+                'lido' => $contact['lido'],
+                'respondido' => false,
+                'ip' => '200.152.10.' . rand(10, 220),
+                'new_created_at' => $now,
+                'new_updated_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+        }
+    }
+
+    private function seedNewsletter($now): void
+    {
+        if (DB::table('newsletter_subscribers')->count() > 0) {
+            return;
+        }
+
+        $subscribers = [
+            ['email' => 'cidadao1@example.com', 'nome' => 'Cidadao 1'],
+            ['email' => 'cidadao2@example.com', 'nome' => 'Cidadao 2'],
+        ];
+
+        foreach ($subscribers as $subscriber) {
+            DB::table('newsletter_subscribers')->insert([
+                'email' => $subscriber['email'],
+                'nome' => $subscriber['nome'],
+                'token' => Str::lower(Str::random(40)),
+                'active' => true,
+                'subscribed_at' => $now,
+                'confirmation_expires_at' => $now->copy()->addHours(24),
                 'new_created_at' => $now,
                 'new_updated_at' => $now,
                 'created_at' => $now,

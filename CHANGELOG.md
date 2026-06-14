@@ -24,7 +24,8 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 - frontend publico passou a disparar registro de visita automaticamente em `resources/js/site/site.js` via `sendBeacon` com fallback `fetch`, usando a URL atual da pagina
 - consolidado seed idempotente do projeto com `DatabaseSeeder` chamando `DemoContentSeeder` e seeders reescritos para perfis, permissoes, usuarios, configuracoes, modulos, menus, categorias e paginas
 - corrigido `PermissionSeeder` para atualizar por `slug` ou `nome`, evitando colisao de chave unica que interrompia a populacao do banco
-- adicionada massa inicial de homologacao para posts, paginas institucionais, itens de transparencia, menu principal e historico de visitas, permitindo ajuste visual e validacao funcional do painel
+- corrigido `DemoContentSeeder` para normalizar `user_id` como inteiro e permitir execucao em MariaDB/cPanel sem falha de tipagem
+- adicionada massa inicial de homologacao para posts, paginas institucionais, eventos, contatos, newsletter, itens de transparencia, menu principal e historico de visitas, permitindo ajuste visual e validacao funcional do painel
 - validacoes locais executadas: `php -l` nos arquivos alterados, `git diff --check`, `php artisan db:seed --force`, `npm run build` e verificacao de ausencia de BOM nos arquivos alterados
 - resultado local apos seed: `users=2`, `pages=4`, `posts=5`, `categories=5`, `transparency_items=3`, `visits=35`, `menus=1`, `menu_items=10`
 
