@@ -92,6 +92,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Public license activation (no auth required)
     Route::get('/licenca', [App\Http\Controllers\Admin\LicenseController::class, 'showActivationForm'])->name('license.activate-form');
     Route::post('/licenca', [App\Http\Controllers\Admin\LicenseController::class, 'activatePublic'])->name('license.activate.public');
+    Route::get('/license/activate', fn () => redirect()->route('admin.license.activate-form'))->name('license.activate-get');
 
     // Auth routes
     Route::middleware('guest')->group(function () {

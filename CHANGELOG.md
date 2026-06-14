@@ -29,6 +29,7 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 - refeito o tema `premium` do frontend com estrutura visual alinhada ao modelo institucional enviado pelo usuario: header glass, hero executivo, cards de pilares, bloco de eventos, CTA lateral e footer escuro premium
 - header, footer e home agora renderizam HTML proprio para o tema `premium`, em vez de apenas herdar pequenas variacoes do tema padrao
 - a paleta continua vinculada ao painel administrativo via `primary_color` e `secondary_color`, mas o layout passou a refletir o modelo solicitado de forma visivel no site
+- adicionada rota GET de compatibilidade para `/admin/license/activate`, redirecionando para a tela publica correta `/admin/licenca` e eliminando erro `405 Method Not Allowed`
 - validacao local executada: `php artisan optimize:clear` e leitura direta de `settings('default_theme')` com cache repovoado no formato correto
 
 ### 2026-06-14 - adiciona segundo tema visual no frontend publico
