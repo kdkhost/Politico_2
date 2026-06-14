@@ -24,32 +24,27 @@ class UserSeeder extends Seeder
 
     public function run(): void
     {
+        if (DB::table('users')->exists()) {
+            return;
+        }
+
         $profileId = DB::table('profiles')->where('slug', 'super-admin')->value('id');
         $now = now();
 
-        $payload = [
-            'name' => 'Carlos Eduardo Nogueira',
+        DB::table('users')->insert([
+            'name' => 'Administrador',
             'email' => 'admin@sistema.com.br',
             'password' => Hash::make('admin123'),
             'profile_id' => $profileId,
-            'telefone' => '(21) 98888-1234',
-            'cargo' => 'Governador',
+            'telefone' => null,
+            'cargo' => 'Administrador',
             'avatar' => '/img/politician-placeholder.jpg',
             'is_super_admin' => true,
             'status' => 'active',
             'is_blocked' => false,
             'email_verified_at' => $now,
+            'created_at' => $now,
             'updated_at' => $now,
-        ];
-
-        $existingId = DB::table('users')->where('email', 'admin@sistema.com.br')->value('id');
-
-        if ($existingId) {
-            DB::table('users')->where('id', $existingId)->update($payload);
-
-            return;
-        }
-
-        DB::table('users')->insert($payload + ['created_at' => $now]);
+        ]);
     }
 }

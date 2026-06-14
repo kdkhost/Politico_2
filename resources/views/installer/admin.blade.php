@@ -41,14 +41,14 @@
                     <label class="form-label fw-semibold">Nome <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-user"></i></span>
-                        <input type="text" name="name" class="form-control" required value="Administrador">
+                        <input type="text" name="name" class="form-control" required value="{{ old('name') }}" placeholder="Nome do administrador principal">
                     </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-semibold">E-mail <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                        <input type="email" name="email" class="form-control" required value="admin@sistema.com.br">
+                        <input type="email" name="email" class="form-control" required value="{{ old('email') }}" placeholder="seu@email.com">
                     </div>
                 </div>
                 <div class="mb-3">
@@ -58,6 +58,9 @@
                         <input type="password" name="password" class="form-control" required minlength="8">
                     </div>
                     <small class="text-muted">Mínimo de 8 caracteres</small>
+                </div>
+                <div class="alert alert-info">
+                    <i class="fas fa-shield-alt me-2"></i>Este será o administrador principal criado na instalação e não deve ser substituído por seeders posteriores.
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Confirmar Senha <span class="text-danger">*</span></label>
