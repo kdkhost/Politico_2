@@ -36,6 +36,7 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 - `BiografiaController` corrigido para usar `avatar_url`, evitando caminho relativo quebrado na pagina `/biografia`
 - `DemoContentSeeder` passou a associar imagens demonstrativas aos posts e eventos seedados e tambem preencher registros existentes que ainda estavam sem imagem
 - `User::getAvatarUrlAttribute()` corrigido para resolver corretamente avatars publicos em `/img/...` no frontend
+- `HomeController` e `BiografiaController` passaram a priorizar o candidato demonstrativo mais recente, com cargo e avatar preenchidos, evitando cair no usuario admin legado
 - objetivo do ajuste: representar fielmente um candidato e o contexto institucional no site sem usar dados reais de campanha
 
 ### 2026-06-14 - corrige cache quebrado das configuracoes globais

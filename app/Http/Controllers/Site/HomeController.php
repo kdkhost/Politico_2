@@ -42,10 +42,17 @@ class HomeController extends Controller
 
         // Politician (admin/vereador)
         $politician = User::with('profile')
-            ->where('is_super_admin', true)
-            ->orWhere('cargo', 'like', '%vereador%')
-            ->orWhere('cargo', 'like', '%prefeito%')
-            ->orWhere('cargo', 'like', '%deputado%')
+            ->where(function ($query) {
+                $query->where('is_super_admin', true)
+                    ->orWhere('cargo', 'like', '%vereador%')
+                    ->orWhere('cargo', 'like', '%prefeito%')
+                    ->orWhere('cargo', 'like', '%deputado%')
+                    ->orWhere('cargo', 'like', '%governador%');
+            })
+            ->orderByDesc('is_super_admin')
+            ->orderByRaw("CASE WHEN avatar IS NOT NULL AND avatar <> '' THEN 1 ELSE 0 END DESC")
+            ->orderByRaw("CASE WHEN cargo IS NOT NULL AND cargo <> '' THEN 1 ELSE 0 END DESC")
+            ->orderByDesc('updated_at')
             ->first();
 
         // About section (biography page)
