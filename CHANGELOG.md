@@ -29,6 +29,14 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 - validacoes locais executadas: `php -l` nos arquivos alterados, `git diff --check`, `php artisan db:seed --force`, `npm run build` e verificacao de ausencia de BOM nos arquivos alterados
 - resultado local apos seed: `users=2`, `pages=4`, `posts=5`, `categories=5`, `transparency_items=3`, `visits=35`, `menus=1`, `menu_items=10`
 
+### 2026-06-14 - publica imagens demonstrativas de banco de imagens no frontend
+
+- substituidos os placeholders publicos por fotos reais de demonstracao em `public/img/politician-placeholder.jpg`, `public/img/about-placeholder.jpg`, `public/img/blog-placeholder.jpg`, `public/img/team-placeholder.jpg` e `public/img/og-default.jpg`
+- seed do usuario administrativo demonstrativo atualizado para `Carlos Eduardo Nogueira`, com cargo simulado `Governador` e avatar local do candidato demo
+- `BiografiaController` corrigido para usar `avatar_url`, evitando caminho relativo quebrado na pagina `/biografia`
+- `DemoContentSeeder` passou a associar imagens demonstrativas aos posts e eventos seedados e tambem preencher registros existentes que ainda estavam sem imagem
+- objetivo do ajuste: representar fielmente um candidato e o contexto institucional no site sem usar dados reais de campanha
+
 ### 2026-06-14 - corrige cache quebrado das configuracoes globais
 
 - corrigido o helper global `settings()` para armazenar em cache apenas array serializavel com `valor` e `tipo`, removendo o cache incorreto de `stdClass` bruto vindo do query builder

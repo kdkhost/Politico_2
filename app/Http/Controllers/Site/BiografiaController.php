@@ -42,17 +42,16 @@ class BiografiaController extends Controller
         if (!$page) {
             $meta = [
                 'title' => 'Biografia - ' . config('app.name'),
-                'description' => 'Conheça a trajetória política e pessoal.',
-                'keywords' => 'biografia, trajetória, política',
+                'description' => 'Conheca a trajetoria politica e pessoal.',
+                'keywords' => 'biografia, trajetoria, politica',
                 'og_image' => config('seo.og_image', ''),
                 'site_name' => config('app.name'),
                 'title_separator' => '|',
             ];
         }
 
-        // Build biography object expected by the view
         $biografia = (object) [
-            'foto' => $politician?->avatar ?? null,
+            'foto' => $politician?->avatar_url ?? null,
             'video_url' => $page?->video_url ?? null,
             'nome' => $politician?->name ?? ($page?->titulo ?? 'Nome Completo'),
             'cargo' => $politician?->cargo ?? 'Vereador',
@@ -60,7 +59,7 @@ class BiografiaController extends Controller
             'naturalidade' => $politician?->naturalidade ?? null,
             'partido' => $politician?->partido ?? null,
             'mandatos' => $politician?->mandatos ?? null,
-            'conteudo' => $page?->conteudo ?? '<p>Natural desta cidade, construí minha trajetória com dedicação e compromisso com o povo. Minha história se confunde com a luta por uma sociedade mais justa e igualitária.</p>',
+            'conteudo' => $page?->conteudo ?? '<p>Natural desta cidade, construi minha trajetoria com dedicacao e compromisso com o povo. Minha historia se confunde com a luta por uma sociedade mais justa e igualitaria.</p>',
         ];
 
         return view('site.biografia.index', compact('page', 'politician', 'biografia', 'meta'));

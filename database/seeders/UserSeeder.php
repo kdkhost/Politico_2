@@ -28,10 +28,13 @@ class UserSeeder extends Seeder
         $now = now();
 
         $payload = [
-            'name' => 'Administrador',
+            'name' => 'Carlos Eduardo Nogueira',
             'email' => 'admin@sistema.com.br',
             'password' => Hash::make('admin123'),
             'profile_id' => $profileId,
+            'telefone' => '(21) 98888-1234',
+            'cargo' => 'Governador',
+            'avatar' => '/img/politician-placeholder.jpg',
             'is_super_admin' => true,
             'status' => 'active',
             'is_blocked' => false,
@@ -43,6 +46,7 @@ class UserSeeder extends Seeder
 
         if ($existingId) {
             DB::table('users')->where('id', $existingId)->update($payload);
+
             return;
         }
 

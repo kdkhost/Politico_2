@@ -37,20 +37,30 @@ class DemoContentSeeder extends Seeder
 
     private function seedPosts(int $userId, $now): void
     {
+        $demoImages = [
+            '/img/blog-placeholder.jpg',
+            '/img/about-placeholder.jpg',
+            '/img/team-placeholder.jpg',
+            '/img/politician-placeholder.jpg',
+        ];
+
         if (DB::table('posts')->count() > 0) {
+            $this->backfillPostImages($demoImages, $now);
+
             return;
         }
 
         $categoryMap = DB::table('categories')->pluck('id', 'slug');
+
         $posts = [
-            ['titulo' => 'Prestação de contas do primeiro semestre', 'slug' => 'prestacao-de-contas-primeiro-semestre', 'category_slug' => 'noticias', 'resumo' => 'Resumo da prestação de contas e principais resultados do semestre.', 'conteudo' => '<p>Conteúdo institucional da prestação de contas.</p>', 'formato' => 'noticia'],
-            ['titulo' => 'Novo projeto para mobilidade urbana', 'slug' => 'novo-projeto-mobilidade-urbana', 'category_slug' => 'projetos', 'resumo' => 'Projeto voltado à melhoria da mobilidade urbana.', 'conteudo' => '<p>Detalhes do projeto de mobilidade urbana.</p>', 'formato' => 'projeto'],
-            ['titulo' => 'Compromissos para educação pública', 'slug' => 'compromissos-educacao-publica', 'category_slug' => 'propostas', 'resumo' => 'Conjunto de propostas para fortalecer a educação pública.', 'conteudo' => '<p>Propostas detalhadas para educação pública.</p>', 'formato' => 'proposta'],
-            ['titulo' => 'Agenda de reuniões comunitárias', 'slug' => 'agenda-reunioes-comunitarias', 'category_slug' => 'comunicados', 'resumo' => 'Comunicado com o calendário de reuniões comunitárias.', 'conteudo' => '<p>Comunicado oficial com agenda de reuniões.</p>', 'formato' => 'noticia'],
-            ['titulo' => 'Artigo sobre transparência e participação', 'slug' => 'artigo-transparencia-participacao', 'category_slug' => 'artigos', 'resumo' => 'Análise sobre transparência, controle social e participação popular.', 'conteudo' => '<p>Artigo institucional sobre transparência e participação.</p>', 'formato' => 'artigo'],
+            ['titulo' => 'Prestacao de contas do primeiro semestre', 'slug' => 'prestacao-de-contas-primeiro-semestre', 'category_slug' => 'noticias', 'resumo' => 'Resumo da prestacao de contas e principais resultados do semestre.', 'conteudo' => '<p>Conteudo institucional da prestacao de contas.</p>', 'formato' => 'noticia'],
+            ['titulo' => 'Novo projeto para mobilidade urbana', 'slug' => 'novo-projeto-mobilidade-urbana', 'category_slug' => 'projetos', 'resumo' => 'Projeto voltado a melhoria da mobilidade urbana.', 'conteudo' => '<p>Detalhes do projeto de mobilidade urbana.</p>', 'formato' => 'projeto'],
+            ['titulo' => 'Compromissos para educacao publica', 'slug' => 'compromissos-educacao-publica', 'category_slug' => 'propostas', 'resumo' => 'Conjunto de propostas para fortalecer a educacao publica.', 'conteudo' => '<p>Propostas detalhadas para educacao publica.</p>', 'formato' => 'proposta'],
+            ['titulo' => 'Agenda de reunioes comunitarias', 'slug' => 'agenda-reunioes-comunitarias', 'category_slug' => 'comunicados', 'resumo' => 'Comunicado com o calendario de reunioes comunitarias.', 'conteudo' => '<p>Comunicado oficial com agenda de reunioes.</p>', 'formato' => 'noticia'],
+            ['titulo' => 'Artigo sobre transparencia e participacao', 'slug' => 'artigo-transparencia-participacao', 'category_slug' => 'artigos', 'resumo' => 'Analise sobre transparencia, controle social e participacao popular.', 'conteudo' => '<p>Artigo institucional sobre transparencia e participacao.</p>', 'formato' => 'artigo'],
         ];
 
-        foreach ($posts as $post) {
+        foreach ($posts as $index => $post) {
             DB::table('posts')->insert([
                 'user_id' => $userId,
                 'category_id' => $categoryMap[$post['category_slug']] ?? null,
@@ -58,6 +68,7 @@ class DemoContentSeeder extends Seeder
                 'slug' => $post['slug'],
                 'resumo' => $post['resumo'],
                 'conteudo' => $post['conteudo'],
+                'imagem_destaque' => $demoImages[$index % count($demoImages)],
                 'status' => 'published',
                 'published_at' => $now,
                 'formato' => $post['formato'],
@@ -81,9 +92,9 @@ class DemoContentSeeder extends Seeder
         }
 
         $items = [
-            ['tipo' => 'receita', 'titulo' => 'Receita institucional do mês', 'descricao' => 'Receitas declaradas no período.', 'valor' => 125000.50, 'categoria' => 'Receitas', 'fornecedor' => null],
-            ['tipo' => 'despesa', 'titulo' => 'Despesa com manutenção administrativa', 'descricao' => 'Despesas operacionais administrativas.', 'valor' => 34850.90, 'categoria' => 'Despesas', 'fornecedor' => 'Fornecedor Exemplo LTDA'],
-            ['tipo' => 'contrato', 'titulo' => 'Contrato de comunicação institucional', 'descricao' => 'Contrato vigente para apoio de comunicação institucional.', 'valor' => 18000.00, 'categoria' => 'Contratos', 'fornecedor' => 'Agência Modelo'],
+            ['tipo' => 'receita', 'titulo' => 'Receita institucional do mes', 'descricao' => 'Receitas declaradas no periodo.', 'valor' => 125000.50, 'categoria' => 'Receitas', 'fornecedor' => null],
+            ['tipo' => 'despesa', 'titulo' => 'Despesa com manutencao administrativa', 'descricao' => 'Despesas operacionais administrativas.', 'valor' => 34850.90, 'categoria' => 'Despesas', 'fornecedor' => 'Fornecedor Exemplo LTDA'],
+            ['tipo' => 'contrato', 'titulo' => 'Contrato de comunicacao institucional', 'descricao' => 'Contrato vigente para apoio de comunicacao institucional.', 'valor' => 18000.00, 'categoria' => 'Contratos', 'fornecedor' => 'Agencia Modelo'],
         ];
 
         foreach ($items as $item) {
@@ -98,7 +109,7 @@ class DemoContentSeeder extends Seeder
                 'categoria' => $item['categoria'],
                 'fornecedor' => $item['fornecedor'],
                 'documento_numero' => 'DOC-' . Str::upper(Str::random(8)),
-                'orgao_responsavel' => 'Gabinete',
+                'orgao_responsavel' => 'Gabinete Demonstrativo',
                 'arquivos' => json_encode([]),
                 'status' => 'active',
                 'new_created_at' => $now,
@@ -112,6 +123,8 @@ class DemoContentSeeder extends Seeder
     private function seedEvents(int $userId, $now): void
     {
         if (DB::table('events')->count() > 0) {
+            $this->backfillEventImages($now);
+
             return;
         }
 
@@ -125,6 +138,7 @@ class DemoContentSeeder extends Seeder
                 'data_inicio' => $now->copy()->addDays(2)->setTime(18, 0),
                 'data_fim' => $now->copy()->addDays(2)->setTime(20, 0),
                 'cor' => '#1e88e5',
+                'image' => '/img/team-placeholder.jpg',
             ],
             [
                 'titulo' => 'Prestacao de contas do gabinete',
@@ -135,6 +149,7 @@ class DemoContentSeeder extends Seeder
                 'data_inicio' => $now->copy()->addDays(5)->setTime(10, 0),
                 'data_fim' => $now->copy()->addDays(5)->setTime(12, 0),
                 'cor' => '#009c3b',
+                'image' => '/img/about-placeholder.jpg',
             ],
         ];
 
@@ -149,6 +164,7 @@ class DemoContentSeeder extends Seeder
                 'data_inicio' => $event['data_inicio'],
                 'data_fim' => $event['data_fim'],
                 'cor' => $event['cor'],
+                'image' => $event['image'],
                 'tipo' => 'publico',
                 'all_day' => false,
                 'status' => 'active',
@@ -171,7 +187,7 @@ class DemoContentSeeder extends Seeder
 
         $contacts = [
             [
-                'nome' => 'Monique Motta',
+                'nome' => 'Monique Andrade',
                 'email' => 'monique@example.com',
                 'telefone' => '(21) 98888-1111',
                 'assunto' => 'Sugestao para comunicacao',
@@ -179,8 +195,8 @@ class DemoContentSeeder extends Seeder
                 'lido' => true,
             ],
             [
-                'nome' => 'Marcelo',
-                'email' => 'marcelo@example.com',
+                'nome' => 'Paulo Mendes',
+                'email' => 'paulo@example.com',
                 'telefone' => '(21) 97777-2222',
                 'assunto' => 'Teste de formulario',
                 'mensagem' => 'Mensagem de teste para validar o fluxo do formulario principal.',
@@ -269,6 +285,49 @@ class DemoContentSeeder extends Seeder
                 'new_updated_at' => $day,
                 'created_at' => $day,
                 'updated_at' => $day,
+            ]);
+        }
+    }
+
+    private function backfillPostImages(array $demoImages, $now): void
+    {
+        $posts = DB::table('posts')
+            ->orderBy('id')
+            ->get(['id', 'imagem_destaque']);
+
+        foreach ($posts as $index => $post) {
+            if (!empty($post->imagem_destaque)) {
+                continue;
+            }
+
+            DB::table('posts')->where('id', $post->id)->update([
+                'imagem_destaque' => $demoImages[$index % count($demoImages)],
+                'new_updated_at' => $now,
+                'updated_at' => $now,
+            ]);
+        }
+    }
+
+    private function backfillEventImages($now): void
+    {
+        $fallbackImages = [
+            '/img/team-placeholder.jpg',
+            '/img/about-placeholder.jpg',
+        ];
+
+        $events = DB::table('events')
+            ->orderBy('id')
+            ->get(['id', 'image']);
+
+        foreach ($events as $index => $event) {
+            if (!empty($event->image)) {
+                continue;
+            }
+
+            DB::table('events')->where('id', $event->id)->update([
+                'image' => $fallbackImages[$index % count($fallbackImages)],
+                'new_updated_at' => $now,
+                'updated_at' => $now,
             ]);
         }
     }
