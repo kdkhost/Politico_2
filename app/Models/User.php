@@ -127,8 +127,14 @@ class User extends Authenticatable
             return asset('img/default-avatar.png');
         }
 
-        if (str_starts_with($avatar, ['http://', 'https://', '//', '/'])) {
-            return $avatar;
+        foreach (['http://', 'https://', '//'] as $prefix) {
+            if (str_starts_with($avatar, $prefix)) {
+                return $avatar;
+            }
+        }
+
+        if (str_starts_with($avatar, '/')) {
+            return asset(ltrim($avatar, '/'));
         }
 
         return asset($avatar);

@@ -35,6 +35,7 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 - seed do usuario administrativo demonstrativo atualizado para `Carlos Eduardo Nogueira`, com cargo simulado `Governador` e avatar local do candidato demo
 - `BiografiaController` corrigido para usar `avatar_url`, evitando caminho relativo quebrado na pagina `/biografia`
 - `DemoContentSeeder` passou a associar imagens demonstrativas aos posts e eventos seedados e tambem preencher registros existentes que ainda estavam sem imagem
+- `User::getAvatarUrlAttribute()` corrigido para resolver corretamente avatars publicos em `/img/...` no frontend
 - objetivo do ajuste: representar fielmente um candidato e o contexto institucional no site sem usar dados reais de campanha
 
 ### 2026-06-14 - corrige cache quebrado das configuracoes globais
