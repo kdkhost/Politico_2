@@ -17,6 +17,13 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-14 - corrige cache quebrado das configuracoes globais
+
+- corrigido o helper global `settings()` para armazenar em cache apenas array serializavel com `valor` e `tipo`, removendo o cache incorreto de `stdClass` bruto vindo do query builder
+- eliminado o erro de desserializacao em producao que fazia configuracoes gravadas no banco voltarem como `null` ou valor padrao ao serem lidas pelo frontend e pelo painel
+- hotfix resolve o caso em que `default_theme` salvava como `premium` no banco, mas o HTML publico continuava renderizando `data-site-theme="default"`
+- validacao local executada: `php artisan optimize:clear` e leitura direta de `settings('default_theme')` com cache repovoado no formato correto
+
 ### 2026-06-14 - adiciona segundo tema visual no frontend publico
 
 - reaproveitada a chave `default_theme` como seletor do frontend publico, com suporte a `default` e `premium`

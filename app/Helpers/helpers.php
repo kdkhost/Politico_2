@@ -375,22 +375,31 @@ if (!function_exists('settings')) {
     {
         try {
             $setting = \Illuminate\Support\Facades\Cache::remember("setting_{$key}", 3600, function () use ($key) {
-                return \Illuminate\Support\Facades\DB::table('settings')
+                $row = \Illuminate\Support\Facades\DB::table('settings')
                     ->where('chave', $key)
                     ->first(['valor', 'tipo']);
+
+                if (!$row) {
+                    return null;
+                }
+
+                return [
+                    'valor' => $row->valor ?? null,
+                    'tipo' => $row->tipo ?? 'text',
+                ];
             });
 
             if (!$setting) {
                 return $default;
             }
 
-            $value = $setting->valor ?? null;
+            $value = is_array($setting) ? ($setting['valor'] ?? null) : null;
 
             if ($value === null) {
                 return $default;
             }
 
-            return match ($setting->tipo ?? 'text') {
+            return match (is_array($setting) ? ($setting['tipo'] ?? 'text') : 'text') {
                 'boolean', 'bool' => filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false,
                 'integer', 'int' => (int) $value,
                 'float', 'double' => (float) $value,
