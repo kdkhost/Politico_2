@@ -16,7 +16,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\Sistema\ConfiguracaoService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class SettingController extends Controller
 {
@@ -97,25 +97,29 @@ class SettingController extends Controller
                     }
                 }
 
+                foreach ($request->allFiles() as $key => $file) {
+                    $validation = $this->validateSettingUpload($file);
+                    if ($validation !== null) {
+                        return $validation;
+                    }
+
+                    $filename = Str::random(40) . '.' . strtolower((string) $file->getClientOriginalExtension());
+                    $path = $this->storeSettingUpload($file, $filename);
+
+                    $settingsData[$key] = [
+                        'valor' => '/storage/' . ltrim(str_replace('\\', '/', $path), '/'),
+                        'tipo' => $typeMap[$key] ?? 'file',
+                        'grupo' => $groupMap[$key] ?? 'geral',
+                    ];
+                }
+
                 foreach ($request->all() as $key => $value) {
                     if (in_array($key, $excluded, true)) {
                         continue;
                     }
 
-                    if ($request->hasFile($key)) {
-                        $file = $request->file($key);
-                        $extension = strtolower((string) $file->getClientOriginalExtension());
-
-                        if (in_array($extension, ['svg'], true)) {
-                            return response()->json(['status' => 'error', 'message' => 'Upload SVG nao e permitido por seguranca.'], 422);
-                        }
-
-                        $request->validate([
-                            $key => 'file|mimes:jpg,jpeg,png,webp,ico|max:' . config('sistema.upload_max_size', 10) * 1024,
-                        ]);
-
-                        $path = $file->store('settings', 'public');
-                        $value = Storage::url($path);
+                    if (array_key_exists($key, $settingsData) && ($typeMap[$key] ?? null) === 'file') {
+                        continue;
                     }
 
                     if ($key === 'recaptcha_secret_key' && empty($value) && settings('recaptcha_secret_key')) {
@@ -167,5 +171,51 @@ class SettingController extends Controller
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao alternar tema.'], 500);
         }
+    }
+
+    private function validateSettingUpload(\Illuminate\Http\UploadedFile $file): \Illuminate\Http\JsonResponse|null
+    {
+        $extension = strtolower((string) $file->getClientOriginalExtension());
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'ico'];
+
+        if ($extension === 'svg') {
+            return response()->json(['status' => 'error', 'message' => 'Upload SVG nao e permitido por seguranca.'], 422);
+        }
+
+        if (!in_array($extension, $allowedExtensions, true)) {
+            return response()->json(['status' => 'error', 'message' => 'Formato de arquivo invalido. Use JPG, PNG, WEBP ou ICO.'], 422);
+        }
+
+        $maxBytes = (int) config('sistema.upload_max_size', 10) * 1024 * 1024;
+        if (($file->getSize() ?? 0) > $maxBytes) {
+            return response()->json(['status' => 'error', 'message' => 'Arquivo excede o tamanho maximo permitido.'], 422);
+        }
+
+        return null;
+    }
+
+    private function storeSettingUpload(\Illuminate\Http\UploadedFile $file, string $filename): string
+    {
+        $relativeDirectory = 'settings';
+        $targetDirectory = storage_path('app/public/' . $relativeDirectory);
+
+        if (!is_dir($targetDirectory) && !mkdir($targetDirectory, 0755, true) && !is_dir($targetDirectory)) {
+            throw new \RuntimeException('Nao foi possivel criar o diretorio de uploads das configuracoes.');
+        }
+
+        $targetPath = $targetDirectory . DIRECTORY_SEPARATOR . $filename;
+        $sourcePath = $file->getRealPath();
+
+        if (!$sourcePath || !is_file($sourcePath)) {
+            throw new \RuntimeException('Arquivo temporario de upload nao encontrado.');
+        }
+
+        if (!@copy($sourcePath, $targetPath)) {
+            throw new \RuntimeException('Nao foi possivel salvar o arquivo enviado.');
+        }
+
+        @chmod($targetPath, 0644);
+
+        return $relativeDirectory . '/' . $filename;
     }
 }
