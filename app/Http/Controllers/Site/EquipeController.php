@@ -17,7 +17,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Page;
 use App\Models\User;
 use App\Services\SEO\SeoService;
-use Illuminate\Support\Facades\Cache;
 
 class EquipeController extends Controller
 {
@@ -27,19 +26,15 @@ class EquipeController extends Controller
 
     public function index()
     {
-        $page = Cache::remember('site_equipe_page', 3600, function () {
-            return Page::where('slug', 'equipe')
-                ->where('status', 'published')
-                ->first();
-        });
+        $page = Page::where('slug', 'equipe')
+            ->where('status', 'published')
+            ->first();
 
-        $equipe = Cache::remember('site_equipe_members', 600, function () {
-            return User::with('profile')
-                ->where('status', 'active')
-                ->whereNotNull('cargo')
-                ->orderBy('name')
-                ->get();
-        });
+        $equipe = User::with('profile')
+            ->where('status', 'active')
+            ->whereNotNull('cargo')
+            ->orderBy('name')
+            ->get();
 
         $meta = $this->seoService->generateMetaTags($page, 'page');
         $meta['title'] = 'Equipe - ' . config('app.name');

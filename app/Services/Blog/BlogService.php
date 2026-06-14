@@ -52,6 +52,10 @@ class BlogService
             $query->whereHas('tags', fn($q) => $q->where('tags.id', $filters['tag_id']));
         }
 
+        if (!empty($filters['tag_slug'])) {
+            $query->whereHas('tags', fn($q) => $q->where('tags.slug', $filters['tag_slug']));
+        }
+
         if (!empty($filters['author_id'])) {
             $query->where('user_id', $filters['author_id']);
         }

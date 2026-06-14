@@ -16,7 +16,6 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Models\Page;
 use App\Services\SEO\SeoService;
-use Illuminate\Support\Facades\Cache;
 
 class PageController extends Controller
 {
@@ -36,12 +35,10 @@ class PageController extends Controller
 
     public function show($slug)
     {
-        $page = Cache::remember("site_page_{$slug}", 3600, function () use ($slug) {
-            return Page::where('slug', $slug)
-                ->where('status', 'published')
-                ->whereDate('published_at', '<=', now())
-                ->first();
-        });
+        $page = Page::where('slug', $slug)
+            ->where('status', 'published')
+            ->whereDate('published_at', '<=', now())
+            ->first();
 
         if (!$page) {
             abort(404);

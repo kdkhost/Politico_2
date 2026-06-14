@@ -70,7 +70,7 @@ return [
 
         // Path Traversal / LFI
         '\.\./',
-        '\.\.\\',
+        '\.\.\\\\',
         'base64_decode',
         'php://input',
         'php://filter',
@@ -176,12 +176,8 @@ return [
     |
     */
     'block_methods' => [
-        'OPTIONS',
         'TRACE',
         'TRACK',
-        'DELETE',
-        'PUT',
-        'PATCH',
     ],
 
     /*

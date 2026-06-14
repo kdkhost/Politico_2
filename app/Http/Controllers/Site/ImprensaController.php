@@ -18,7 +18,6 @@ use App\Models\Media;
 use App\Models\Page;
 use App\Models\Post;
 use App\Services\SEO\SeoService;
-use Illuminate\Support\Facades\Cache;
 
 class ImprensaController extends Controller
 {
@@ -28,30 +27,26 @@ class ImprensaController extends Controller
 
     public function index()
     {
-        $page = Cache::remember('site_imprensa_page', 3600, function () {
-            return Page::where('slug', 'imprensa')
-                ->where('status', 'published')
-                ->first();
-        });
+        $page = Page::where('slug', 'imprensa')
+            ->where('status', 'published')
+            ->first();
 
-        $noticias = Cache::remember('site_imprensa_releases', 300, function () {
-            return Post::with(['author:id,name'])
-                ->where('status', 'published')
-                ->whereDate('published_at', '<=', now())
-                ->where('formato', 'release')
-                ->orWhereHas('category', fn($q) => $q->where('slug', 'imprensa'))
-                ->orderByDesc('published_at')
-                ->limit(10)
-                ->get();
-        });
+        $noticias = Post::with(['author:id,name'])
+            ->where(function ($query) {
+                $query->where('formato', 'release')
+                    ->orWhereHas('category', fn($categoryQuery) => $categoryQuery->where('slug', 'imprensa'));
+            })
+            ->where('status', 'published')
+            ->whereDate('published_at', '<=', now())
+            ->orderByDesc('published_at')
+            ->limit(10)
+            ->get();
 
-        $materiais = Cache::remember('site_imprensa_documents', 600, function () {
-            return Media::where('tipo', 'documento')
-                ->where('pasta', 'imprensa')
-                ->orderByDesc('created_at')
-                ->limit(10)
-                ->get();
-        });
+        $materiais = Media::where('tipo', 'documento')
+            ->where('pasta', 'imprensa')
+            ->orderByDesc('created_at')
+            ->limit(10)
+            ->get();
 
         $meta = $this->seoService->generateMetaTags($page, 'page');
         $meta['title'] = 'Imprensa - ' . config('app.name');

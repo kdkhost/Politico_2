@@ -27,9 +27,9 @@
     <div class="row g-4">
       <div class="col-lg-8">
         <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
-          @if(request('q'))
+          @if(request('q') || request('search'))
             <span class="badge bg-dark fs-6 fw-normal px-3 py-2 rounded-pill">
-              <i class="fas fa-search me-1"></i> Resultados para: "{{ request('q') }}"
+              <i class="fas fa-search me-1"></i> Resultados para: "{{ request('q', request('search')) }}"
               <a href="{{ route('site.blog') }}" class="text-white ms-2 text-decoration-none"><i class="fas fa-times"></i></a>
             </span>
           @endif
@@ -49,7 +49,7 @@
                   <img src="{{ $post->imagem_destaque ?: asset('img/blog-placeholder.jpg') }}" class="card-img-top" alt="{{ $post->titulo }}" loading="lazy" itemprop="image">
                   <div class="card-body">
                     @if($post->category)
-                      <a href="{{ route('site.blog', ['category' => $post->category->slug]) }}" class="badge bg-green mb-2 text-decoration-none">{{ $post->category->nome }}</a>
+                      <a href="{{ route('site.blog.categoria', $post->category->slug) }}" class="badge bg-green mb-2 text-decoration-none">{{ $post->category->nome }}</a>
                     @endif
                     <h5 class="card-title" itemprop="headline"><a href="{{ route('site.blog.show', $post->slug) }}">{{ $post->titulo }}</a></h5>
                     <p class="card-text">{{ Str::limit($post->resumo, 120) }}</p>
@@ -87,7 +87,7 @@
           <form action="{{ route('site.blog') }}" method="GET">
             <div class="search-box">
               <i class="fas fa-search"></i>
-              <input type="text" name="q" class="form-control w-100" placeholder="Buscar no blog..." value="{{ request('q') }}">
+              <input type="text" name="q" class="form-control w-100" placeholder="Buscar no blog..." value="{{ request('q', request('search')) }}">
             </div>
           </form>
         </div>
@@ -98,7 +98,7 @@
             <ul class="list-unstyled mb-0">
               @foreach($categories as $cat)
                 <li class="mb-2">
-                  <a href="{{ route('site.blog', ['category' => $cat->slug]) }}" class="text-decoration-none d-flex justify-content-between align-items-center">
+                  <a href="{{ route('site.blog.categoria', $cat->slug) }}" class="text-decoration-none d-flex justify-content-between align-items-center">
                     <span><i class="fas fa-chevron-right me-2 small text-green"></i>{{ $cat->nome }}</span>
                     <span class="badge bg-light text-dark rounded-pill">{{ $cat->posts_count ?? 0 }}</span>
                   </a>
@@ -113,7 +113,7 @@
             <h5><i class="fas fa-tags me-2 text-blue"></i>Tags</h5>
             <div>
               @foreach($tags as $tag)
-                <a href="{{ route('site.blog', ['tag' => $tag->slug]) }}" class="tag">{{ $tag->nome }}</a>
+                <a href="{{ route('site.blog.tag', $tag->slug) }}" class="tag">{{ $tag->nome }}</a>
               @endforeach
             </div>
           </div>

@@ -16,7 +16,6 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Models\Page;
 use App\Services\SEO\SeoService;
-use Illuminate\Support\Facades\Cache;
 
 class TermosController extends Controller
 {
@@ -26,11 +25,9 @@ class TermosController extends Controller
 
     public function index()
     {
-        $page = Cache::remember('site_termos_page', 3600, function () {
-            return Page::where('slug', 'termos')
-                ->where('status', 'published')
-                ->first();
-        });
+        $page = Page::where('slug', 'termos')
+            ->where('status', 'published')
+            ->first();
 
         if (!$page) {
             abort(404);

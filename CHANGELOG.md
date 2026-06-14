@@ -23,6 +23,9 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 - eliminado o erro de desserializacao em producao que fazia configuracoes gravadas no banco voltarem como `null` ou valor padrao ao serem lidas pelo frontend e pelo painel
 - hotfix resolve o caso em que `default_theme` salvava como `premium` no banco, mas o HTML publico continuava renderizando `data-site-theme="default"`
 - corrigido o padrao inseguro de ordenacao em services criticos (`BlogService`, `AgendaService`, `FinanceiroService`, `MidiaService`, `TransparenciaService`, `AuditoriaService`, `NotificacaoService` e `WafService`) para nao acessar `sort_by` ausente e nao gerar erro 500 em producao
+- removido o cache de models e collections Eloquent nas controllers publicas do blog, equipe, imprensa, paginas institucionais, noticias e projetos para evitar objetos incompletos no cache de arquivo do cPanel
+- ajustado o WAF para nao bloquear `PUT`, `PATCH` e `DELETE` legitimos do proprio sistema e corrigido o padrao regex de path traversal com barra invertida
+- corrigido o blog publico para aceitar busca por `q`, links reais de categoria e tag, e filtro por `tag_slug` no service
 - validacao local executada: `php artisan optimize:clear` e leitura direta de `settings('default_theme')` com cache repovoado no formato correto
 
 ### 2026-06-14 - adiciona segundo tema visual no frontend publico

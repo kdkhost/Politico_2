@@ -18,7 +18,6 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Services\SEO\SeoService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class NoticiasController extends Controller
 {
@@ -28,9 +27,7 @@ class NoticiasController extends Controller
 
     public function index(Request $request)
     {
-        $category = Cache::remember('site_noticias_category', 3600, function () {
-            return Category::where('slug', 'noticias')->where('active', true)->first();
-        });
+        $category = Category::where('slug', 'noticias')->where('active', true)->first();
 
         if (!$category) {
             abort(404, 'Categoria de notícias não encontrada.');
@@ -52,15 +49,13 @@ class NoticiasController extends Controller
 
         $posts = $query->orderByDesc('published_at')->paginate(12);
 
-        $destaques = Cache::remember('site_noticias_destaques', 300, function () use ($category) {
-            return Post::where('category_id', $category->id)
-                ->where('status', 'published')
-                ->whereDate('published_at', '<=', now())
-                ->where('formato', 'destaque')
-                ->orderByDesc('published_at')
-                ->limit(3)
-                ->get();
-        });
+        $destaques = Post::where('category_id', $category->id)
+            ->where('status', 'published')
+            ->whereDate('published_at', '<=', now())
+            ->where('formato', 'destaque')
+            ->orderByDesc('published_at')
+            ->limit(3)
+            ->get();
 
         $meta = $this->seoService->generateMetaTags(null, 'page');
         $meta['title'] = 'Notícias - ' . config('app.name');

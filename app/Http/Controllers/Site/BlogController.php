@@ -19,7 +19,6 @@ use App\Models\Tag;
 use App\Services\Blog\BlogService;
 use App\Services\SEO\SeoService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class BlogController extends Controller
 {
@@ -30,25 +29,24 @@ class BlogController extends Controller
 
     public function index(Request $request)
     {
-        $filters = array_merge($request->only(['search', 'sort_by', 'sort_order']), [
+        $filters = array_merge($request->only(['sort_by', 'sort_order']), [
             'status' => 'published',
+            'search' => $request->input('search', $request->input('q')),
+            'category_slug' => $request->input('category'),
+            'tag_slug' => $request->input('tag'),
         ]);
 
         $posts = $this->blogService->listPosts($filters);
 
-        $categories = Cache::remember('site_blog_categories', 3600, function () {
-            return Category::withCount(['posts' => fn($q) => $q->where('status', 'published')])
-                ->where('active', true)
-                ->orderBy('nome')
-                ->get();
-        });
+        $categories = Category::withCount(['posts' => fn($q) => $q->where('status', 'published')])
+            ->where('active', true)
+            ->orderBy('nome')
+            ->get();
 
-        $tags = Cache::remember('site_blog_tags', 3600, function () {
-            return Tag::withCount(['posts' => fn($q) => $q->where('status', 'published')])
-                ->orderBy('posts_count', 'desc')
-                ->limit(20)
-                ->get();
-        });
+        $tags = Tag::withCount(['posts' => fn($q) => $q->where('status', 'published')])
+            ->orderBy('posts_count', 'desc')
+            ->limit(20)
+            ->get();
 
         $popularPosts = collect($this->blogService->getPopularPosts(5))->map(fn($item) => (object) $item);
 
