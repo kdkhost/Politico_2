@@ -26,13 +26,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="transparencia_category_id" class="form-label">Categoria <span class="text-danger">*</span></label>
-                                <select id="transparencia_category_id" name="category_id" class="form-select" required>
-                                    <option value="">Selecione</option>
-                                    @foreach($categories ?? [] as $cat)
-                                        <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                                    @endforeach
-                                </select>
+                                <label for="transparencia_category_id" class="form-label">Categoria</label>
+                                <input type="text" id="transparencia_category_id" name="category_id" class="form-control" placeholder="Ex: Licitações, Contratos, Relatórios">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -57,7 +52,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="transparencia_file" class="form-label">Arquivo <span class="text-danger">*</span></label>
-                        <input type="file" id="transparencia_file" name="file" class="form-control" required>
+                        <input type="file" id="transparencia_file" name="file" class="form-control" data-upload-label="Arquivo de transparência" data-image-size="Documento até 10MB" required>
                         <div class="form-text">PDF, XLS, XLSX, DOC, DOCX. Tamanho máximo: 10MB.</div>
                     </div>
                     <div class="mb-3">

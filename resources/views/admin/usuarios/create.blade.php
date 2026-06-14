@@ -12,7 +12,7 @@
 <div class="card">
     <div class="card-header"><h3 class="card-title">Novo Usuário</h3></div>
     <div class="card-body">
-        <form id="userForm" action="{{ route('admin.users.store') }}" method="POST">
+        <form id="userForm" action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -46,6 +46,10 @@
                         <option value="active">Ativo</option>
                         <option value="inactive">Inativo</option>
                     </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Foto/Avatar</label>
+                    <input type="file" name="avatar" class="form-control" accept="image/*" data-image-size="512x512" data-upload-label="Foto do usuario">
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Salvar</button>

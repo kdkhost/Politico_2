@@ -16,6 +16,7 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use App\Services\SEO\SeoService;
+use App\Services\Security\RecaptchaService;
 use App\Services\SMTP\SmtpService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -28,6 +29,7 @@ class ContatoController extends Controller
     public function __construct(
         protected SeoService $seoService,
         protected SmtpService $smtpService,
+        protected RecaptchaService $recaptchaService,
     ) {}
 
     public function index()
@@ -61,6 +63,14 @@ class ContatoController extends Controller
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
+        }
+
+        $recaptcha = $this->recaptchaService->validate($request, 'contact');
+
+        if (!$recaptcha['valid']) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['recaptcha' => $recaptcha['message'] ?? 'Falha na validacao anti-spam.']);
         }
 
         if ($request->filled('website')) {

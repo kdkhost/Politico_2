@@ -25,7 +25,7 @@
 
                     <div class="mb-3">
                         <label for="title" class="form-label">Título <span class="text-danger">*</span></label>
-                        <input type="text" id="title" name="title" class="form-control" value="{{ $page->title ?? '' }}" placeholder="Título da página" required>
+                        <input type="text" id="title" name="title" class="form-control" value="{{ $page->titulo ?? '' }}" placeholder="Título da página" required>
                     </div>
 
                     <div class="row">
@@ -42,9 +42,9 @@
                             <div class="mb-3">
                                 <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
                                 <select id="status" name="status" class="form-select">
-                                    <option value="rascunho" {{ ($page->status ?? '') === 'rascunho' ? 'selected' : '' }}>Rascunho</option>
-                                    <option value="publicado" {{ ($page->status ?? '') === 'publicado' ? 'selected' : '' }}>Publicado</option>
-                                    <option value="arquivado" {{ ($page->status ?? '') === 'arquivado' ? 'selected' : '' }}>Arquivado</option>
+                                    <option value="rascunho" @selected(in_array(($page->status ?? 'draft'), ['rascunho', 'draft'], true))>Rascunho</option>
+                                    <option value="publicado" @selected(in_array(($page->status ?? ''), ['publicado', 'published'], true))>Publicado</option>
+                                    <option value="arquivado" @selected(in_array(($page->status ?? ''), ['arquivado', 'archived'], true))>Arquivado</option>
                                 </select>
                             </div>
                         </div>
@@ -52,15 +52,15 @@
 
                     <div class="mb-3">
                         <label for="content" class="form-label">Conteúdo <span class="text-danger">*</span></label>
-                        <textarea id="content" name="content" class="form-control summernote" rows="15">{{ $page->content ?? '' }}</textarea>
+                        <textarea id="content" name="content" class="form-control summernote" rows="15">{{ $page->conteudo ?? '' }}</textarea>
                     </div>
 
                     <div class="mb-3">
                         <label for="featured_image" class="form-label">Imagem de Destaque</label>
-                        <input type="file" id="featured_image" name="featured_image" class="form-control" accept="image/*">
-                        @if($page->featured_image ?? false)
+                        <input type="file" id="featured_image" name="featured_image" class="form-control" accept="image/*" data-image-size="1200x675" data-upload-label="Imagem de destaque" data-existing-url="{{ $page->seo_og_image ?? '' }}">
+                        @if($page->seo_og_image ?? false)
                             <div class="mt-2">
-                                <img src="{{ $page->featured_image }}" alt="{{ $page->title }}" style="max-height: 100px;">
+                                <img src="{{ $page->seo_og_image }}" alt="{{ $page->titulo }}" style="max-height: 100px;">
                             </div>
                         @endif
                     </div>
@@ -80,22 +80,22 @@
                             <div class="card-body">
                                 <div class="mb-3">
                                     <label for="meta_title" class="form-label">Meta Title</label>
-                                    <input type="text" id="meta_title" name="meta_title" class="form-control" value="{{ $page->meta_title ?? '' }}" placeholder="Título para SEO (se vazio, usa o título da página)">
+                                    <input type="text" id="meta_title" name="meta_title" class="form-control" value="{{ $page->seo_title ?? '' }}" placeholder="Título para SEO (se vazio, usa o título da página)">
                                 </div>
                                 <div class="mb-3">
                                     <label for="meta_description" class="form-label">Meta Description</label>
-                                    <textarea id="meta_description" name="meta_description" class="form-control" rows="2" maxlength="160" placeholder="Descrição para mecanismos de busca">{{ $page->meta_description ?? '' }}</textarea>
+                                    <textarea id="meta_description" name="meta_description" class="form-control" rows="2" maxlength="160" placeholder="Descrição para mecanismos de busca">{{ $page->seo_description ?? '' }}</textarea>
                                     <div class="form-text">Máximo 160 caracteres.</div>
                                 </div>
                                 <div class="mb-3">
                                     <label for="meta_keywords" class="form-label">Meta Keywords</label>
-                                    <input type="text" id="meta_keywords" name="meta_keywords" class="form-control" value="{{ $page->meta_keywords ?? '' }}" placeholder="palavra1, palavra2, palavra3">
+                                    <input type="text" id="meta_keywords" name="meta_keywords" class="form-control" value="{{ $page->seo_keywords ?? '' }}" placeholder="palavra1, palavra2, palavra3">
                                 </div>
                                 <div class="mb-3">
                                     <label for="og_image" class="form-label">OG Image (Compartilhamento)</label>
-                                    <input type="file" id="og_image" name="og_image" class="form-control" accept="image/*">
-                                    @if($page->og_image ?? false)
-                                        <div class="mt-2"><img src="{{ $page->og_image }}" alt="OG" style="max-height: 60px;"></div>
+                                    <input type="file" id="og_image" name="og_image" class="form-control" accept="image/*" data-image-size="1200x630" data-upload-label="Imagem OG" data-existing-url="{{ $page->seo_og_image ?? '' }}">
+                                    @if($page->seo_og_image ?? false)
+                                        <div class="mt-2"><img src="{{ $page->seo_og_image }}" alt="OG" style="max-height: 60px;"></div>
                                     @endif
                                 </div>
                             </div>
@@ -165,7 +165,7 @@
             callbacks: {
                 onImageUpload: function(files) {
                     var formData = new FormData();
-                    formData.append('image', files[0]);
+                    formData.append('file', files[0]);
                     formData.append('_token', '{{ csrf_token() }}');
                     $.ajax({
                         url: '{{ route("admin.media.upload") }}',
@@ -174,8 +174,9 @@
                         processData: false,
                         contentType: false,
                         success: function(res) {
-                            if (res.url) {
-                                $('.summernote').summernote('insertImage', res.url, res.filename || 'image');
+                            var imageUrl = res.url || res.data?.url;
+                            if (imageUrl) {
+                                $('.summernote').summernote('insertImage', imageUrl, res.data?.filename || 'image');
                             }
                         },
                         error: function(xhr) {

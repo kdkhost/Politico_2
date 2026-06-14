@@ -16,6 +16,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\Sistema\ConfiguracaoService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
@@ -63,15 +64,38 @@ class SettingController extends Controller
                     'contact_email' => 'contato', 'contact_phone' => 'contato', 'contact_address' => 'contato', 'contact_whatsapp' => 'contato',
                     'social_facebook' => 'social', 'social_instagram' => 'social', 'social_twitter' => 'social', 'social_youtube' => 'social', 'social_linkedin' => 'social',
                     'seo_title' => 'seo', 'seo_description' => 'seo', 'seo_keywords' => 'seo',
-                    'primary_color' => 'tema', 'secondary_color' => 'tema', 'dark_mode_default' => 'tema',
+                    'primary_color' => 'tema', 'secondary_color' => 'tema', 'dark_mode' => 'tema', 'dark_mode_default' => 'tema',
                     'cookie_banner_enabled' => 'lgpd', 'lgpd_privacy_page' => 'lgpd',
+                    'recaptcha_enabled' => 'seguranca', 'recaptcha_version' => 'seguranca', 'recaptcha_site_key' => 'seguranca',
+                    'recaptcha_secret_key' => 'seguranca', 'recaptcha_min_score' => 'seguranca',
+                    'recaptcha_admin_login' => 'seguranca', 'recaptcha_contact' => 'seguranca',
                     'header_scripts' => 'scripts', 'footer_scripts' => 'scripts',
                 ];
                 $typeMap = [
                     'logo' => 'file', 'favicon' => 'file',
-                    'dark_mode_default' => 'boolean', 'cookie_banner_enabled' => 'boolean',
+                    'dark_mode' => 'boolean', 'dark_mode_default' => 'boolean', 'cookie_banner_enabled' => 'boolean',
+                    'recaptcha_enabled' => 'boolean', 'recaptcha_admin_login' => 'boolean', 'recaptcha_contact' => 'boolean',
+                    'recaptcha_min_score' => 'float',
                     'header_scripts' => 'text', 'footer_scripts' => 'text',
                 ];
+                $booleanKeys = [
+                    'dark_mode',
+                    'dark_mode_default',
+                    'cookie_banner_enabled',
+                    'recaptcha_enabled',
+                    'recaptcha_admin_login',
+                    'recaptcha_contact',
+                ];
+
+                foreach ($booleanKeys as $booleanKey) {
+                    if (!$request->has($booleanKey)) {
+                        $settingsData[$booleanKey] = [
+                            'valor' => false,
+                            'tipo' => 'boolean',
+                            'grupo' => $groupMap[$booleanKey] ?? 'geral',
+                        ];
+                    }
+                }
 
                 foreach ($request->all() as $key => $value) {
                     if (in_array($key, $excluded, true)) {
@@ -80,8 +104,22 @@ class SettingController extends Controller
 
                     if ($request->hasFile($key)) {
                         $file = $request->file($key);
+                        $extension = strtolower((string) $file->getClientOriginalExtension());
+
+                        if (in_array($extension, ['svg'], true)) {
+                            return response()->json(['status' => 'error', 'message' => 'Upload SVG nao e permitido por seguranca.'], 422);
+                        }
+
+                        $request->validate([
+                            $key => 'file|mimes:jpg,jpeg,png,webp,ico|max:' . config('sistema.upload_max_size', 10) * 1024,
+                        ]);
+
                         $path = $file->store('settings', 'public');
-                        $value = 'storage/' . $path;
+                        $value = Storage::url($path);
+                    }
+
+                    if ($key === 'recaptcha_secret_key' && empty($value) && settings('recaptcha_secret_key')) {
+                        continue;
                     }
 
                     $settingsData[$key] = [
@@ -119,6 +157,7 @@ class SettingController extends Controller
         try {
             $theme = $request->input('theme', 'light');
             session(['admin-theme' => $theme]);
+            $this->configuracaoService->set('dark_mode', $theme === 'dark', 'boolean', 'tema');
 
             return response()->json([
                 'status' => 'success',

@@ -118,4 +118,19 @@ class User extends Authenticatable
     {
         return (bool) $this->is_blocked;
     }
+
+    public function getAvatarUrlAttribute(): string
+    {
+        $avatar = (string) ($this->avatar ?? '');
+
+        if ($avatar === '') {
+            return asset('img/default-avatar.png');
+        }
+
+        if (str_starts_with($avatar, ['http://', 'https://', '//', '/'])) {
+            return $avatar;
+        }
+
+        return asset($avatar);
+    }
 }

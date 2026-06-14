@@ -106,6 +106,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Authenticated admin routes (with license check)
     Route::middleware(['auth', 'admin', 'check.license'])->group(function () {
         Route::post('/logout', [App\Http\Controllers\Admin\AuthController::class, 'logout'])->name('logout');
+        Route::post('/me/avatar', [App\Http\Controllers\Admin\UserController::class, 'updateAvatar'])->name('profile.avatar');
 
         // Dashboard
         Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->middleware('permission:dashboard.view')->name('dashboard');
@@ -148,7 +149,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/criar', [App\Http\Controllers\Admin\UserController::class, 'store'])->middleware('permission:users.create')->name('store');
             Route::get('/{id}/editar', [App\Http\Controllers\Admin\UserController::class, 'edit'])->middleware('permission:users.edit')->name('edit');
             Route::get('/{id}', [App\Http\Controllers\Admin\UserController::class, 'show'])->name('show');
-            Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\UserController::class, 'update'])->middleware('permission:users.edit')->name('update');
+            Route::match(['post', 'put', 'patch'], '/{id}/atualizar', [App\Http\Controllers\Admin\UserController::class, 'update'])->middleware('permission:users.edit')->name('update');
             Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->middleware('permission:users.delete')->name('destroy');
             Route::post('/{id}/bloquear', [App\Http\Controllers\Admin\UserController::class, 'block'])->middleware('permission:users.edit')->name('block');
             Route::post('/{id}/desbloquear', [App\Http\Controllers\Admin\UserController::class, 'unblock'])->middleware('permission:users.edit')->name('unblock');
@@ -163,7 +164,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/criar', [App\Http\Controllers\Admin\PermissionController::class, 'create'])->middleware('permission:permissions.create')->name('create');
             Route::post('/criar', [App\Http\Controllers\Admin\PermissionController::class, 'store'])->middleware('permission:permissions.create')->name('store');
             Route::get('/{id}/editar', [App\Http\Controllers\Admin\PermissionController::class, 'edit'])->middleware('permission:permissions.edit')->name('edit');
-            Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\PermissionController::class, 'update'])->middleware('permission:permissions.edit')->name('update');
+            Route::match(['post', 'put', 'patch'], '/{id}/atualizar', [App\Http\Controllers\Admin\PermissionController::class, 'update'])->middleware('permission:permissions.edit')->name('update');
             Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\PermissionController::class, 'destroy'])->middleware('permission:permissions.delete')->name('destroy');
             Route::get('/grupos/{groupId?}', [App\Http\Controllers\Admin\PermissionController::class, 'getByGroup'])->name('grupos');
 
@@ -174,13 +175,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/perfis/criar', [App\Http\Controllers\Admin\ProfileController::class, 'store'])->middleware('permission:permissions.create')->name('profiles.store');
             Route::get('/perfis/{id}/editar', [App\Http\Controllers\Admin\ProfileController::class, 'edit'])->middleware('permission:permissions.edit')->name('profiles.edit');
             Route::get('/perfis/{id}', [App\Http\Controllers\Admin\ProfileController::class, 'show'])->name('profiles.show');
-            Route::post('/perfis/{id}/atualizar', [App\Http\Controllers\Admin\ProfileController::class, 'update'])->middleware('permission:permissions.edit')->name('profiles.update');
+            Route::match(['post', 'put', 'patch'], '/perfis/{id}/atualizar', [App\Http\Controllers\Admin\ProfileController::class, 'update'])->middleware('permission:permissions.edit')->name('profiles.update');
             Route::delete('/perfis/{id}/excluir', [App\Http\Controllers\Admin\ProfileController::class, 'destroy'])->middleware('permission:permissions.delete')->name('profiles.destroy');
             Route::post('/perfis/{id}/permissoes', [App\Http\Controllers\Admin\ProfileController::class, 'syncPermissions'])->middleware('permission:permissions.edit')->name('profiles.sync-permissions');
 
             // Aliases legados para rotas usadas nas views; remover na v1.1.0.
             Route::get('/profile/{id}', [App\Http\Controllers\Admin\ProfileController::class, 'show'])->name('profile.show');
-            Route::post('/profile/{id}/atualizar', [App\Http\Controllers\Admin\ProfileController::class, 'update'])->middleware('permission:permissions.edit')->name('profile.update');
+            Route::match(['post', 'put', 'patch'], '/profile/{id}/atualizar', [App\Http\Controllers\Admin\ProfileController::class, 'update'])->middleware('permission:permissions.edit')->name('profile.update');
             Route::post('/profile/criar', [App\Http\Controllers\Admin\ProfileController::class, 'store'])->middleware('permission:permissions.create')->name('profile.store');
             Route::delete('/profile/{id}/excluir', [App\Http\Controllers\Admin\ProfileController::class, 'destroy'])->middleware('permission:permissions.delete')->name('profile.delete');
 
@@ -197,7 +198,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/criar', [App\Http\Controllers\Admin\PageController::class, 'create'])->middleware('permission:pages.create')->name('create');
             Route::post('/criar', [App\Http\Controllers\Admin\PageController::class, 'store'])->middleware('permission:pages.create')->name('store');
             Route::get('/{id}/editar', [App\Http\Controllers\Admin\PageController::class, 'edit'])->middleware('permission:pages.edit')->name('edit');
-            Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\PageController::class, 'update'])->middleware('permission:pages.edit')->name('update');
+            Route::match(['post', 'put', 'patch'], '/{id}/atualizar', [App\Http\Controllers\Admin\PageController::class, 'update'])->middleware('permission:pages.edit')->name('update');
             Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\PageController::class, 'destroy'])->middleware('permission:pages.delete')->name('destroy');
         });
 
@@ -215,7 +216,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/categorias/criar', [App\Http\Controllers\Admin\CategoryController::class, 'create'])->middleware('permission:blog.create')->name('categories.create');
             Route::post('/categorias/criar', [App\Http\Controllers\Admin\CategoryController::class, 'store'])->middleware('permission:blog.create')->name('categories.store');
             Route::get('/categorias/{id}/editar', [App\Http\Controllers\Admin\CategoryController::class, 'edit'])->middleware('permission:blog.edit')->name('categories.edit');
-            Route::post('/categorias/{id}/atualizar', [App\Http\Controllers\Admin\CategoryController::class, 'update'])->middleware('permission:blog.edit')->name('categories.update');
+            Route::match(['post', 'put', 'patch'], '/categorias/{id}/atualizar', [App\Http\Controllers\Admin\CategoryController::class, 'update'])->middleware('permission:blog.edit')->name('categories.update');
             Route::delete('/categorias/{id}/excluir', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])->middleware('permission:blog.delete')->name('categories.destroy');
 
             // Tags
@@ -224,12 +225,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/tags/criar', [App\Http\Controllers\Admin\TagController::class, 'create'])->middleware('permission:blog.create')->name('tags.create');
             Route::post('/tags/criar', [App\Http\Controllers\Admin\TagController::class, 'store'])->middleware('permission:blog.create')->name('tags.store');
             Route::get('/tags/{id}/editar', [App\Http\Controllers\Admin\TagController::class, 'edit'])->middleware('permission:blog.edit')->name('tags.edit');
-            Route::post('/tags/{id}/atualizar', [App\Http\Controllers\Admin\TagController::class, 'update'])->middleware('permission:blog.edit')->name('tags.update');
+            Route::match(['post', 'put', 'patch'], '/tags/{id}/atualizar', [App\Http\Controllers\Admin\TagController::class, 'update'])->middleware('permission:blog.edit')->name('tags.update');
             Route::delete('/tags/{id}/excluir', [App\Http\Controllers\Admin\TagController::class, 'destroy'])->middleware('permission:blog.delete')->name('tags.destroy');
 
             Route::get('/{id}', [App\Http\Controllers\Admin\BlogController::class, 'show'])->name('show');
             Route::get('/{id}/editar', [App\Http\Controllers\Admin\BlogController::class, 'edit'])->middleware('permission:blog.edit')->name('edit');
-            Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\BlogController::class, 'update'])->middleware('permission:blog.edit')->name('update');
+            Route::match(['post', 'put', 'patch'], '/{id}/atualizar', [App\Http\Controllers\Admin\BlogController::class, 'update'])->middleware('permission:blog.edit')->name('update');
             Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\BlogController::class, 'destroy'])->middleware('permission:blog.delete')->name('destroy');
             Route::post('/{id}/publicar', [App\Http\Controllers\Admin\BlogController::class, 'publish'])->middleware('permission:blog.edit')->name('publish');
             Route::post('/{id}/arquivar', [App\Http\Controllers\Admin\BlogController::class, 'archive'])->middleware('permission:blog.edit')->name('archive');
@@ -261,7 +262,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/criar', [App\Http\Controllers\Admin\EventController::class, 'store'])->middleware('permission:agenda.create')->name('store');
             Route::get('/{id}', [App\Http\Controllers\Admin\EventController::class, 'show'])->name('show');
             Route::get('/{id}/editar', [App\Http\Controllers\Admin\EventController::class, 'edit'])->middleware('permission:agenda.edit')->name('edit');
-            Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\EventController::class, 'update'])->middleware('permission:agenda.edit')->name('update');
+            Route::match(['post', 'put', 'patch'], '/{id}/atualizar', [App\Http\Controllers\Admin\EventController::class, 'update'])->middleware('permission:agenda.edit')->name('update');
             Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\EventController::class, 'destroy'])->middleware('permission:agenda.delete')->name('destroy');
             Route::post('/{id}/arrastar', [App\Http\Controllers\Admin\EventController::class, 'dragUpdate'])->middleware('permission:agenda.edit')->name('drag-update');
         });
@@ -276,12 +277,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/resumo', [App\Http\Controllers\Admin\FinanceiroController::class, 'getSummary'])->name('summary');
             Route::get('/exportar', [App\Http\Controllers\Admin\FinanceiroController::class, 'export'])->name('export');
             Route::post('/categorias/criar', [App\Http\Controllers\Admin\FinanceiroController::class, 'storeCategory'])->middleware('permission:financeiro.create')->name('categorias.store');
-            Route::post('/categorias/{id}/atualizar', [App\Http\Controllers\Admin\FinanceiroController::class, 'updateCategory'])->middleware('permission:financeiro.edit')->name('categorias.update');
+            Route::match(['post', 'put', 'patch'], '/categorias/{id}/atualizar', [App\Http\Controllers\Admin\FinanceiroController::class, 'updateCategory'])->middleware('permission:financeiro.edit')->name('categorias.update');
             Route::delete('/categorias/{id}/excluir', [App\Http\Controllers\Admin\FinanceiroController::class, 'destroyCategory'])->middleware('permission:financeiro.delete')->name('categorias.destroy');
             Route::get('/{id}/editar', [App\Http\Controllers\Admin\FinanceiroController::class, 'edit'])->middleware('permission:financeiro.edit')->name('edit');
             Route::get('/{id}', [App\Http\Controllers\Admin\FinanceiroController::class, 'show'])->name('show');
             Route::post('/criar', [App\Http\Controllers\Admin\FinanceiroController::class, 'store'])->middleware('permission:financeiro.create')->name('store');
-            Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\FinanceiroController::class, 'update'])->middleware('permission:financeiro.edit')->name('update');
+            Route::match(['post', 'put', 'patch'], '/{id}/atualizar', [App\Http\Controllers\Admin\FinanceiroController::class, 'update'])->middleware('permission:financeiro.edit')->name('update');
             Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\FinanceiroController::class, 'destroy'])->middleware('permission:financeiro.delete')->name('destroy');
         });
 
@@ -295,7 +296,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{id}/editar', [App\Http\Controllers\Admin\TransparenciaController::class, 'edit'])->middleware('permission:transparencia.edit')->name('edit');
             Route::get('/{id}', [App\Http\Controllers\Admin\TransparenciaController::class, 'show'])->name('show');
             Route::post('/criar', [App\Http\Controllers\Admin\TransparenciaController::class, 'store'])->middleware('permission:transparencia.create')->name('store');
-            Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\TransparenciaController::class, 'update'])->middleware('permission:transparencia.edit')->name('update');
+            Route::match(['post', 'put', 'patch'], '/{id}/atualizar', [App\Http\Controllers\Admin\TransparenciaController::class, 'update'])->middleware('permission:transparencia.edit')->name('update');
             Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\TransparenciaController::class, 'destroy'])->middleware('permission:transparencia.delete')->name('destroy');
         });
 
@@ -381,18 +382,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/criar', [App\Http\Controllers\Admin\MenuController::class, 'create'])->middleware('permission:menus.create')->name('create');
             Route::post('/criar', [App\Http\Controllers\Admin\MenuController::class, 'store'])->middleware('permission:menus.create')->name('store');
             Route::get('/{id}/editar', [App\Http\Controllers\Admin\MenuController::class, 'edit'])->middleware('permission:menus.edit')->name('edit');
-            Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\MenuController::class, 'update'])->middleware('permission:menus.edit')->name('update');
+            Route::match(['post', 'put', 'patch'], '/{id}/atualizar', [App\Http\Controllers\Admin\MenuController::class, 'update'])->middleware('permission:menus.edit')->name('update');
             Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\MenuController::class, 'destroy'])->middleware('permission:menus.delete')->name('destroy');
             Route::get('/{id}', [App\Http\Controllers\Admin\MenuController::class, 'show'])->name('show');
             Route::post('/{id}/itens', [App\Http\Controllers\Admin\MenuController::class, 'addItem'])->middleware('permission:menus.create')->name('items.store');
-            Route::post('/itens/{itemId}/atualizar', [App\Http\Controllers\Admin\MenuController::class, 'updateItem'])->middleware('permission:menus.edit')->name('items.update');
+            Route::match(['post', 'put', 'patch'], '/itens/{itemId}/atualizar', [App\Http\Controllers\Admin\MenuController::class, 'updateItem'])->middleware('permission:menus.edit')->name('items.update');
             Route::delete('/itens/{itemId}/excluir', [App\Http\Controllers\Admin\MenuController::class, 'deleteItem'])->middleware('permission:menus.delete')->name('items.destroy');
             Route::post('/reordenar', [App\Http\Controllers\Admin\MenuController::class, 'reorderItems'])->middleware('permission:menus.edit')->name('reorder');
 
             // Aliases legados para rotas usadas nas views; remover na v1.1.0.
             Route::get('/itens/{itemId}', [App\Http\Controllers\Admin\MenuController::class, 'showItem'])->name('item.show');
             Route::post('/itens/{itemId}/excluir', [App\Http\Controllers\Admin\MenuController::class, 'deleteItem'])->middleware('permission:menus.delete')->name('item.destroy');
-            Route::post('/itens/{itemId}/atualizar', [App\Http\Controllers\Admin\MenuController::class, 'updateItem'])->middleware('permission:menus.edit')->name('item.update');
+            Route::match(['post', 'put', 'patch'], '/itens/{itemId}/atualizar', [App\Http\Controllers\Admin\MenuController::class, 'updateItem'])->middleware('permission:menus.edit')->name('item.update');
             Route::post('/itens/criar', [App\Http\Controllers\Admin\MenuController::class, 'addItem'])->middleware('permission:menus.create')->name('item.store');
         });
 
@@ -402,7 +403,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{id}/editar', [App\Http\Controllers\Admin\ModuleController::class, 'edit'])->middleware('permission:modules.edit')->name('edit');
             Route::post('/{id}/alternar', [App\Http\Controllers\Admin\ModuleController::class, 'toggle'])->middleware('permission:modules.edit')->name('toggle');
             Route::post('/{id}/configurar', [App\Http\Controllers\Admin\ModuleController::class, 'config'])->middleware('permission:modules.edit')->name('config');
-            Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\ModuleController::class, 'update'])->middleware('permission:modules.edit')->name('update');
+            Route::match(['post', 'put', 'patch'], '/{id}/atualizar', [App\Http\Controllers\Admin\ModuleController::class, 'update'])->middleware('permission:modules.edit')->name('update');
         });
 
         // SEO
@@ -421,7 +422,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/criar', [App\Http\Controllers\Admin\HashtagController::class, 'create'])->middleware('permission:hashtags.create')->name('create');
             Route::post('/criar', [App\Http\Controllers\Admin\HashtagController::class, 'store'])->middleware('permission:hashtags.create')->name('store');
             Route::get('/{id}/editar', [App\Http\Controllers\Admin\HashtagController::class, 'edit'])->middleware('permission:hashtags.edit')->name('edit');
-            Route::post('/{id}/atualizar', [App\Http\Controllers\Admin\HashtagController::class, 'update'])->middleware('permission:hashtags.edit')->name('update');
+            Route::match(['post', 'put', 'patch'], '/{id}/atualizar', [App\Http\Controllers\Admin\HashtagController::class, 'update'])->middleware('permission:hashtags.edit')->name('update');
             Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\HashtagController::class, 'destroy'])->middleware('permission:hashtags.delete')->name('destroy');
             Route::get('/buscar', [App\Http\Controllers\Admin\HashtagController::class, 'search'])->name('search');
         });

@@ -374,11 +374,29 @@ if (!function_exists('settings')) {
     function settings(string $key, mixed $default = null): mixed
     {
         try {
-            $setting = \Illuminate\Support\Facades\DB::table('settings')
-                ->where('key', $key)
-                ->value('value');
+            $setting = \Illuminate\Support\Facades\Cache::remember("setting_{$key}", 3600, function () use ($key) {
+                return \Illuminate\Support\Facades\DB::table('settings')
+                    ->where('chave', $key)
+                    ->first(['valor', 'tipo']);
+            });
 
-            return $setting ?? $default;
+            if (!$setting) {
+                return $default;
+            }
+
+            $value = $setting->valor ?? null;
+
+            if ($value === null) {
+                return $default;
+            }
+
+            return match ($setting->tipo ?? 'text') {
+                'boolean', 'bool' => filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false,
+                'integer', 'int' => (int) $value,
+                'float', 'double' => (float) $value,
+                'json', 'array' => json_decode((string) $value, true) ?? [],
+                default => $value,
+            };
         } catch (\Throwable $e) {
             return $default;
         }

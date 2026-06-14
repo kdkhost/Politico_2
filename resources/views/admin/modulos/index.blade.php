@@ -110,6 +110,28 @@
 @push('scripts')
 <script>
     $(function() {
+        function escapeHtml(value) {
+            return $('<div>').text(value || '').html();
+        }
+
+        function updateModuleRow(module) {
+            var row = $('#modulesTable tr[data-id="' + module.id + '"]');
+            if (!row.length) {
+                return;
+            }
+
+            row.find('td').eq(0).text(module.ordem || 0);
+            row.find('td').eq(1).html('<i class="' + escapeHtml(module.icone || 'fas fa-puzzle-piece') + ' me-1"></i>' + escapeHtml(module.nome || ''));
+            row.find('td').eq(2).text(module.descricao || '-');
+            row.find('td').eq(3).html(module.active
+                ? '<span class="badge bg-success"><i class="fas fa-check me-1"></i>Ativo</span>'
+                : '<span class="badge bg-danger"><i class="fas fa-times me-1"></i>Inativo</span>');
+            row.find('.btn-toggle-module')
+                .toggleClass('btn-warning', !!module.active)
+                .toggleClass('btn-success', !module.active)
+                .html('<i class="fas fa-' + (module.active ? 'pause' : 'play') + '"></i>');
+        }
+
         $(document).on('click', '.btn-edit-module', function() {
             var id = $(this).data('id');
             $.get('{{ route("admin.modules.config", ":id") }}'.replace(':id', id), function(res) {
@@ -145,7 +167,7 @@
                     if (res.status === 'success') {
                         toastr.success('Módulo atualizado!');
                         $('#moduleModal').modal('hide');
-                        location.reload();
+                        updateModuleRow(res.data || {});
                     } else {
                         toastr.error(res.message || 'Erro ao salvar.');
                     }
@@ -165,7 +187,7 @@
                 success: function(res) {
                     if (res.status === 'success') {
                         toastr.success(res.message || 'Status alterado!');
-                        location.reload();
+                        updateModuleRow(res.data || {});
                     } else {
                         toastr.error(res.message || 'Erro ao alternar.');
                     }

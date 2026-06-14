@@ -81,7 +81,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="browseFile" class="form-label">Arquivo <span class="text-danger">*</span></label>
-                        <input type="file" id="browseFile" name="file" class="form-control" required>
+                        <input type="file" id="browseFile" name="file" class="form-control" required data-upload-label="Arquivo de mídia" data-image-size="1200x675">
                     </div>
                     <div class="mb-3">
                         <label for="browseAltText" class="form-label">Texto Alternativo</label>

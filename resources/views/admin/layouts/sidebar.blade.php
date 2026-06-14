@@ -260,7 +260,7 @@
 @endphp
 
 <nav class="mt-2">
-    <ul class="nav sidebar-menu flex-column" data-admin-treeview role="menu" data-accordion="false">
+    <ul class="nav sidebar-menu flex-column" data-admin-treeview role="menu" data-accordion="true">
         @foreach($sections as $section)
             @php
                 $visibleItems = [];

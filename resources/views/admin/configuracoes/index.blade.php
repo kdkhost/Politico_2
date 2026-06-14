@@ -44,6 +44,11 @@
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-seguranca" data-bs-toggle="tab" data-bs-target="#seguranca" type="button" role="tab">
+                            <i class="fas fa-user-shield me-1"></i>Seguranca
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
                         <button class="nav-link" id="tab-scripts" data-bs-toggle="tab" data-bs-target="#scripts" type="button" role="tab">
                             <i class="fas fa-code me-1"></i>Scripts
                         </button>
@@ -73,7 +78,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="logo" class="form-label">Logo</label>
-                                        <input type="file" id="logo" name="logo" class="form-control" accept="image/*">
+                                        <input type="file" id="logo" name="logo" class="form-control" accept="image/*" data-image-size="280x120" data-upload-label="Logo do sistema" data-existing-url="{{ settings('logo') }}">
                                         @if(settings('logo'))
                                             <div class="mt-2"><img src="{{ settings('logo') }}" alt="Logo" style="max-height: 60px;"></div>
                                         @endif
@@ -82,7 +87,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="favicon" class="form-label">Favicon</label>
-                                        <input type="file" id="favicon" name="favicon" class="form-control" accept="image/x-icon,image/png">
+                                        <input type="file" id="favicon" name="favicon" class="form-control" accept="image/x-icon,image/png" data-image-size="512x512" data-upload-label="Favicon" data-existing-url="{{ settings('favicon') }}">
                                         @if(settings('favicon'))
                                             <div class="mt-2"><img src="{{ settings('favicon') }}" alt="Favicon" style="max-height: 32px;"></div>
                                         @endif
@@ -220,6 +225,66 @@
                             <div class="mb-3">
                                 <label for="lgpd_privacy_page" class="form-label">URL da Página de Privacidade</label>
                                 <input type="url" id="lgpd_privacy_page" name="lgpd_privacy_page" class="form-control" value="{{ settings('lgpd_privacy_page') }}" placeholder="https://...">
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="seguranca" role="tabpanel">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-1"></i>Configure o Google reCAPTCHA para proteger login administrativo e formularios publicos.
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="recaptcha_version" class="form-label">Versao</label>
+                                        <select id="recaptcha_version" name="recaptcha_version" class="form-select">
+                                            <option value="v2" @selected(settings('recaptcha_version', 'v2') === 'v2')>reCAPTCHA v2</option>
+                                            <option value="v3" @selected(settings('recaptcha_version', 'v2') === 'v3')>reCAPTCHA v3</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="recaptcha_min_score" class="form-label">Score minimo v3</label>
+                                        <input type="number" id="recaptcha_min_score" name="recaptcha_min_score" class="form-control" min="0.1" max="1" step="0.1" value="{{ settings('recaptcha_min_score', '0.5') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label d-block">Status</label>
+                                        <div class="form-check form-switch">
+                                            <input type="checkbox" id="recaptcha_enabled" name="recaptcha_enabled" class="form-check-input" value="1" {{ settings('recaptcha_enabled') ? 'checked' : '' }}>
+                                            <label for="recaptcha_enabled" class="form-check-label">Ativar reCAPTCHA</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="recaptcha_site_key" class="form-label">Site key</label>
+                                        <input type="text" id="recaptcha_site_key" name="recaptcha_site_key" class="form-control" value="{{ settings('recaptcha_site_key') }}" autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="recaptcha_secret_key" class="form-label">Secret key</label>
+                                        <input type="password" id="recaptcha_secret_key" name="recaptcha_secret_key" class="form-control" value="" placeholder="{{ settings('recaptcha_secret_key') ? 'Chave ja configurada' : '' }}" autocomplete="new-password">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check form-switch mb-3">
+                                        <input type="checkbox" id="recaptcha_admin_login" name="recaptcha_admin_login" class="form-check-input" value="1" {{ settings('recaptcha_admin_login') ? 'checked' : '' }}>
+                                        <label for="recaptcha_admin_login" class="form-check-label">Proteger login administrativo</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check form-switch mb-3">
+                                        <input type="checkbox" id="recaptcha_contact" name="recaptcha_contact" class="form-check-input" value="1" {{ settings('recaptcha_contact', true) ? 'checked' : '' }}>
+                                        <label for="recaptcha_contact" class="form-check-label">Proteger formulario de contato</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

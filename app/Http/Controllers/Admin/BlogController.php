@@ -18,6 +18,7 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Services\Blog\BlogService;
+use App\Services\Upload\UploadService;
 use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -113,6 +114,7 @@ class BlogController extends Controller
                 'resumo' => 'nullable|string|max:500',
                 'conteudo' => 'nullable|string',
                 'imagem_destaque' => 'nullable|string|max:500',
+                'imagem_destaque_upload' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:' . config('sistema.upload_max_size', 10) * 1024,
                 'category_id' => 'nullable|exists:categories,id',
                 'tags' => 'nullable|array',
                 'tags.*' => 'nullable|string',
@@ -125,6 +127,8 @@ class BlogController extends Controller
                 'seo_keywords' => 'nullable|string|max:500',
                 'seo_og_image' => 'nullable|string|max:500',
             ]);
+
+            $this->storeFeaturedImageIfPresent($request, $validated);
 
             $post = $this->blogService->createPost($validated);
 
@@ -162,6 +166,7 @@ class BlogController extends Controller
                 'resumo' => 'nullable|string|max:500',
                 'conteudo' => 'nullable|string',
                 'imagem_destaque' => 'nullable|string|max:500',
+                'imagem_destaque_upload' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:' . config('sistema.upload_max_size', 10) * 1024,
                 'category_id' => 'nullable|exists:categories,id',
                 'tags' => 'nullable|array',
                 'tags.*' => 'nullable|string',
@@ -174,6 +179,8 @@ class BlogController extends Controller
                 'seo_keywords' => 'nullable|string|max:500',
                 'seo_og_image' => 'nullable|string|max:500',
             ]);
+
+            $this->storeFeaturedImageIfPresent($request, $validated);
 
             $post = $this->blogService->updatePost($id, $validated);
 
@@ -257,6 +264,25 @@ class BlogController extends Controller
             return response()->json(['status' => 'success', 'success' => true, 'message' => 'Post excluído com sucesso.', 'reload' => true]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao excluir post.'], 500);
+        }
+    }
+
+    private function storeFeaturedImageIfPresent(Request $request, array &$validated): void
+    {
+        unset($validated['imagem_destaque_upload']);
+
+        if (!$request->hasFile('imagem_destaque_upload')) {
+            return;
+        }
+
+        $media = app(UploadService::class)->upload($request->file('imagem_destaque_upload'), 'blog/featured', [
+            'alt_text' => $validated['titulo'] ?? 'Imagem de destaque',
+        ]);
+
+        $url = $media->url ?: ('storage/' . ltrim((string) $media->caminho, '/'));
+        $validated['imagem_destaque'] = $url;
+        if (empty($validated['seo_og_image'])) {
+            $validated['seo_og_image'] = $url;
         }
     }
 }

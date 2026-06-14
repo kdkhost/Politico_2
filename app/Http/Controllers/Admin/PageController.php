@@ -15,6 +15,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
+use App\Services\Upload\UploadService;
 use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -116,6 +117,8 @@ class PageController extends Controller
     public function store(Request $request)
     {
         try {
+            $this->normalizePagePayload($request);
+
             $validated = $request->validate([
                 'titulo' => 'required|string|max:255',
                 'slug' => 'nullable|string|max:255|unique:pages,slug',
@@ -128,9 +131,19 @@ class PageController extends Controller
                 'seo_description' => 'nullable|string|max:500',
                 'seo_keywords' => 'nullable|string|max:500',
                 'seo_og_image' => 'nullable|string|max:500',
+                'featured_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:' . config('sistema.upload_max_size', 10) * 1024,
+                'og_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:' . config('sistema.upload_max_size', 10) * 1024,
             ]);
 
-            if (!isset($validated['slug'])) {
+            unset($validated['featured_image'], $validated['og_image']);
+
+            if ($request->hasFile('og_image')) {
+                $validated['seo_og_image'] = $this->storePageImage($request->file('og_image'), 'pages/og');
+            } elseif ($request->hasFile('featured_image')) {
+                $validated['seo_og_image'] = $this->storePageImage($request->file('featured_image'), 'pages/featured');
+            }
+
+            if (empty($validated['slug'])) {
                 $validated['slug'] = Str::slug($validated['titulo']);
             }
             $validated['user_id'] = auth()->id();
@@ -158,6 +171,7 @@ class PageController extends Controller
     {
         try {
             $page = Page::findOrFail($id);
+            $this->normalizePagePayload($request);
 
             $validated = $request->validate([
                 'titulo' => 'required|string|max:255',
@@ -171,9 +185,19 @@ class PageController extends Controller
                 'seo_description' => 'nullable|string|max:500',
                 'seo_keywords' => 'nullable|string|max:500',
                 'seo_og_image' => 'nullable|string|max:500',
+                'featured_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:' . config('sistema.upload_max_size', 10) * 1024,
+                'og_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:' . config('sistema.upload_max_size', 10) * 1024,
             ]);
 
-            if (!isset($validated['slug'])) {
+            unset($validated['featured_image'], $validated['og_image']);
+
+            if ($request->hasFile('og_image')) {
+                $validated['seo_og_image'] = $this->storePageImage($request->file('og_image'), 'pages/og');
+            } elseif ($request->hasFile('featured_image')) {
+                $validated['seo_og_image'] = $this->storePageImage($request->file('featured_image'), 'pages/featured');
+            }
+
+            if (empty($validated['slug'])) {
                 $validated['slug'] = Str::slug($validated['titulo']);
             }
 
@@ -199,5 +223,42 @@ class PageController extends Controller
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao excluir página.'], 500);
         }
+    }
+
+    private function normalizePagePayload(Request $request): void
+    {
+        $aliases = [
+            'title' => 'titulo',
+            'content' => 'conteudo',
+            'meta_title' => 'seo_title',
+            'meta_description' => 'seo_description',
+            'meta_keywords' => 'seo_keywords',
+        ];
+
+        foreach ($aliases as $from => $to) {
+            if (!$request->filled($to) && $request->has($from)) {
+                $request->merge([$to => $request->input($from)]);
+            }
+        }
+
+        $status = (string) $request->input('status', 'draft');
+        $statusMap = [
+            'rascunho' => 'draft',
+            'publicado' => 'published',
+            'arquivado' => 'archived',
+        ];
+
+        if (isset($statusMap[$status])) {
+            $request->merge(['status' => $statusMap[$status]]);
+        }
+    }
+
+    private function storePageImage(\Illuminate\Http\UploadedFile $file, string $folder): string
+    {
+        $media = app(UploadService::class)->upload($file, $folder, [
+            'alt_text' => 'Imagem da pagina',
+        ]);
+
+        return $media->url ?: ('storage/' . ltrim((string) $media->caminho, '/'));
     }
 }

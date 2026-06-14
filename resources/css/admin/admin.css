@@ -2570,3 +2570,250 @@ body.admin-premium.admin-sidebar-collapsed .admin-content {
         pointer-events: auto;
     }
 }
+
+/* Admin UX standardization */
+body.admin-premium .card > .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 58px;
+}
+
+body.admin-premium .card > .card-header > .card-title,
+body.admin-premium .card > .card-header > h1,
+body.admin-premium .card > .card-header > h2,
+body.admin-premium .card > .card-header > h3,
+body.admin-premium .card > .card-header > h4,
+body.admin-premium .card > .card-header > h5,
+body.admin-premium .card > .card-header > h6 {
+    margin: 0;
+    min-width: 0;
+}
+
+body.admin-premium .card > .card-header > .card-tools {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+body.admin-premium .card > .card-header.p-0,
+body.admin-premium .card > .card-header.pt-1 {
+    display: block;
+}
+
+.admin-sidebar .sidebar-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: var(--admin-sidebar-scrollbar-thumb) var(--admin-sidebar-scrollbar-track);
+}
+
+.admin-sidebar .sidebar-wrapper::-webkit-scrollbar {
+    width: 10px;
+}
+
+.admin-sidebar .sidebar-wrapper::-webkit-scrollbar-track {
+    background: var(--admin-sidebar-scrollbar-track);
+}
+
+.admin-sidebar .sidebar-wrapper::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--admin-primary), var(--admin-secondary));
+    border: 2px solid var(--admin-sidebar-scrollbar-track);
+    border-radius: 999px;
+}
+
+.admin-sidebar .sidebar-wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--admin-sidebar-scrollbar-thumb-hover);
+}
+
+.admin-notification-toggle {
+    position: relative;
+}
+
+.admin-notification-toggle .navbar-badge {
+    position: absolute;
+    top: 4px;
+    right: 2px;
+    min-width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    box-shadow: 0 0 0 2px var(--admin-header-bg);
+}
+
+.admin-notification-toggle.has-notifications .admin-notification-bell,
+.admin-notification-bell.is-ringing {
+    animation: adminBellRing 0.9s ease-in-out 2;
+    color: var(--admin-accent);
+    transform-origin: 50% 0;
+}
+
+@keyframes adminBellRing {
+    0%, 100% { transform: rotate(0); }
+    15% { transform: rotate(16deg); }
+    30% { transform: rotate(-14deg); }
+    45% { transform: rotate(10deg); }
+    60% { transform: rotate(-8deg); }
+    75% { transform: rotate(5deg); }
+}
+
+.admin-profile-avatar-box {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-profile-avatar-action {
+    position: absolute;
+    right: -4px;
+    bottom: -4px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.admin-user-menu .admin-upload-enhanced.admin-upload-compact {
+    margin-top: 12px;
+    padding: 10px;
+}
+
+.admin-upload-native {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.admin-upload-enhanced {
+    width: 100%;
+    border: 2px dashed #c7d2e1;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #ffffff, #f7f9fc);
+    padding: 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.admin-upload-enhanced:hover,
+.admin-upload-enhanced:focus,
+.admin-upload-enhanced.is-dragover {
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 0.2rem rgba(13, 165, 192, 0.12);
+    outline: 0;
+    transform: translateY(-1px);
+}
+
+.admin-upload-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: #ffffff;
+    background: linear-gradient(135deg, var(--admin-primary), var(--admin-secondary));
+    font-size: 1.25rem;
+}
+
+.admin-upload-title {
+    font-weight: 800;
+    color: var(--admin-ink);
+}
+
+.admin-upload-help,
+.admin-upload-ideal,
+.admin-upload-meta,
+.admin-upload-dimensions,
+.admin-upload-progress-text {
+    color: #64748b;
+    font-size: 0.82rem;
+}
+
+.admin-upload-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.admin-upload-preview-media {
+    width: 100%;
+    max-height: 220px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #eef2f7;
+    border: 1px solid rgba(21, 32, 51, 0.08);
+}
+
+.admin-upload-file-icon {
+    min-height: 92px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 8px;
+    background: #eef2f7;
+    color: #475467;
+    word-break: break-word;
+    padding: 10px;
+}
+
+.admin-upload-file-icon i {
+    font-size: 1.8rem;
+}
+
+.admin-upload-progress {
+    margin-top: 12px;
+}
+
+.admin-upload-progress .progress {
+    height: 16px;
+}
+
+[data-bs-theme="dark"] .admin-upload-enhanced,
+body.admin-premium.dark-mode .admin-upload-enhanced {
+    background: linear-gradient(180deg, #111827, #0f172a);
+    border-color: rgba(255, 255, 255, 0.16);
+}
+
+[data-bs-theme="dark"] .admin-upload-title,
+body.admin-premium.dark-mode .admin-upload-title {
+    color: #f8fafc;
+}
+
+[data-bs-theme="dark"] .admin-upload-help,
+[data-bs-theme="dark"] .admin-upload-ideal,
+[data-bs-theme="dark"] .admin-upload-meta,
+[data-bs-theme="dark"] .admin-upload-dimensions,
+[data-bs-theme="dark"] .admin-upload-progress-text,
+body.admin-premium.dark-mode .admin-upload-help,
+body.admin-premium.dark-mode .admin-upload-ideal,
+body.admin-premium.dark-mode .admin-upload-meta,
+body.admin-premium.dark-mode .admin-upload-dimensions,
+body.admin-premium.dark-mode .admin-upload-progress-text {
+    color: #94a3b8;
+}
+
+[data-bs-theme="dark"] .admin-upload-preview-media,
+[data-bs-theme="dark"] .admin-upload-file-icon,
+body.admin-premium.dark-mode .admin-upload-preview-media,
+body.admin-premium.dark-mode .admin-upload-file-icon {
+    background: #0b1220;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+}

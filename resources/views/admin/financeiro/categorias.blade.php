@@ -109,8 +109,44 @@
 @push('scripts')
 <script>
 $(function () {
-    $('#financialCategoriesTable').DataTable();
+    var financialCategoriesTable = $('#financialCategoriesTable').DataTable();
     var modal = new bootstrap.Modal(document.getElementById('financialCategoryModal'));
+
+    function escapeHtml(value) {
+        return $('<div>').text(value || '').html();
+    }
+
+    function renderCategoryActions(category) {
+        return '<div class="btn-group btn-group-sm">' +
+            '<button type="button" class="btn btn-primary btn-edit-financial-category"' +
+            ' data-id="' + category.id + '"' +
+            ' data-nome="' + escapeHtml(category.nome) + '"' +
+            ' data-slug="' + escapeHtml(category.slug) + '"' +
+            ' data-tipo="' + escapeHtml(category.tipo) + '"' +
+            ' data-descricao="' + escapeHtml(category.descricao) + '">' +
+            '<i class="fas fa-edit"></i></button>' +
+            '<button type="button" class="btn btn-danger btn-delete-financial-category" data-id="' + category.id + '">' +
+            '<i class="fas fa-trash"></i></button></div>';
+    }
+
+    function reloadFinancialCategories() {
+        return $.get('{{ route("admin.financeiro.categorias") }}')
+            .done(function (res) {
+                var rows = (res.data || []).map(function (category) {
+                    var tipoClass = category.tipo === 'receita' ? 'success' : 'danger';
+
+                    return [
+                        '<strong>' + escapeHtml(category.nome) + '</strong>',
+                        escapeHtml(category.slug),
+                        '<span class="badge bg-' + tipoClass + '">' + escapeHtml(category.tipo ? category.tipo.charAt(0).toUpperCase() + category.tipo.slice(1) : '') + '</span>',
+                        escapeHtml(category.descricao) || '-',
+                        renderCategoryActions(category)
+                    ];
+                });
+
+                financialCategoriesTable.clear().rows.add(rows).draw(false);
+            });
+    }
 
     $('#btnNewFinancialCategory').on('click', function () {
         $('#financialCategoryForm')[0].reset();
@@ -140,7 +176,8 @@ $(function () {
             .done(function (res) {
                 if (window.isSuccessfulResponse(res)) {
                     toastr.success(res.message || 'Categoria salva.');
-                    location.reload();
+                    modal.hide();
+                    reloadFinancialCategories();
                 } else {
                     toastr.error(res.message || 'Erro ao salvar categoria.');
                 }
@@ -164,7 +201,7 @@ $(function () {
             $.ajax({ url: '{{ route("admin.financeiro.categorias.destroy", ":id") }}'.replace(':id', id), method: 'DELETE' })
                 .done(function (res) {
                     toastr.success(res.message || 'Categoria excluída.');
-                    location.reload();
+                    reloadFinancialCategories();
                 })
                 .fail(function (xhr) { toastr.error(xhr.responseJSON?.message || 'Erro ao excluir categoria.'); });
         });

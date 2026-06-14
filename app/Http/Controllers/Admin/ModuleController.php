@@ -63,6 +63,7 @@ class ModuleController extends Controller
     {
         try {
             $module = Module::findOrFail($id);
+            $request->merge(['active' => $request->boolean('active')]);
 
             $validated = $request->validate([
                 'nome' => 'required|string|max:255',

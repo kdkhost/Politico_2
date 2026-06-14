@@ -16,6 +16,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Permissions\Profile;
 use App\Models\User;
+use App\Services\Upload\UploadService;
 use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +37,9 @@ class UserController extends Controller
 
     public function index()
     {
-        return view('admin.usuarios.index');
+        $profiles = Profile::orderBy('nome')->get(['id', 'nome']);
+
+        return view('admin.usuarios.index', compact('profiles'));
     }
 
     public function show(int $id)
@@ -128,11 +131,21 @@ class UserController extends Controller
                 'telefone' => 'nullable|string|max:20',
                 'cargo' => 'nullable|string|max:255',
                 'is_super_admin' => 'boolean',
-                'status' => 'required|in:active,inactive',
+                'status' => 'nullable|in:active,inactive',
+                'active' => 'nullable|boolean',
+                'avatar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:' . config('sistema.upload_max_size', 10) * 1024,
             ]);
 
+            $validated['status'] = $request->input('status') ?: ($request->boolean('active') ? 'active' : 'inactive');
+            $validated['is_blocked'] = $validated['status'] !== 'active';
             $validated['password'] = Hash::make($validated['password']);
+            unset($validated['active'], $validated['avatar']);
+
             $user = User::create($validated);
+
+            if ($request->hasFile('avatar')) {
+                $user->update(['avatar' => $this->storeAvatar($request->file('avatar'))]);
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -165,7 +178,9 @@ class UserController extends Controller
                 'telefone' => 'nullable|string|max:20',
                 'cargo' => 'nullable|string|max:255',
                 'is_super_admin' => 'boolean',
-                'status' => 'required|in:active,inactive',
+                'status' => 'nullable|in:active,inactive',
+                'active' => 'nullable|boolean',
+                'avatar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:' . config('sistema.upload_max_size', 10) * 1024,
             ];
 
             if ($request->filled('password')) {
@@ -178,6 +193,14 @@ class UserController extends Controller
                 $validated['password'] = Hash::make($validated['password']);
             } else {
                 unset($validated['password']);
+            }
+
+            $validated['status'] = $request->input('status') ?: ($request->boolean('active') ? 'active' : 'inactive');
+            $validated['is_blocked'] = $validated['status'] !== 'active';
+            unset($validated['active'], $validated['avatar']);
+
+            if ($request->hasFile('avatar')) {
+                $validated['avatar'] = $this->storeAvatar($request->file('avatar'));
             }
 
             $user->update($validated);
@@ -311,6 +334,36 @@ class UserController extends Controller
         }
     }
 
+    public function updateAvatar(Request $request)
+    {
+        try {
+            $request->validate([
+                'avatar' => 'required|image|mimes:jpg,jpeg,png,webp|max:' . config('sistema.upload_max_size', 10) * 1024,
+            ]);
+
+            $user = Auth::user();
+
+            if (!$user instanceof User) {
+                return response()->json(['status' => 'error', 'message' => 'Usuario nao autenticado.'], 401);
+            }
+
+            $user->update([
+                'avatar' => $this->storeAvatar($request->file('avatar')),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'success' => true,
+                'message' => 'Foto do perfil atualizada.',
+                'data' => [
+                    'avatar_url' => $user->fresh()->avatar_url,
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao atualizar foto do perfil: ' . $e->getMessage()], 500);
+        }
+    }
+
     private function formatUserForJson(User $user): array
     {
         return [
@@ -325,6 +378,7 @@ class UserController extends Controller
             'status' => $user->status,
             'active' => $user->status === 'active' && !$user->is_blocked,
             'is_blocked' => (bool) $user->is_blocked,
+            'avatar_url' => $user->avatar_url,
             'created_at' => $user->created_at,
             'last_login_at' => $user->ultimo_acesso,
         ];
@@ -349,5 +403,14 @@ class UserController extends Controller
                 . '<button type="button" class="btn btn-warning btn-toggle-user" data-id="' . $user->id . '" title="Ativar/desativar"><i class="fas fa-power-off"></i></button>'
                 . '</div>',
         ];
+    }
+
+    private function storeAvatar(\Illuminate\Http\UploadedFile $file): string
+    {
+        $media = app(UploadService::class)->upload($file, 'profile-avatars', [
+            'alt_text' => 'Foto de perfil',
+        ]);
+
+        return $media->url ?: ('storage/' . ltrim((string) $media->caminho, '/'));
     }
 }

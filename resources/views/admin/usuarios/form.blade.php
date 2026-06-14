@@ -44,7 +44,7 @@
                                 <select id="profile_id" name="profile_id" class="form-select" required>
                                     <option value="">Selecione um perfil</option>
                                     @foreach($profiles ?? [] as $profile)
-                                        <option value="{{ $profile->id }}">{{ $profile->name }}</option>
+                                        <option value="{{ $profile->id }}">{{ $profile->nome }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -52,7 +52,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="avatar" class="form-label">Foto/Avatar</label>
-                                <input type="file" id="avatar" name="avatar" class="form-control" accept="image/*">
+                                <input type="file" id="avatar" name="avatar" class="form-control" accept="image/*" data-image-size="512x512" data-upload-label="Foto do usuario">
                             </div>
                         </div>
                     </div>

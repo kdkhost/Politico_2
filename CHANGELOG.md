@@ -17,6 +17,27 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-14 - corrige salvamento real, uploads e padronização do admin
+
+- corrigido helper global `settings()` para ler `settings.chave/valor/tipo`, eliminando configurações que salvavam no banco mas não refletiam no painel
+- adicionada configuração de Google reCAPTCHA pelo painel administrativo, com suporte a v2/v3, proteção do login admin e do formulário público de contato
+- criada migration `2026_06_14_093000_seed_recaptcha_settings.php` para registrar as chaves e flags de reCAPTCHA com compatibilidade para timestamps legados
+- corrigidas views de páginas para carregar os campos reais do model (`titulo`, `conteudo`, `seo_*`) e manter status compatível com `draft/published/archived`
+- blog passou a aceitar upload de imagem de destaque com preview/progresso, mantendo a opção de URL externa
+- transparência passou a aceitar categoria textual opcional, tratar checkbox de status corretamente e salvar anexos via `UploadService`
+- módulos passaram a gravar corretamente checkbox desmarcado (`active=false`) e atualizar linha sem `location.reload()`
+- categorias financeiras passaram a atualizar a tabela via AJAX/JSON após salvar ou excluir, sem recarregar a página inteira
+- rotas `update` dos principais CRUDs administrativos passaram a aceitar `POST`, `PUT` e `PATCH` para evitar falha entre `_method=PUT` das views e rotas antigas somente `POST`
+- uploads administrativos ganharam componente global com arrasta-e-solta, preview antes/durante/depois, barra animada, tempo estimado e ajuste automático de imagem grande
+- troca rápida de foto do usuário logado foi adicionada no dropdown do navbar, com envio automático e atualização imediata da imagem
+- sidebar agora usa accordion ativo, fecha outros dropdowns ao abrir um novo e mantém scrollbar tematizada
+- notificações do sininho passaram a usar badge numérico, animação visual e áudio quando chegam novas notificações
+- alertas nativos do navegador foram interceptados para DataTables; falhas reais passam por SweetAlert2/toastr e erro de idioma externo é ignorado porque a tradução PT-BR local já existe
+- cabeçalhos de cards foram padronizados com título à esquerda e ações/botões à direita usando `.card-title` e `.card-tools`
+- recompilado bundle Vite do admin com novos assets `public/build/assets/admin-CmWgzdsy.css` e `public/build/assets/admin-Dbz7UEaE.js`
+- validações locais executadas: `php -l` nos PHP alterados, `node --check resources/js/admin/admin.js`, `composer dump-autoload`, `php artisan migrate`, `php artisan optimize:clear`, `php artisan route:list`, `php artisan view:cache`, `php artisan test`, `npm run build`, `git diff --check` e varredura de BOM
+- varredura final confirmou `BOM_COUNT=0` e nenhum arquivo `.zip` foi gerado
+
 ### 2026-06-14 - otimiza CRUDs AJAX, DataTables e consultas do admin
 
 - adicionado `App\Support\DataTableRequest` para normalizar `start`, `length`, busca, paginação e ordenação enviados pelo DataTables

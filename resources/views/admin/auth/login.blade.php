@@ -11,6 +11,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    @php
+        $recaptchaEnabled = settings('recaptcha_enabled', false) && settings('recaptcha_admin_login', false) && settings('recaptcha_site_key');
+        $recaptchaVersion = in_array(settings('recaptcha_version', 'v2'), ['v2', 'v3'], true) ? settings('recaptcha_version', 'v2') : 'v2';
+        $recaptchaSiteKey = (string) settings('recaptcha_site_key', '');
+    @endphp
+    @if($recaptchaEnabled)
+        @if($recaptchaVersion === 'v3')
+            <script src="https://www.google.com/recaptcha/api.js?render={{ $recaptchaSiteKey }}"></script>
+        @else
+            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        @endif
+    @endif
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -400,6 +412,12 @@
             margin-top: 4px;
             padding-left: 4px;
         }
+
+        .recaptcha-box {
+            display: flex;
+            justify-content: center;
+            margin: 4px 0 20px;
+        }
     </style>
 </head>
 <body>
@@ -484,6 +502,19 @@
                     <label class="form-check-label" for="remember">Lembrar de mim</label>
                 </div>
 
+                @if($recaptchaEnabled)
+                    @if($recaptchaVersion === 'v3')
+                        <input type="hidden" name="recaptcha_token" id="recaptcha_token">
+                    @else
+                        <div class="recaptcha-box">
+                            <div class="g-recaptcha" data-sitekey="{{ $recaptchaSiteKey }}"></div>
+                        </div>
+                    @endif
+                    @error('recaptcha')
+                        <div class="invalid-feedback d-block text-center mb-3">{{ $message }}</div>
+                    @enderror
+                @endif
+
                 <button type="submit" class="btn-login" id="loginBtn">
                     <span id="btnText">Entrar</span>
                     <div class="spinner-border d-none" id="btnSpinner" role="status">
@@ -530,6 +561,18 @@
             var btn = document.getElementById('loginBtn');
             var text = document.getElementById('btnText');
             var spinner = document.getElementById('btnSpinner');
+            @if($recaptchaEnabled && $recaptchaVersion === 'v3')
+            if (!document.getElementById('recaptcha_token').value && window.grecaptcha) {
+                e.preventDefault();
+                grecaptcha.ready(function() {
+                    grecaptcha.execute(@json($recaptchaSiteKey), { action: 'admin_login' }).then(function(token) {
+                        document.getElementById('recaptcha_token').value = token;
+                        document.getElementById('loginForm').requestSubmit();
+                    });
+                });
+                return;
+            }
+            @endif
             btn.disabled = true;
             text.textContent = 'Entrando...';
             spinner.classList.remove('d-none');

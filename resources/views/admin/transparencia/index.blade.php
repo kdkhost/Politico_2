@@ -78,7 +78,7 @@
                 $('#transparencia_type').val(data.type);
                 $('#transparencia_year').val(data.year);
                 $('#transparencia_description').val(data.description);
-                $('#transparencia_status').val(data.status ? '1' : '0');
+                $('#transparencia_status').prop('checked', !!data.status);
                 $('#transparenciaModalLabel').text('Editar Item');
                 $('#transparencia_file').prop('required', false);
                 $('#transparenciaModal').modal('show');

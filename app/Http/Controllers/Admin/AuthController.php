@@ -17,6 +17,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\Auditoria\AuditoriaService;
 use App\Services\License\LicenseService;
+use App\Services\Security\RecaptchaService;
 use App\Services\SMTP\SmtpService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,6 +34,7 @@ class AuthController extends Controller
         protected AuditoriaService $auditoriaService,
         protected LicenseService $licenseService,
         protected SmtpService $smtpService,
+        protected RecaptchaService $recaptchaService,
     ) {}
 
     public function showLoginForm()
@@ -43,6 +45,15 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $this->validateLogin($request);
+
+        $recaptcha = $this->recaptchaService->validate($request, 'admin_login');
+
+        if (!$recaptcha['valid']) {
+            throw ValidationException::withMessages([
+                'email' => $recaptcha['message'] ?? 'Falha na validacao anti-spam.',
+            ]);
+        }
+
         $this->checkRateLimiter($request);
 
         $user = User::where('email', $request->email)->first();

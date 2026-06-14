@@ -82,7 +82,7 @@
                     <button type="button" class="btn btn-primary btn-sm" id="btnUpload">
                         <i class="fas fa-upload me-1"></i>Selecionar Arquivos
                     </button>
-                    <input type="file" id="fileInput" class="d-none" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar">
+                    <input type="file" id="fileInput" class="d-none" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar" data-admin-upload-enhance="1" data-upload-label="Arquivos de mídia" data-image-size="1200x675">
                     <div class="mt-2 upload-progress d-none">
                         <div class="progress" style="height: 20px;">
                             <div class="progress-bar progress-bar-striped progress-bar-animated" id="uploadProgressBar" style="width: 0%;">0%</div>

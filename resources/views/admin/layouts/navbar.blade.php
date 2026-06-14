@@ -16,9 +16,9 @@
 
 <ul class="navbar-nav ms-auto align-items-center">
     <li class="nav-item dropdown">
-        <a class="nav-link admin-icon-button" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" aria-label="Notificações">
-            <i class="far fa-bell"></i>
-            <span class="badge text-bg-warning navbar-badge notifications-count d-none">0</span>
+        <a class="nav-link admin-icon-button admin-notification-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" aria-label="Notificacoes">
+            <i class="far fa-bell admin-notification-bell"></i>
+            <span class="badge text-bg-warning navbar-badge notifications-count d-none" aria-live="polite">0</span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end notifications-dropdown-menu admin-dropdown">
             <span class="dropdown-item dropdown-header text-center">Nenhuma notificação</span>
@@ -40,13 +40,19 @@
 
     <li class="nav-item dropdown user-menu">
         <a href="#" class="nav-link dropdown-toggle admin-user-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">
-            <img src="{{ auth()->user()->avatar_url ?? asset('img/default-avatar.png') }}" class="user-image admin-avatar" alt="{{ auth()->user()->name ?? 'Usuário' }}">
-            <span class="d-none d-md-inline">{{ auth()->user()->name ?? 'Usuário' }}</span>
+            <img src="{{ auth()->user()->avatar_url ?? asset('img/default-avatar.png') }}" class="user-image admin-avatar admin-profile-avatar-preview" alt="{{ auth()->user()->name ?? 'Usuario' }}">
+            <span class="d-none d-md-inline">{{ auth()->user()->name ?? 'Usuario' }}</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end admin-dropdown admin-user-menu">
             <li class="user-header text-center">
-                <img src="{{ auth()->user()->avatar_url ?? asset('img/default-avatar.png') }}" class="img-circle shadow" alt="{{ auth()->user()->name ?? 'Usuário' }}">
-                <p class="mt-2 mb-1">{{ auth()->user()->name ?? 'Usuário' }}<small>{{ auth()->user()->profile->name ?? 'Membro' }}</small></p>
+                <div class="admin-profile-avatar-box">
+                    <img src="{{ auth()->user()->avatar_url ?? asset('img/default-avatar.png') }}" class="img-circle shadow admin-profile-avatar-preview" alt="{{ auth()->user()->name ?? 'Usuario' }}">
+                    <button type="button" class="btn btn-sm btn-primary admin-profile-avatar-action" data-profile-avatar-trigger title="Trocar foto">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <input type="file" class="d-none" id="quickProfileAvatar" accept="image/*" data-profile-avatar-upload="{{ route('admin.profile.avatar') }}" data-image-size="512x512" data-upload-label="Foto do perfil">
+                </div>
+                <p class="mt-2 mb-1">{{ auth()->user()->name ?? 'Usuario' }}<small>{{ auth()->user()->profile->nome ?? 'Membro' }}</small></p>
             </li>
             <li class="user-body border-bottom">
                 <div class="row g-0">

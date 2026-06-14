@@ -196,8 +196,54 @@
             }
         };
 
+        if (!window.__adminNativeAlertPatched) {
+            window.__adminNativeAlertPatched = true;
+            window.__adminNativeAlert = window.alert;
+            window.alert = function (message) {
+                var text = String(message || '');
+
+                if (text.indexOf('DataTables warning:') === 0) {
+                    if (text.indexOf('i18n file loading error') !== -1) {
+                        console.warn(text);
+                        return;
+                    }
+
+                    if (window.Swal) {
+                        window.Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'warning',
+                            title: 'Falha ao carregar tabela',
+                            text: 'Uma tabela do painel retornou erro. Verifique os filtros e tente novamente.',
+                            timer: 6000,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        });
+                        return;
+                    }
+
+                    window.toastr?.warning('Uma tabela do painel retornou erro.', 'Falha ao carregar tabela');
+                    return;
+                }
+
+                if (window.Swal) {
+                    window.Swal.fire({
+                        icon: 'info',
+                        title: 'Aviso',
+                        text: text
+                    });
+                    return;
+                }
+
+                window.__adminNativeAlert(text);
+            };
+        }
+
         if ($.fn.dataTable) {
             $.fn.dataTable.ext.errMode = 'none';
+            if (window.DataTable?.ext) {
+                window.DataTable.ext.errMode = 'none';
+            }
 
             $.extend(true, $.fn.dataTable.defaults, {
                 language: window.AdminDataTableLanguage,

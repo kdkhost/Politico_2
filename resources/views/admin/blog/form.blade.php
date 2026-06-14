@@ -13,7 +13,7 @@
                 </h3>
             </div>
             <div class="card-body">
-                <form id="postForm">
+                <form id="postForm" enctype="multipart/form-data">
                     @csrf
                     @if($isEditing)
                         <input type="hidden" name="id" value="{{ $post->id }}">
@@ -101,6 +101,11 @@
                                 <img src="{{ $post->imagem_destaque }}" alt="{{ $post->titulo }}" style="max-height: 80px;">
                             </div>
                         @endif
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="imagem_destaque_upload" class="form-label">Upload da Imagem de Destaque</label>
+                        <input type="file" id="imagem_destaque_upload" name="imagem_destaque_upload" class="form-control" accept="image/*" data-image-size="1200x675" data-upload-label="Imagem de destaque do blog" data-existing-url="{{ old('imagem_destaque', $post->imagem_destaque) }}">
                     </div>
 
                     <div class="mb-3">

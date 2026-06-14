@@ -12,7 +12,7 @@
 <div class="card">
     <div class="card-header"><h3 class="card-title">Editar Usuário</h3></div>
     <div class="card-body">
-        <form id="userForm" action="{{ route('admin.users.update', $user->id) }}" method="POST">
+        <form id="userForm" action="{{ route('admin.users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')
             <div class="row">
@@ -47,6 +47,10 @@
                         <option value="active" {{ $user->status == 'active' ? 'selected' : '' }}>Ativo</option>
                         <option value="inactive" {{ $user->status == 'inactive' ? 'selected' : '' }}>Inativo</option>
                     </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Foto/Avatar</label>
+                    <input type="file" name="avatar" class="form-control" accept="image/*" data-image-size="512x512" data-upload-label="Foto do usuario" data-existing-url="{{ $user->avatar_url }}">
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Atualizar</button>

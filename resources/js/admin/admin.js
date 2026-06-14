@@ -39,6 +39,451 @@ function isSuccessfulResponse(response) {
 
 window.isSuccessfulResponse = isSuccessfulResponse;
 
+function formatBytesForAdmin(bytes) {
+    const value = Number(bytes || 0);
+    if (value <= 0) return '0 B';
+
+    const units = ['B', 'KB', 'MB', 'GB'];
+    const power = Math.min(Math.floor(Math.log(value) / Math.log(1024)), units.length - 1);
+
+    return `${(value / (1024 ** power)).toFixed(power === 0 ? 0 : 1)} ${units[power]}`;
+}
+
+function formatSecondsForAdmin(seconds) {
+    const safeSeconds = Math.max(0, Math.ceil(Number(seconds || 0)));
+    if (safeSeconds < 60) return `${safeSeconds}s`;
+
+    const minutes = Math.floor(safeSeconds / 60);
+    const rest = safeSeconds % 60;
+
+    return `${minutes}min ${rest}s`;
+}
+
+function parseTargetSize(value) {
+    const match = String(value || '').match(/(\d{2,5})\s*[xX]\s*(\d{2,5})/);
+
+    if (!match) {
+        return null;
+    }
+
+    return {
+        width: Number(match[1]),
+        height: Number(match[2]),
+    };
+}
+
+function getImageInfo(file) {
+    return new Promise((resolve) => {
+        if (!file || !String(file.type || '').startsWith('image/')) {
+            resolve(null);
+            return;
+        }
+
+        const url = URL.createObjectURL(file);
+        const image = new Image();
+
+        image.onload = function () {
+            const info = { width: image.naturalWidth, height: image.naturalHeight, url };
+            resolve(info);
+        };
+
+        image.onerror = function () {
+            URL.revokeObjectURL(url);
+            resolve(null);
+        };
+
+        image.src = url;
+    });
+}
+
+function canvasToFile(canvas, originalFile) {
+    return new Promise((resolve) => {
+        const mime = ['image/png', 'image/webp', 'image/jpeg'].includes(originalFile.type)
+            ? originalFile.type
+            : 'image/jpeg';
+        const quality = mime === 'image/png' ? undefined : 0.86;
+
+        canvas.toBlob((blob) => {
+            if (!blob) {
+                resolve(originalFile);
+                return;
+            }
+
+            const baseName = originalFile.name.replace(/\.[^.]+$/, '');
+            const extension = mime === 'image/png' ? 'png' : (mime === 'image/webp' ? 'webp' : 'jpg');
+            resolve(new File([blob], `${baseName}-ajustada.${extension}`, {
+                type: mime,
+                lastModified: Date.now(),
+            }));
+        }, mime, quality);
+    });
+}
+
+async function resizeImageFile(file, target) {
+    const info = await getImageInfo(file);
+    if (!info) {
+        return file;
+    }
+
+    const maxWidth = target?.width || 1920;
+    const maxHeight = target?.height || 1080;
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    const image = new Image();
+
+    const resizedFile = await new Promise((resolve) => {
+        image.onload = async function () {
+            if (target?.width && target?.height) {
+                const sourceRatio = info.width / info.height;
+                const targetRatio = target.width / target.height;
+                let sourceWidth = info.width;
+                let sourceHeight = info.height;
+                let sourceX = 0;
+                let sourceY = 0;
+
+                if (sourceRatio > targetRatio) {
+                    sourceWidth = Math.round(info.height * targetRatio);
+                    sourceX = Math.round((info.width - sourceWidth) / 2);
+                } else {
+                    sourceHeight = Math.round(info.width / targetRatio);
+                    sourceY = Math.round((info.height - sourceHeight) / 2);
+                }
+
+                canvas.width = target.width;
+                canvas.height = target.height;
+                context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, target.width, target.height);
+            } else {
+                const ratio = Math.min(maxWidth / info.width, maxHeight / info.height, 1);
+                canvas.width = Math.round(info.width * ratio);
+                canvas.height = Math.round(info.height * ratio);
+                context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            }
+
+            resolve(await canvasToFile(canvas, file));
+        };
+
+        image.onerror = function () {
+            resolve(file);
+        };
+
+        image.src = info.url;
+    });
+
+    URL.revokeObjectURL(info.url);
+
+    return resizedFile;
+}
+
+function setInputFiles(input, files) {
+    if (!window.DataTransfer) {
+        return false;
+    }
+
+    const transfer = new DataTransfer();
+    files.forEach((file) => transfer.items.add(file));
+    input.files = transfer.files;
+
+    return true;
+}
+
+function activeUploadWrappers(form) {
+    const scope = form ? $(form) : $(document);
+
+    return scope.find('.admin-upload-enhanced').filter(function () {
+        return $(this).find('input[type="file"]')[0]?.files?.length;
+    });
+}
+
+function updateUploadProgress(wrapper, percent, text) {
+    const safePercent = Math.max(0, Math.min(100, Math.round(percent)));
+    const zone = $(wrapper);
+
+    zone.find('.admin-upload-progress').removeClass('d-none');
+    zone.find('.admin-upload-progress-bar')
+        .css('width', `${safePercent}%`)
+        .attr('aria-valuenow', safePercent)
+        .text(`${safePercent}%`);
+
+    if (text) {
+        zone.find('.admin-upload-progress-text').text(text);
+    }
+}
+
+const originalAjax = $.ajax.bind($);
+$.ajax = function (urlOrOptions, maybeOptions) {
+    const isUrlSignature = typeof urlOrOptions === 'string';
+    const options = isUrlSignature
+        ? $.extend({}, maybeOptions || {}, { url: urlOrOptions })
+        : $.extend({}, urlOrOptions || {});
+
+    const hasFormData = options.data instanceof FormData;
+
+    if (hasFormData && !options.xhr) {
+        const originalBeforeSend = options.beforeSend;
+        const originalComplete = options.complete;
+        const startedAt = Date.now();
+        let activeWrappers = $();
+
+        options.beforeSend = function (xhr, settings) {
+            const form = options.context && options.context.nodeType ? options.context : null;
+            activeWrappers = activeUploadWrappers(form);
+            activeWrappers.each(function () {
+                updateUploadProgress(this, 3, 'Preparando envio...');
+            });
+
+            if (typeof originalBeforeSend === 'function') {
+                return originalBeforeSend.call(this, xhr, settings);
+            }
+
+            return undefined;
+        };
+
+        options.xhr = function () {
+            const xhr = new XMLHttpRequest();
+
+            xhr.upload.addEventListener('progress', function (event) {
+                if (!event.lengthComputable) {
+                    return;
+                }
+
+                const percent = (event.loaded / event.total) * 100;
+                const elapsed = Math.max((Date.now() - startedAt) / 1000, 0.1);
+                const speed = event.loaded / elapsed;
+                const remaining = speed > 0 ? (event.total - event.loaded) / speed : 0;
+                const text = `${formatBytesForAdmin(event.loaded)} de ${formatBytesForAdmin(event.total)} - falta ${formatSecondsForAdmin(remaining)}`;
+
+                activeWrappers.each(function () {
+                    updateUploadProgress(this, percent, text);
+                });
+            });
+
+            return xhr;
+        };
+
+        options.complete = function (xhr, status) {
+            activeWrappers.each(function () {
+                updateUploadProgress(this, status === 'success' ? 100 : 0, status === 'success' ? 'Envio concluido.' : 'Envio interrompido.');
+            });
+
+            if (typeof originalComplete === 'function') {
+                originalComplete.call(this, xhr, status);
+            }
+        };
+    }
+
+    return isUrlSignature ? originalAjax(options) : originalAjax(options);
+};
+
+function renderUploadPreview(wrapper, input) {
+    const files = Array.from(input.files || []);
+    const preview = wrapper.find('.admin-upload-preview');
+    const meta = wrapper.find('.admin-upload-meta');
+
+    preview.empty();
+
+    if (!files.length) {
+        const existingUrl = input.dataset.existingUrl;
+        if (existingUrl) {
+            preview.html(`<img src="${existingUrl}" alt="Preview atual" class="admin-upload-preview-media">`);
+            meta.text('Arquivo atual carregado.');
+        } else {
+            meta.text('Nenhum arquivo selecionado.');
+        }
+        return;
+    }
+
+    meta.text(files.map((file) => `${file.name} (${formatBytesForAdmin(file.size)})`).join(' | '));
+
+    files.slice(0, 6).forEach((file) => {
+        const fileUrl = URL.createObjectURL(file);
+        let element;
+
+        if (file.type.startsWith('image/')) {
+            element = $(`<img src="${fileUrl}" alt="${file.name}" class="admin-upload-preview-media">`);
+            getImageInfo(file).then((info) => {
+                if (info) {
+                    wrapper.find('.admin-upload-dimensions').text(`${info.width}x${info.height}px`);
+                    URL.revokeObjectURL(info.url);
+                }
+            });
+        } else if (file.type.startsWith('video/')) {
+            element = $(`<video src="${fileUrl}" class="admin-upload-preview-media" controls></video>`);
+        } else if (file.type.startsWith('audio/')) {
+            element = $(`<audio src="${fileUrl}" class="w-100" controls></audio>`);
+        } else {
+            element = $(`<div class="admin-upload-file-icon"><i class="fas fa-file"></i><span>${file.name}</span></div>`);
+        }
+
+        preview.append(element);
+    });
+}
+
+async function maybeAdjustImage(input, wrapper) {
+    const files = Array.from(input.files || []);
+    const target = parseTargetSize(input.dataset.imageSize);
+
+    if (!files.length || !files[0].type.startsWith('image/')) {
+        return;
+    }
+
+    const info = await getImageInfo(files[0]);
+
+    if (!info) {
+        return;
+    }
+
+    const tooLargeByTarget = target && (info.width > target.width * 1.35 || info.height > target.height * 1.35);
+    const tooLargeGeneric = !target && (info.width > 2400 || info.height > 2400 || files[0].size > 3 * 1024 * 1024);
+    URL.revokeObjectURL(info.url);
+
+    if (!tooLargeByTarget && !tooLargeGeneric) {
+        return;
+    }
+
+    const targetText = target ? `${target.width}x${target.height}px` : 'ate 1920x1080px';
+    const result = await Swal.fire({
+        title: 'Ajustar imagem?',
+        text: `A imagem esta maior que o ideal (${targetText}). Deseja cortar/redimensionar automaticamente antes do envio?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ajustar automaticamente',
+        cancelButtonText: 'Manter original',
+        reverseButtons: true,
+    });
+
+    if (!result.isConfirmed) {
+        return;
+    }
+
+    const adjusted = await resizeImageFile(files[0], target);
+    setInputFiles(input, [adjusted, ...files.slice(1)]);
+    renderUploadPreview(wrapper, input);
+    toastr.info('Imagem ajustada em tempo real antes do envio.', 'Upload');
+}
+
+function enhanceUploadInput(input) {
+    if (!input || input.dataset.adminUploadEnhanced === '1') {
+        return;
+    }
+
+    if (input.classList.contains('d-none') && !input.dataset.profileAvatarUpload && input.dataset.adminUploadEnhance !== '1') {
+        return;
+    }
+
+    input.dataset.adminUploadEnhanced = '1';
+    const compactClass = input.dataset.profileAvatarUpload ? ' admin-upload-compact' : '';
+    const label = input.dataset.uploadLabel || input.closest('.mb-3, .form-group')?.querySelector('label')?.textContent?.trim() || 'Arquivo';
+    const ideal = input.dataset.imageSize || 'definido pelo local de uso';
+    const wrapper = $(`
+        <div class="admin-upload-enhanced${compactClass}" tabindex="0" role="button">
+            <div class="admin-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+            <div class="admin-upload-title">${label}</div>
+            <div class="admin-upload-help">Arraste e solte aqui ou clique para selecionar.</div>
+            <div class="admin-upload-ideal">Tamanho ideal: ${ideal}</div>
+            <div class="admin-upload-preview"></div>
+            <div class="admin-upload-meta">Nenhum arquivo selecionado.</div>
+            <div class="admin-upload-dimensions"></div>
+            <div class="admin-upload-progress d-none">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated admin-upload-progress-bar" role="progressbar" style="width:0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                </div>
+                <div class="admin-upload-progress-text">Preparando...</div>
+            </div>
+        </div>
+    `);
+
+    $(input).addClass('admin-upload-native').after(wrapper);
+    wrapper.prepend(input);
+
+    wrapper.on('click keydown', function (event) {
+        if (event.type === 'keydown' && !['Enter', ' '].includes(event.key)) {
+            return;
+        }
+
+        if ($(event.target).is('input')) {
+            return;
+        }
+
+        event.preventDefault();
+        input.click();
+    });
+
+    wrapper.on('dragover', function (event) {
+        event.preventDefault();
+        wrapper.addClass('is-dragover');
+    });
+
+    wrapper.on('dragleave drop', function () {
+        wrapper.removeClass('is-dragover');
+    });
+
+    wrapper.on('drop', function (event) {
+        event.preventDefault();
+        const files = Array.from(event.originalEvent?.dataTransfer?.files || []);
+
+        if (!files.length) {
+            return;
+        }
+
+        setInputFiles(input, input.multiple ? files : [files[0]]);
+        $(input).trigger('change');
+    });
+
+    $(input).on('change.adminUploadPreview', async function () {
+        renderUploadPreview(wrapper, input);
+        await maybeAdjustImage(input, wrapper);
+        updateUploadProgress(wrapper, 100, 'Arquivo pronto para envio.');
+    });
+
+    renderUploadPreview(wrapper, input);
+}
+
+function enhanceUploadInputs(context) {
+    const scope = context ? $(context) : $(document);
+    scope.find('input[type="file"]').each(function () {
+        enhanceUploadInput(this);
+    });
+}
+
+function uploadProfileAvatar(input) {
+    if (!input?.files?.length) {
+        return;
+    }
+
+    const url = input.dataset.profileAvatarUpload;
+    const wrapper = $(input).closest('.admin-upload-enhanced');
+    const formData = new FormData();
+    formData.append('avatar', input.files[0]);
+
+    $.ajax({
+        url,
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            updateUploadProgress(wrapper, 5, 'Enviando foto...');
+        },
+        success: function (response) {
+            if (!isSuccessfulResponse(response)) {
+                toastr.error(response.message || 'Erro ao atualizar foto.');
+                return;
+            }
+
+            const avatarUrl = response.data?.avatar_url;
+            if (avatarUrl) {
+                $('.admin-profile-avatar-preview, .admin-avatar').attr('src', avatarUrl);
+            }
+            updateUploadProgress(wrapper, 100, 'Foto atualizada.');
+            toastr.success(response.message || 'Foto atualizada.');
+        },
+        error: function (xhr) {
+            toastr.error(xhr.responseJSON?.message || 'Erro ao atualizar foto.');
+            updateUploadProgress(wrapper, 0, 'Falha no envio.');
+        },
+    });
+}
+
 function markAdminLoaded() {
     document.body?.classList.add('admin-loaded', 'app-loaded');
 }
@@ -146,6 +591,49 @@ const adminDataTableLanguage = window.AdminDataTableLanguage || {
 
 window.AdminDataTableLanguage = adminDataTableLanguage;
 
+if (!window.__adminNativeAlertPatched) {
+    window.__adminNativeAlertPatched = true;
+    window.__adminNativeAlert = window.alert;
+    window.alert = function (message) {
+        const text = String(message || '');
+
+        if (text.startsWith('DataTables warning:')) {
+            if (text.includes('i18n file loading error')) {
+                console.warn(text);
+                return;
+            }
+
+            if (window.Swal) {
+                window.Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: 'Falha ao carregar tabela',
+                    text: 'Uma tabela do painel retornou erro. Verifique os filtros e tente novamente.',
+                    timer: 6000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                });
+                return;
+            }
+
+            window.toastr?.warning('Uma tabela do painel retornou erro.', 'Falha ao carregar tabela');
+            return;
+        }
+
+        if (window.Swal) {
+            window.Swal.fire({
+                icon: 'info',
+                title: 'Aviso',
+                text,
+            });
+            return;
+        }
+
+        window.__adminNativeAlert(text);
+    };
+}
+
 function normalizeDataTableOptions(options) {
     if (!options || typeof options !== 'object') {
         return options;
@@ -203,6 +691,9 @@ if ($.fn.DataTable?.ext?.pager) {
 
 if ($.fn.dataTable) {
     $.fn.dataTable.ext.errMode = 'none';
+    if (window.DataTable?.ext) {
+        window.DataTable.ext.errMode = 'none';
+    }
 
     $.extend(true, $.fn.dataTable.defaults, {
         language: adminDataTableLanguage,
@@ -686,8 +1177,8 @@ $(document).on('click', '.admin-sidebar [data-admin-tree-toggle]', function (eve
     }
 
     const isOpen = item.classList.contains('menu-open');
-    const siblings = Array.from(item.parentElement?.children || []).filter(function (sibling) {
-        return sibling !== item && sibling.classList?.contains('menu-open');
+    const siblings = Array.from(document.querySelectorAll('.admin-sidebar .nav-item.menu-open')).filter(function (sibling) {
+        return sibling !== item;
     });
 
     siblings.forEach(function (sibling) {
@@ -699,32 +1190,77 @@ $(document).on('click', '.admin-sidebar [data-admin-tree-toggle]', function (eve
 
 window.addEventListener('resize', syncSidebarState);
 
+let lastNotificationCount = null;
+
+function playNotificationSound() {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+
+        const context = new AudioContext();
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(880, context.currentTime);
+        gain.gain.setValueAtTime(0.001, context.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.16, context.currentTime + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.28);
+        oscillator.connect(gain);
+        gain.connect(context.destination);
+        oscillator.start();
+        oscillator.stop(context.currentTime + 0.3);
+    } catch (error) {
+        // Browsers can block audio before user interaction.
+    }
+}
+
+function renderNotifications(data) {
+    const count = Number(data?.count || data?.unread_count || 0);
+    const items = Array.isArray(data?.items) ? data.items : [];
+    const badge = $('.notifications-count');
+    const toggle = $('.admin-notification-toggle');
+    const bell = $('.admin-notification-bell');
+    const dropdown = $('.notifications-dropdown-menu');
+
+    badge.text(count).toggleClass('d-none', count === 0);
+    toggle.toggleClass('has-notifications', count > 0);
+
+    if (lastNotificationCount !== null && count > lastNotificationCount) {
+        bell.removeClass('is-ringing');
+        window.requestAnimationFrame(() => bell.addClass('is-ringing'));
+        playNotificationSound();
+    }
+
+    lastNotificationCount = count;
+
+    if (dropdown.length) {
+        if (!items.length) {
+            dropdown.html('<span class="dropdown-item dropdown-header text-center">Nenhuma notificacao</span>');
+        } else {
+            let html = `<span class="dropdown-item dropdown-header text-center">${count} notificacao(oes)</span>`;
+            items.forEach((item) => {
+                html += `<a href="${item.url || '#'}" class="dropdown-item">
+                    <i class="${item.icon || 'fas fa-bell'} me-2"></i>
+                    ${item.message || item.mensagem || ''}
+                    <br><small class="text-muted">${window.formatDate ? window.formatDate(item.created_at, true) : ''}</small>
+                </a>`;
+            });
+            html += '<div class="dropdown-divider"></div><a href="/admin/notificacoes" class="dropdown-item dropdown-footer">Ver todas</a>';
+            dropdown.html(html);
+        }
+    }
+}
+
 function startNotificationPolling(url, interval) {
-    if (!url) url = '/admin/notifications';
-    if (!interval) interval = 30000;
-    setInterval(function () {
-        $.get(url, function (data) {
-            const badge = $('.notifications-badge');
-            const dropdown = $('.notifications-dropdown');
-            if (data.count > 0) {
-                badge.text(data.count).removeClass('d-none');
-            } else {
-                badge.addClass('d-none');
-            }
-            if (data.html && dropdown.length) {
-                dropdown.html(data.html);
-            }
-            if (data.count > 0 && Notification.permission === 'granted') {
-                data.notifications?.forEach(function (notif) {
-                    new Notification(notif.title, {
-                        body: notif.message,
-                        icon: notif.icon || '/favicon.ico',
-                    });
-                });
-            }
-        }).fail(function () {
-        });
-    }, interval);
+    const endpoint = url || '/admin/notificacoes/poll';
+    const delay = interval || 30000;
+    const poll = function () {
+        $.get(endpoint, renderNotifications).fail(function () {});
+    };
+
+    poll();
+    window.setInterval(poll, delay);
 }
 
 function startAutoRefresh(url, interval, targetSelector) {
@@ -775,6 +1311,19 @@ $(document).on('click', '[data-toggle="tooltip"]', function () {
     }
 });
 
+$(document).on('click', '[data-profile-avatar-trigger]', function (event) {
+    event.preventDefault();
+    document.getElementById('quickProfileAvatar')?.click();
+});
+
+$(document).on('change', '[data-profile-avatar-upload]', function () {
+    uploadProfileAvatar(this);
+});
+
+$(document).on('form.loaded shown.bs.modal', function (event) {
+    enhanceUploadInputs(event.target);
+});
+
 $(function () {
     loadThemePreference();
     syncSidebarState();
@@ -787,6 +1336,7 @@ $(function () {
         });
     }
     window.applyMasks();
+    enhanceUploadInputs(document);
     if (typeof bootstrap !== 'undefined') {
         document.querySelectorAll('.toast').forEach(function (el) {
             var toast = new bootstrap.Toast(el);

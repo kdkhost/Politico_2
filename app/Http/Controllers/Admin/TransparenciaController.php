@@ -16,6 +16,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\TransparencyItem;
 use App\Services\Transparencia\TransparenciaService;
+use App\Services\Upload\UploadService;
 use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -86,7 +87,10 @@ class TransparenciaController extends Controller
                 'documento_numero' => 'nullable|string|max:100',
                 'orgao_responsavel' => 'nullable|string|max:255',
                 'status' => 'required|in:rascunho,publicado,arquivado',
+                'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,csv,jpg,jpeg,png,webp|max:' . config('sistema.upload_max_size', 10) * 1024,
             ]);
+
+            $this->storeAttachmentIfPresent($request, $validated);
 
             $item = $this->transparenciaService->createItem($validated);
 
@@ -139,7 +143,10 @@ class TransparenciaController extends Controller
                 'documento_numero' => 'nullable|string|max:100',
                 'orgao_responsavel' => 'nullable|string|max:255',
                 'status' => 'required|in:rascunho,publicado,arquivado',
+                'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,csv,jpg,jpeg,png,webp|max:' . config('sistema.upload_max_size', 10) * 1024,
             ]);
+
+            $this->storeAttachmentIfPresent($request, $validated);
 
             $item = $this->transparenciaService->updateItem($id, $validated);
 
@@ -209,6 +216,27 @@ class TransparenciaController extends Controller
         if ($normalized !== []) {
             $request->merge($normalized);
         }
+    }
+
+    private function storeAttachmentIfPresent(Request $request, array &$validated): void
+    {
+        unset($validated['file']);
+
+        if (!$request->hasFile('file')) {
+            return;
+        }
+
+        $media = app(UploadService::class)->upload($request->file('file'), 'transparencia', [
+            'alt_text' => $validated['titulo'] ?? 'Documento de transparencia',
+        ]);
+
+        $validated['arquivos'] = [[
+            'media_id' => $media->id,
+            'nome' => $media->nome_original,
+            'url' => $media->url,
+            'mime_type' => $media->mime_type,
+            'tamanho' => $media->tamanho,
+        ]];
     }
 
     private function formatTransparencyForJson(TransparencyItem $item): array

@@ -4,6 +4,11 @@
 @section('og_title', 'Fale Conosco - ' . config('app.name'))
 
 @section('content')
+@php
+  $recaptchaEnabled = settings('recaptcha_enabled', false) && settings('recaptcha_contact', true) && settings('recaptcha_site_key');
+  $recaptchaVersion = in_array(settings('recaptcha_version', 'v2'), ['v2', 'v3'], true) ? settings('recaptcha_version', 'v2') : 'v2';
+  $recaptchaSiteKey = (string) settings('recaptcha_site_key', '');
+@endphp
 
 <section class="page-header">
   <div class="container">
@@ -76,6 +81,20 @@
                 <textarea class="form-control @error('mensagem') is-invalid @enderror" id="mensagem" name="mensagem" rows="5" required>{{ old('mensagem') }}</textarea>
                 @error('mensagem')<div class="invalid-feedback">{{ $message }}</div>@enderror
               </div>
+              <div class="col-12 d-none">
+                <label for="website">Website</label>
+                <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+              </div>
+              @if($recaptchaEnabled)
+                <div class="col-12">
+                  @if($recaptchaVersion === 'v3')
+                    <input type="hidden" name="recaptcha_token" id="recaptcha_token">
+                  @else
+                    <div class="g-recaptcha" data-sitekey="{{ $recaptchaSiteKey }}"></div>
+                  @endif
+                  @error('recaptcha')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                </div>
+              @endif
               <div class="col-12">
                 <button type="submit" class="btn btn-blue btn-lg rounded-pill px-5"><i class="fas fa-paper-plane me-2"></i>Enviar mensagem</button>
               </div>
@@ -155,12 +174,39 @@
 </section>
 
 @push('scripts')
+@if($recaptchaEnabled)
+  @if($recaptchaVersion === 'v3')
+    <script src="https://www.google.com/recaptcha/api.js?render={{ $recaptchaSiteKey }}"></script>
+  @else
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  @endif
+@endif
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function(){
   if(typeof jQuery !== 'undefined'){
     jQuery('#telefone').mask('(00) 00000-0000');
   }
+
+  @if($recaptchaEnabled && $recaptchaVersion === 'v3')
+  var contactForm = document.querySelector('form[action="{{ route('site.contato.enviar') }}"]');
+  if (contactForm) {
+    contactForm.addEventListener('submit', function(event) {
+      var tokenInput = document.getElementById('recaptcha_token');
+      if (!tokenInput || tokenInput.value || !window.grecaptcha) {
+        return;
+      }
+
+      event.preventDefault();
+      grecaptcha.ready(function() {
+        grecaptcha.execute(@json($recaptchaSiteKey), { action: 'contact' }).then(function(token) {
+          tokenInput.value = token;
+          contactForm.requestSubmit();
+        });
+      });
+    });
+  }
+  @endif
 });
 </script>
 @endpush
