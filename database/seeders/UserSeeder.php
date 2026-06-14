@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/**
+ * @autor marcelo-brad rj
+ * @contato Tel: +55 (21) 98132-5441
+ * @contato Email: contato@kdkhost.com.br
+ * @contato Telegram: @MARCELO_BRAD
+ * @contato Instagram: @marcelobradrj
+ * @contato WhatsApp: 5521981325441
+ */
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -15,23 +24,28 @@ class UserSeeder extends Seeder
 
     public function run(): void
     {
-        $profile = DB::table('profiles')->where('slug', 'super-admin')->first();
+        $profileId = DB::table('profiles')->where('slug', 'super-admin')->value('id');
+        $now = now();
 
-        $userData = [
-            'name'              => 'Administrador',
-            'email'             => 'admin@sistema.com.br',
-            'password'          => Hash::make('admin123'),
-            'is_super_admin'    => true,
-            'status'            => 'ativo',
-            'email_verified_at' => now(),
-            'created_at'        => now(),
-            'updated_at'        => now(),
+        $payload = [
+            'name' => 'Administrador',
+            'email' => 'admin@sistema.com.br',
+            'password' => Hash::make('admin123'),
+            'profile_id' => $profileId,
+            'is_super_admin' => true,
+            'status' => 'active',
+            'is_blocked' => false,
+            'email_verified_at' => $now,
+            'updated_at' => $now,
         ];
 
-        if ($profile) {
-            $userData['profile_id'] = $profile->id;
+        $existingId = DB::table('users')->where('email', 'admin@sistema.com.br')->value('id');
+
+        if ($existingId) {
+            DB::table('users')->where('id', $existingId)->update($payload);
+            return;
         }
 
-        DB::table('users')->insert($userData);
+        DB::table('users')->insert($payload + ['created_at' => $now]);
     }
 }

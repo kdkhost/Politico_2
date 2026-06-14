@@ -1,6 +1,7 @@
 import 'intersection-observer';
 
 document.addEventListener('DOMContentLoaded', function () {
+    registerPublicVisit();
 
     var navbar = document.querySelector('.navbar-site');
     var navbarCollapse = document.getElementById('navbarMain');
@@ -362,4 +363,39 @@ document.addEventListener('DOMContentLoaded', function () {
     style.textContent =
         '@keyframes slideInRight{from{opacity:0;transform:translateX(100%)}to{opacity:1;transform:translateX(0)}}';
     document.head.appendChild(style);
+
+    function registerPublicVisit() {
+        if (document.body && document.body.dataset.visitTracked === '1') {
+            return;
+        }
+
+        var payload = JSON.stringify({
+            page_url: window.location.href,
+        });
+
+        if (document.body) {
+            document.body.dataset.visitTracked = '1';
+        }
+
+        if (navigator.sendBeacon) {
+            navigator.sendBeacon('/api/visitas/registrar', new Blob([payload], { type: 'application/json' }));
+            return;
+        }
+
+        fetch('/api/visitas/registrar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Page-Url': window.location.href,
+            },
+            body: payload,
+            keepalive: true,
+        }).catch(function () {
+            if (document.body) {
+                document.body.dataset.visitTracked = '0';
+            }
+        });
+    }
 });

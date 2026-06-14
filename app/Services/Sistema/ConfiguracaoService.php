@@ -40,8 +40,7 @@ class ConfiguracaoService
             ]
         );
 
-        Cache::forget("setting_{$chave}");
-        Cache::forget('settings_all');
+        $this->forgetSettingCaches($chave, $grupo);
 
         return $setting;
     }
@@ -85,7 +84,7 @@ class ConfiguracaoService
             $this->set((string) $key, $valor, $tipo, $grupo);
         }
 
-        Cache::forget('settings_all');
+        $this->forgetSettingCaches();
     }
 
     public function getSiteSettings(): array
@@ -112,6 +111,27 @@ class ConfiguracaoService
 
         Cache::forever('settings_all', $settings->toArray());
         Cache::forever('site_settings', $settings->pluck('valor', 'chave')->toArray());
+    }
+
+    protected function forgetSettingCaches(string|null $key = null, string|null $group = null): void
+    {
+        if ($key !== null) {
+            Cache::forget("setting_{$key}");
+        }
+
+        Cache::forget('settings_all');
+        Cache::forget('site_settings');
+
+        if ($group !== null) {
+            Cache::forget("settings_group_{$group}");
+        }
+
+        Setting::query()
+            ->select('grupo')
+            ->distinct()
+            ->pluck('grupo')
+            ->filter()
+            ->each(static fn (string $groupName): bool => Cache::forget("settings_group_{$groupName}"));
     }
 
     protected function castValue(string|null $valor, string $tipo): mixed

@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/**
+ * @autor marcelo-brad rj
+ * @contato Tel: +55 (21) 98132-5441
+ * @contato Email: contato@kdkhost.com.br
+ * @contato Telegram: @MARCELO_BRAD
+ * @contato Instagram: @marcelobradrj
+ * @contato WhatsApp: 5521981325441
+ */
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -17,51 +26,45 @@ class SettingSeeder extends Seeder
         $now = now();
 
         $settings = [
-            // Geral
-            ['chave' => 'site_name',           'valor' => 'Meu Site Politico',     'tipo' => 'string',  'grupo' => 'geral',    'descricao' => 'Nome do Site'],
-            ['chave' => 'site_description',    'valor' => 'Portal do vereador',     'tipo' => 'string',  'grupo' => 'geral',    'descricao' => 'Descricao do Site'],
-            ['chave' => 'site_keywords',       'valor' => 'politica, vereador, camara', 'tipo' => 'string','grupo' => 'geral',  'descricao' => 'Palavras-chave'],
-            ['chave' => 'site_logo',           'valor' => '',                       'tipo' => 'string',  'grupo' => 'geral',    'descricao' => 'Logo do Site'],
-            ['chave' => 'site_favicon',        'valor' => '',                       'tipo' => 'string',  'grupo' => 'geral',    'descricao' => 'Favicon'],
-
-            // Localizacao
-            ['chave' => 'timezone',            'valor' => 'America/Sao_Paulo',      'tipo' => 'string',  'grupo' => 'localizacao', 'descricao' => 'Fuso Horario'],
-            ['chave' => 'locale',              'valor' => 'pt_BR',                  'tipo' => 'string',  'grupo' => 'localizacao', 'descricao' => 'Idioma'],
-
-            // Tema
-            ['chave' => 'default_theme',       'valor' => 'default',                'tipo' => 'string',  'grupo' => 'tema',    'descricao' => 'Tema Padrao'],
-            ['chave' => 'primary_color',       'valor' => '#1a56db',                'tipo' => 'string',  'grupo' => 'tema',    'descricao' => 'Cor Primaria'],
-            ['chave' => 'secondary_color',     'valor' => '#7c3aed',                'tipo' => 'string',  'grupo' => 'tema',    'descricao' => 'Cor Secundaria'],
-
-            // Contato
-            ['chave' => 'contact_email',       'valor' => 'contato@sistema.com.br',   'tipo' => 'string', 'grupo' => 'contato', 'descricao' => 'E-mail de Contato'],
-            ['chave' => 'contact_phone',       'valor' => '(11) 99999-9999',          'tipo' => 'string', 'grupo' => 'contato', 'descricao' => 'Telefone de Contato'],
-            ['chave' => 'contact_address',     'valor' => '',                         'tipo' => 'text',   'grupo' => 'contato', 'descricao' => 'Endereco'],
-
-            // Redes Sociais
-            ['chave' => 'social_facebook',     'valor' => '',                       'tipo' => 'string',  'grupo' => 'social',  'descricao' => 'Facebook'],
-            ['chave' => 'social_instagram',    'valor' => '',                       'tipo' => 'string',  'grupo' => 'social',  'descricao' => 'Instagram'],
-            ['chave' => 'social_youtube',      'valor' => '',                       'tipo' => 'string',  'grupo' => 'social',  'descricao' => 'YouTube'],
-            ['chave' => 'social_twitter',      'valor' => '',                       'tipo' => 'string',  'grupo' => 'social',  'descricao' => 'Twitter / X'],
-            ['chave' => 'social_tiktok',       'valor' => '',                       'tipo' => 'string',  'grupo' => 'social',  'descricao' => 'TikTok'],
-
-            // SEO
-            ['chave' => 'seo_google_analytics', 'valor' => '',                      'tipo' => 'string',  'grupo' => 'seo',     'descricao' => 'Google Analytics ID'],
-            ['chave' => 'seo_google_tag_manager', 'valor' => '',                    'tipo' => 'string',  'grupo' => 'seo',     'descricao' => 'Google Tag Manager'],
-
-            // Manutencao
-            ['chave' => 'maintenance_mode',    'valor' => 'false',                  'tipo' => 'boolean', 'grupo' => 'manutencao', 'descricao' => 'Modo Manutencao'],
-            ['chave' => 'maintenance_message', 'valor' => 'Site em manutencao.',    'tipo' => 'string',  'grupo' => 'manutencao', 'descricao' => 'Mensagem de Manutencao'],
-
-            // Posts
-            ['chave' => 'posts_per_page',      'valor' => '12',                     'tipo' => 'integer', 'grupo' => 'conteudo', 'descricao' => 'Posts por Pagina'],
-            ['chave' => 'comments_enabled',    'valor' => 'true',                   'tipo' => 'boolean', 'grupo' => 'conteudo', 'descricao' => 'Comentarios Ativos'],
+            ['chave' => 'site_name', 'valor' => 'Político 2', 'tipo' => 'string', 'grupo' => 'geral', 'descricao' => 'Nome do site'],
+            ['chave' => 'site_slogan', 'valor' => 'Gestão com Excelência', 'tipo' => 'string', 'grupo' => 'geral', 'descricao' => 'Slogan institucional'],
+            ['chave' => 'site_description', 'valor' => 'Portal institucional com notícias, agenda e transparência.', 'tipo' => 'string', 'grupo' => 'geral', 'descricao' => 'Descrição do site'],
+            ['chave' => 'site_keywords', 'valor' => 'politica, transparencia, agenda, noticias', 'tipo' => 'string', 'grupo' => 'geral', 'descricao' => 'Palavras-chave'],
+            ['chave' => 'timezone', 'valor' => 'America/Sao_Paulo', 'tipo' => 'string', 'grupo' => 'localizacao', 'descricao' => 'Fuso horário'],
+            ['chave' => 'locale', 'valor' => 'pt_BR', 'tipo' => 'string', 'grupo' => 'localizacao', 'descricao' => 'Idioma'],
+            ['chave' => 'default_theme', 'valor' => 'premium', 'tipo' => 'string', 'grupo' => 'tema', 'descricao' => 'Tema padrão do frontend'],
+            ['chave' => 'primary_color', 'valor' => '#1e3a5f', 'tipo' => 'string', 'grupo' => 'tema', 'descricao' => 'Cor primária'],
+            ['chave' => 'secondary_color', 'valor' => '#3b82f6', 'tipo' => 'string', 'grupo' => 'tema', 'descricao' => 'Cor secundária'],
+            ['chave' => 'contact_email', 'valor' => 'contato@politico2.com.br', 'tipo' => 'string', 'grupo' => 'contato', 'descricao' => 'E-mail de contato'],
+            ['chave' => 'contact_phone', 'valor' => '(21) 98132-5441', 'tipo' => 'string', 'grupo' => 'contato', 'descricao' => 'Telefone de contato'],
+            ['chave' => 'contact_whatsapp', 'valor' => '5521981325441', 'tipo' => 'string', 'grupo' => 'contato', 'descricao' => 'WhatsApp'],
+            ['chave' => 'contact_address', 'valor' => 'Rio de Janeiro - RJ', 'tipo' => 'text', 'grupo' => 'contato', 'descricao' => 'Endereço'],
+            ['chave' => 'posts_per_page', 'valor' => '12', 'tipo' => 'integer', 'grupo' => 'conteudo', 'descricao' => 'Posts por página'],
+            ['chave' => 'comments_enabled', 'valor' => '0', 'tipo' => 'boolean', 'grupo' => 'conteudo', 'descricao' => 'Comentários ativos'],
         ];
 
         foreach ($settings as $setting) {
-            $setting['new_created_at'] = $now;
-            $setting['new_updated_at'] = $now;
-            DB::table('settings')->insert($setting);
+            $exists = DB::table('settings')->where('chave', $setting['chave'])->exists();
+
+            if ($exists) {
+                DB::table('settings')
+                    ->where('chave', $setting['chave'])
+                    ->update([
+                        'tipo' => $setting['tipo'],
+                        'grupo' => $setting['grupo'],
+                        'descricao' => $setting['descricao'],
+                        'new_updated_at' => $now,
+                        'updated_at' => $now,
+                    ]);
+                continue;
+            }
+
+            DB::table('settings')->insert($setting + [
+                'new_created_at' => $now,
+                'new_updated_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
         }
     }
 }

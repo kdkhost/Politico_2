@@ -24,10 +24,11 @@ class VisitaService
     public function registerVisit(Request $request): Visit
     {
         $ip = $request->ip();
-        $url = $request->fullUrl();
+        $url = $this->resolveVisitedUrl($request);
         $userAgent = $request->userAgent();
         $referer = $request->header('referer');
         $bot = $this->isBot($userAgent);
+        $pagePath = parse_url($url, PHP_URL_PATH) ?: '/';
 
         $exists = Visit::where('ip', $ip)
             ->where('page_url', $url)
@@ -38,7 +39,7 @@ class VisitaService
 
         $data = [
             'page_url' => $url,
-            'page_type' => $request->segment(1) ?: 'home',
+            'page_type' => $this->detectPageType($pagePath),
             'page_id' => null,
             'ip' => $ip,
             'user_agent' => $userAgent,
@@ -49,7 +50,7 @@ class VisitaService
             'referrer_url' => $referer,
             'referrer_source' => $this->detectReferrerSource($referer),
             'visit_time' => now(),
-            'session_id' => $request->session()->getId(),
+            'session_id' => $request->hasSession() ? $request->session()->getId() : null,
             'unique_visit' => $uniqueVisit,
             'bot' => $bot,
         ];
@@ -460,5 +461,34 @@ class VisitaService
         }
 
         return 'Unknown';
+    }
+
+    protected function resolveVisitedUrl(Request $request): string
+    {
+        $pageUrl = (string) ($request->input('page_url') ?: $request->header('X-Page-Url', ''));
+
+        if ($pageUrl !== '' && filter_var($pageUrl, FILTER_VALIDATE_URL)) {
+            return $pageUrl;
+        }
+
+        $referer = (string) $request->header('referer', '');
+        if ($referer !== '' && filter_var($referer, FILTER_VALIDATE_URL)) {
+            return $referer;
+        }
+
+        return $request->fullUrl();
+    }
+
+    protected function detectPageType(string $path): string
+    {
+        $normalizedPath = trim($path, '/');
+
+        if ($normalizedPath === '') {
+            return 'home';
+        }
+
+        $segments = explode('/', $normalizedPath);
+
+        return $segments[0] ?: 'home';
     }
 }
