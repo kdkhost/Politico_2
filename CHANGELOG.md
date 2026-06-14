@@ -17,6 +17,17 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-14 - corrige exportações Excel sem quebra de acentuação
+
+- substituídos os exports administrativos baseados em CSV puro por planilha Excel XML `.xls` compatível com Excel, mantendo UTF-8 sem BOM no código-fonte
+- criado `App\Services\Export\SpreadsheetExportService` para gerar planilhas com cabeçalhos em PT-BR, escape XML seguro e largura de colunas calculada pelo maior conteúdo exportado
+- newsletter, contatos, visitas, financeiro e transparência passaram a exportar arquivos `.xls` com acentuação correta e colunas dimensionadas
+- chamadas antigas com `type=csv` continuam aceitas para compatibilidade, mas agora retornam planilha Excel quando o objetivo é abrir corretamente no Excel
+- exportações grandes passaram a usar `cursor()`/streaming de consulta onde aplicável, evitando carregar todos os registros na memória
+- textos visíveis de exportação foram ajustados de `CSV` para `Excel` onde o usuário recebe planilha
+- validações locais executadas: `php -l` nos PHP alterados, geração de planilha de teste sem BOM (`3C 3F 78` no início do arquivo), confirmação de `Data de Inscrição` e `ação sem erro` em UTF-8 real, `composer dump-autoload`, `php artisan optimize:clear`, `php artisan route:list`, `php artisan view:cache`, `php artisan view:clear`, `php artisan test`, `npm run build`, `git diff --check` e varredura de BOM
+- varredura final confirmou `BOM_COUNT=0` e nenhum arquivo `.zip` foi gerado
+
 ### 2026-06-14 - corrige salvamento real, uploads e padronização do admin
 
 - corrigido helper global `settings()` para ler `settings.chave/valor/tipo`, eliminando configurações que salvavam no banco mas não refletiam no painel

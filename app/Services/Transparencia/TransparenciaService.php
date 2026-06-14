@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace App\Services\Transparencia;
 
 use App\Models\TransparencyItem;
+use App\Services\Export\SpreadsheetExportService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -198,8 +199,12 @@ class TransparenciaService
         });
     }
 
-    public function exportData(string $type, array $filters): string
+    /**
+     * @return array{path: string, filename: string, content_type: string}|string
+     */
+    public function exportData(string $type, array $filters): array|string
     {
+        $type = strtolower($type ?: 'excel');
         $query = TransparencyItem::query();
 
         if (!empty($filters['tipo'])) {
@@ -214,40 +219,29 @@ class TransparenciaService
             $query->whereDate('data_publicacao', '<=', $filters['date_to']);
         }
 
-        $items = $query->orderByDesc('data_publicacao')->get();
-
-        if ($type === 'csv') {
-            $filename = "transparencia_export_" . now()->format('Ymd_His') . ".csv";
-            $path = storage_path("app/exports/{$filename}");
-
-            $dir = dirname($path);
-            if (!is_dir($dir)) {
-                mkdir($dir, 0755, true);
-            }
-
-            $handle = fopen($path, 'w+b');
-            fputcsv($handle, ['ID', 'Título', 'Tipo', 'Categoria', 'Valor', 'Fornecedor', 'Documento', 'Data Publicação', 'Status'], ';');
-
-            foreach ($items as $item) {
-                fputcsv($handle, [
-                    $item->id,
-                    $item->titulo,
-                    $item->tipo,
-                    $item->categoria,
-                    number_format((float) $item->valor, 2, ',', '.'),
-                    $item->fornecedor,
-                    $item->documento_numero,
-                    $item->data_publicacao?->format('d/m/Y'),
-                    $item->status,
-                ], ';');
-            }
-
-            fclose($handle);
-
-            return $path;
+        if (in_array($type, ['excel', 'xls', 'xlsx', 'csv'], true)) {
+            return app(SpreadsheetExportService::class)->excel(
+                'transparencia_export_' . now()->format('Ymd_His'),
+                'Transparência',
+                ['ID', 'Título', 'Tipo', 'Categoria', 'Valor', 'Fornecedor', 'Documento', 'Data Publicação', 'Status'],
+                $query->orderByDesc('data_publicacao')
+                    ->cursor()
+                    ->map(fn (TransparencyItem $item): array => [
+                        $item->id,
+                        $item->titulo,
+                        $item->tipo,
+                        $item->categoria,
+                        number_format((float) $item->valor, 2, ',', '.'),
+                        $item->fornecedor,
+                        $item->documento_numero,
+                        $item->data_publicacao?->format('d/m/Y') ?? '',
+                        $item->status,
+                    ]),
+            );
         }
 
         if ($type === 'json') {
+            $items = $query->orderByDesc('data_publicacao')->get();
             return $items->toJson(JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
 

@@ -174,13 +174,21 @@ class TransparenciaController extends Controller
     public function export(Request $request)
     {
         try {
-            $type = $request->input('type', 'csv');
+            $type = strtolower((string) $request->input('type', 'excel'));
             $filters = $request->only(['tipo', 'date_from', 'date_to']);
 
-            $path = $this->transparenciaService->exportData($type, $filters);
-            $filename = basename($path);
+            $export = $this->transparenciaService->exportData($type, $filters);
 
-            return Response::download($path, $filename)->deleteFileAfterSend();
+            if (is_array($export)) {
+                return Response::download($export['path'], $export['filename'], [
+                    'Content-Type' => $export['content_type'],
+                ])->deleteFileAfterSend();
+            }
+
+            return response($export, 200, [
+                'Content-Type' => 'application/json; charset=UTF-8',
+                'Content-Disposition' => 'attachment; filename="transparencia_export_' . now()->format('Ymd_His') . '.json"',
+            ]);
         } catch (\InvalidArgumentException $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         } catch (\Throwable $e) {

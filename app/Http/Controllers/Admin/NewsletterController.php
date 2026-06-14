@@ -15,6 +15,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\NewsletterSubscriber;
+use App\Services\Export\SpreadsheetExportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Response;
@@ -85,33 +86,27 @@ class NewsletterController extends Controller
         }
     }
 
-    public function export()
+    public function export(SpreadsheetExportService $exporter)
     {
         try {
-            $subscribers = NewsletterSubscriber::where('active', true)->get();
+            $export = $exporter->excel(
+                'newsletter_export_' . now()->format('Ymd_His'),
+                'Newsletter',
+                ['Email', 'Nome', 'Data de Inscrição'],
+                NewsletterSubscriber::query()
+                    ->where('active', true)
+                    ->orderBy('email')
+                    ->cursor()
+                    ->map(fn (NewsletterSubscriber $sub): array => [
+                        $sub->email,
+                        $sub->nome ?? '',
+                        $sub->created_at?->format('d/m/Y H:i') ?? '',
+                    ]),
+            );
 
-            $filename = 'newsletter_export_' . now()->format('Ymd_His') . '.csv';
-            $path = storage_path("app/exports/{$filename}");
-
-            $dir = dirname($path);
-            if (!is_dir($dir)) {
-                mkdir($dir, 0755, true);
-            }
-
-            $handle = fopen($path, 'w+b');
-            fputcsv($handle, ['Email', 'Nome', 'Data de Inscrição'], ';');
-
-            foreach ($subscribers as $sub) {
-                fputcsv($handle, [
-                    $sub->email,
-                    $sub->nome ?? '',
-                    $sub->created_at->format('d/m/Y H:i'),
-                ], ';');
-            }
-
-            fclose($handle);
-
-            return Response::download($path, $filename)->deleteFileAfterSend();
+            return Response::download($export['path'], $export['filename'], [
+                'Content-Type' => $export['content_type'],
+            ])->deleteFileAfterSend();
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao exportar: ' . $e->getMessage()], 500);
         }

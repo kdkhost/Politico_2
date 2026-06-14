@@ -100,7 +100,7 @@
           <div class="dropdown d-none">
             <button class="btn btn-outline-success btn-sm rounded-pill dropdown-toggle" data-bs-toggle="dropdown"><i class="fas fa-download me-1"></i>Exportar</button>
             <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#"><i class="fas fa-file-csv me-2"></i>CSV</a></li>
+              <li><a class="dropdown-item" href="#"><i class="fas fa-file-excel me-2"></i>Excel</a></li>
               <li><a class="dropdown-item" href="#"><i class="fas fa-file-pdf me-2"></i>PDF</a></li>
               <li><a class="dropdown-item" href="#"><i class="fas fa-file-code me-2"></i>JSON</a></li>
             </ul>

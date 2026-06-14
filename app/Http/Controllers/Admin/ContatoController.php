@@ -15,6 +15,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
+use App\Services\Export\SpreadsheetExportService;
 use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -175,7 +176,7 @@ class ContatoController extends Controller
         }
     }
 
-    public function export(Request $request)
+    public function export(Request $request, SpreadsheetExportService $exporter)
     {
         try {
             $query = Contact::query();
@@ -187,36 +188,28 @@ class ContatoController extends Controller
                 $query->whereDate('created_at', '<=', $request->date_to);
             }
 
-            $contacts = $query->orderByDesc('created_at')->get();
+            $export = $exporter->excel(
+                'contatos_export_' . now()->format('Ymd_His'),
+                'Contatos',
+                ['ID', 'Nome', 'Email', 'Telefone', 'Assunto', 'Mensagem', 'Data', 'Lido', 'Respondido'],
+                $query->orderByDesc('created_at')
+                    ->cursor()
+                    ->map(fn (Contact $contact): array => [
+                        $contact->id,
+                        $contact->nome,
+                        $contact->email,
+                        $contact->telefone,
+                        $contact->assunto,
+                        $contact->mensagem,
+                        $contact->created_at?->format('d/m/Y H:i') ?? '',
+                        $contact->lido ? 'Sim' : 'Não',
+                        $contact->respondido ? 'Sim' : 'Não',
+                    ]),
+            );
 
-            $filename = 'contatos_export_' . now()->format('Ymd_His') . '.csv';
-            $path = storage_path("app/exports/{$filename}");
-
-            $dir = dirname($path);
-            if (!is_dir($dir)) {
-                mkdir($dir, 0755, true);
-            }
-
-            $handle = fopen($path, 'w+b');
-            fputcsv($handle, ['ID', 'Nome', 'Email', 'Telefone', 'Assunto', 'Mensagem', 'Data', 'Lido', 'Respondido'], ';');
-
-            foreach ($contacts as $contact) {
-                fputcsv($handle, [
-                    $contact->id,
-                    $contact->nome,
-                    $contact->email,
-                    $contact->telefone,
-                    $contact->assunto,
-                    $contact->mensagem,
-                    $contact->created_at->format('d/m/Y H:i'),
-                    $contact->lido ? 'Sim' : 'Não',
-                    $contact->respondido ? 'Sim' : 'Não',
-                ], ';');
-            }
-
-            fclose($handle);
-
-            return Response::download($path, $filename)->deleteFileAfterSend();
+            return Response::download($export['path'], $export['filename'], [
+                'Content-Type' => $export['content_type'],
+            ])->deleteFileAfterSend();
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao exportar contatos: ' . $e->getMessage()], 500);
         }

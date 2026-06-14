@@ -100,7 +100,7 @@
                 <hr id="finance">
                 <section>
                     <h4><i class="fas fa-money-bill me-1"></i>Financeiro</h4>
-                    <p>Controle de receitas e despesas com categorização, relatórios e exportação CSV.</p>
+                    <p>Controle de receitas e despesas com categorização, relatórios e exportação Excel.</p>
                     <p>Funcionalidades: lançamentos, categorias financeiras, saldo por período e gráficos.</p>
                 </section>
 

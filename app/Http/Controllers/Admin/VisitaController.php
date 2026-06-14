@@ -15,6 +15,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Visit;
+use App\Services\Export\SpreadsheetExportService;
 use App\Services\Visitas\VisitaService;
 use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
@@ -125,41 +126,51 @@ class VisitaController extends Controller
         }
     }
 
-    public function export(Request $request)
+    public function export(Request $request, SpreadsheetExportService $exporter)
     {
         try {
             $filters = $request->only(['date_from', 'date_to', 'device', 'browser']);
-            $visits = $this->visitaService->getVisits(array_merge($filters, ['per_page' => 999999]));
+            $query = Visit::query();
 
-            $filename = 'visitas_export_' . now()->format('Ymd_His') . '.csv';
-            $path = storage_path("app/exports/{$filename}");
-
-            $dir = dirname($path);
-            if (!is_dir($dir)) {
-                mkdir($dir, 0755, true);
+            if (!empty($filters['date_from'])) {
+                $query->whereDate('visit_time', '>=', $filters['date_from']);
             }
 
-            $handle = fopen($path, 'w+b');
-            fputcsv($handle, ['IP', 'URL', 'Pagina', 'Dispositivo', 'Navegador', 'SO', 'Referenciador', 'Data/Hora', 'Unico', 'Bot'], ';');
-
-            foreach ($visits->items() as $visit) {
-                fputcsv($handle, [
-                    $visit->ip,
-                    $visit->url,
-                    $visit->page,
-                    $visit->device,
-                    $visit->browser,
-                    $visit->os,
-                    $visit->referer,
-                    $visit->visit_time?->format('d/m/Y H:i:s'),
-                    $visit->unique_visit ? 'Sim' : 'Nao',
-                    $visit->bot ? 'Sim' : 'Nao',
-                ], ';');
+            if (!empty($filters['date_to'])) {
+                $query->whereDate('visit_time', '<=', $filters['date_to']);
             }
 
-            fclose($handle);
+            if (!empty($filters['device'])) {
+                $query->where('device_type', $filters['device']);
+            }
 
-            return Response::download($path, $filename)->deleteFileAfterSend();
+            if (!empty($filters['browser'])) {
+                $query->where('browser', $filters['browser']);
+            }
+
+            $export = $exporter->excel(
+                'visitas_export_' . now()->format('Ymd_His'),
+                'Visitas',
+                ['IP', 'URL', 'Página', 'Dispositivo', 'Navegador', 'SO', 'Referenciador', 'Data/Hora', 'Único', 'Bot'],
+                $query->orderByDesc('visit_time')
+                    ->cursor()
+                    ->map(fn (Visit $visit): array => [
+                        $visit->ip,
+                        $visit->url,
+                        $visit->page,
+                        $visit->device,
+                        $visit->browser,
+                        $visit->os,
+                        $visit->referer,
+                        $visit->visit_time?->format('d/m/Y H:i:s') ?? '',
+                        $visit->unique_visit ? 'Sim' : 'Não',
+                        $visit->bot ? 'Sim' : 'Não',
+                    ]),
+            );
+
+            return Response::download($export['path'], $export['filename'], [
+                'Content-Type' => $export['content_type'],
+            ])->deleteFileAfterSend();
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao exportar visitas: ' . $e->getMessage()], 500);
         }

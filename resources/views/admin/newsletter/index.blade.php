@@ -44,7 +44,7 @@
                 <h3 class="card-title"><i class="fas fa-address-book me-1"></i>Inscritos</h3>
                 <div class="card-tools">
                     <a href="{{ route('admin.newsletter.export') }}" class="btn btn-outline-secondary btn-sm">
-                        <i class="fas fa-file-export me-1"></i>Exportar CSV
+                        <i class="fas fa-file-excel me-1"></i>Exportar Excel
                     </a>
                 </div>
             </div>

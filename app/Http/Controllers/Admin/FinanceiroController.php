@@ -16,6 +16,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\FinancialCategory;
 use App\Models\FinancialTransaction;
+use App\Services\Export\SpreadsheetExportService;
 use App\Services\Financeiro\FinanceiroService;
 use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
@@ -192,45 +193,36 @@ class FinanceiroController extends Controller
         }
     }
 
-    public function export(Request $request)
+    public function export(Request $request, SpreadsheetExportService $exporter)
     {
         try {
-            $type = $request->input('type', 'csv');
+            $type = strtolower((string) $request->input('type', 'excel'));
             $filters = $request->only(['tipo', 'date_from', 'date_to', 'status', 'categoria_id']);
 
-            if ($type === 'csv') {
-                $filename = 'financeiro_export_' . now()->format('Ymd_His') . '.csv';
-                $path = storage_path("app/exports/{$filename}");
+            if (in_array($type, ['excel', 'xls', 'xlsx', 'csv'], true)) {
+                $export = $exporter->excel(
+                    'financeiro_export_' . now()->format('Ymd_His'),
+                    'Financeiro',
+                    ['ID', 'Tipo', 'Descrição', 'Valor', 'Vencimento', 'Pagamento', 'Forma', 'Status', 'Categoria'],
+                    $this->buildExportQuery($filters)
+                        ->orderBy('id')
+                        ->cursor()
+                        ->map(fn (FinancialTransaction $transaction): array => [
+                            $transaction->id,
+                            ucfirst((string) $transaction->tipo),
+                            $transaction->descricao,
+                            number_format((float) $transaction->valor, 2, ',', '.'),
+                            $transaction->data_vencimento?->format('d/m/Y') ?? '',
+                            $transaction->data_pagamento?->format('d/m/Y') ?? '',
+                            $transaction->forma_pagamento ?? '',
+                            ucfirst((string) $transaction->status),
+                            $transaction->category?->nome ?? '',
+                        ]),
+                );
 
-                $dir = dirname($path);
-                if (!is_dir($dir)) {
-                    mkdir($dir, 0755, true);
-                }
-
-                $handle = fopen($path, 'w+b');
-                fputcsv($handle, ['ID', 'Tipo', 'Descrição', 'Valor', 'Vencimento', 'Pagamento', 'Forma', 'Status', 'Categoria'], ';');
-
-                $this->buildExportQuery($filters)
-                    ->orderBy('id')
-                    ->chunk(500, function ($transactions) use ($handle): void {
-                        foreach ($transactions as $t) {
-                            fputcsv($handle, [
-                                $t->id,
-                                $t->tipo,
-                                $t->descricao,
-                                number_format((float) $t->valor, 2, ',', '.'),
-                                $t->data_vencimento?->format('d/m/Y'),
-                                $t->data_pagamento?->format('d/m/Y'),
-                                $t->forma_pagamento,
-                                $t->status,
-                                $t->category?->nome ?? '',
-                            ], ';');
-                        }
-                    });
-
-                fclose($handle);
-
-                return Response::download($path, $filename)->deleteFileAfterSend();
+                return Response::download($export['path'], $export['filename'], [
+                    'Content-Type' => $export['content_type'],
+                ])->deleteFileAfterSend();
             }
 
             return response()->json(['status' => 'error', 'message' => 'Formato de exportação não suportado.'], 400);
