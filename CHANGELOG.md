@@ -35,6 +35,8 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 - alertas nativos do navegador foram interceptados para DataTables; falhas reais passam por SweetAlert2/toastr e erro de idioma externo é ignorado porque a tradução PT-BR local já existe
 - cabeçalhos de cards foram padronizados com título à esquerda e ações/botões à direita usando `.card-title` e `.card-tools`
 - recompilado bundle Vite do admin com novos assets `public/build/assets/admin-CmWgzdsy.css` e `public/build/assets/admin-Dbz7UEaE.js`
+- executado `graphify update`, atualizando `graphify-out/graph.json`, `graphify-out/graph.html`, `graphify-out/GRAPH_REPORT.md`, `graphify-out/manifest.json` e labels
+- comando `graphify .` foi executado em seguida, mas o ambiente não possui chave LLM (`GEMINI_API_KEY`, `OPENAI_API_KEY` ou equivalente), então ele retornou erro sem alterar o código do sistema
 - validações locais executadas: `php -l` nos PHP alterados, `node --check resources/js/admin/admin.js`, `composer dump-autoload`, `php artisan migrate`, `php artisan optimize:clear`, `php artisan route:list`, `php artisan view:cache`, `php artisan test`, `npm run build`, `git diff --check` e varredura de BOM
 - varredura final confirmou `BOM_COUNT=0` e nenhum arquivo `.zip` foi gerado
 
