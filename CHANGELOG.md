@@ -26,6 +26,9 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 - adicionada normalização defensiva para remover `language.url` caso alguma tabela futura tente usar tradução por URL externa
 - telas atualizadas: Blog, Páginas, Usuários, Financeiro, Contatos, Logs, Notificações, Transparência e Visitas
 - mantido UTF-8 sem BOM e sem geração de arquivo `.zip`
+- validações locais executadas: `npm run build`, `php artisan view:cache`, `php artisan view:clear`, `php artisan test`, `php artisan route:list --path=admin`, `node --check resources/js/admin/admin.js`, `git diff --check` e varredura de BOM
+- validação local e remota confirmou ausência de `i18n/pt-BR.json` no bundle admin e `BOM_COUNT 0`
+- publicado no Git e sincronizado no servidor remoto em `2026-06-14`
 
 ### 2026-06-14 - corrige submenus da sidebar e scrollbar temática
 
