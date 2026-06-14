@@ -1,4 +1,4 @@
-{{-- Scripts globais do admin - incluÃ­dos via @stack('scripts') nos mÃ³dulos --}}
+{{-- Scripts globais do admin - incluídos via @stack('scripts') nos módulos --}}
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
@@ -68,7 +68,7 @@
     function confirmDelete(url, msg, callback) {
         Swal.fire({
             title: 'Tem certeza?',
-            text: msg || 'Esta aÃ§Ã£o nÃ£o pode ser desfeita!',
+            text: msg || 'Esta ação não pode ser desfeita!',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc3545',
@@ -84,7 +84,7 @@
                     data: { _token: $('meta[name="csrf-token"]').attr('content') },
                     success: function(res) {
                         if (window.isSuccessfulResponse(res)) {
-                            toastr.success(res.message || 'Registro excluÃ­do com sucesso!');
+                            toastr.success(res.message || 'Registro excluído com sucesso!');
                             if (typeof table !== 'undefined') table.ajax.reload();
                             if (typeof callback === 'function') callback(true);
                         } else {
@@ -144,7 +144,7 @@
                 $.each(msgs, function(i, msg) { toastr.error(msg); });
             });
         } else {
-            toastr.error(xhr.responseJSON?.message || 'Ocorreu um erro na requisiÃ§Ã£o.');
+            toastr.error(xhr.responseJSON?.message || 'Ocorreu um erro na requisição.');
         }
     }
 
@@ -153,7 +153,7 @@
             var count = data.count || 0;
             $('.notifications-count').text(count).toggleClass('d-none', count === 0);
             if (data.items && data.items.length) {
-                var html = '<span class="dropdown-item dropdown-header">' + count + ' notificaÃ§' + (count === 1 ? 'Ã£o' : 'Ãµes') + '</span>';
+                var html = '<span class="dropdown-item dropdown-header">' + count + ' notificaç' + (count === 1 ? 'ão' : 'ões') + '</span>';
                 data.items.forEach(function(item) {
                     html += '<a href="' + (item.url || '#') + '" class="dropdown-item">' +
                         '<i class="' + (item.icon || 'fas fa-bell') + ' me-2"></i>' +

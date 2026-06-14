@@ -26,7 +26,7 @@
                         <th>Slug</th>
                         <th>Posts</th>
                         <th>Criada em</th>
-                        <th class="actions-column">AÃ§Ãµes</th>
+                        <th class="actions-column">Ações</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -135,7 +135,7 @@ $(function () {
         var id = $(this).data('id');
         Swal.fire({
             title: 'Excluir tag?',
-            text: 'A tag serÃ¡ removida dos posts vinculados.',
+            text: 'A tag será removida dos posts vinculados.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sim, excluir',
@@ -145,7 +145,7 @@ $(function () {
             if (!result.isConfirmed) return;
             $.ajax({ url: '{{ route("admin.blog.tags.destroy", ":id") }}'.replace(':id', id), method: 'DELETE' })
                 .done(function (res) {
-                    toastr.success(res.message || 'Tag excluÃ­da.');
+                    toastr.success(res.message || 'Tag excluída.');
                     table.ajax.reload(null, false);
                 })
                 .fail(function (xhr) { toastr.error(xhr.responseJSON?.message || 'Erro ao excluir tag.'); });

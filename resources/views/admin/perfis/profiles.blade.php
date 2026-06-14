@@ -4,8 +4,8 @@
 @section('page_title', 'Perfis de Acesso')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">UsuÃ¡rios</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('admin.permissions.index') }}">PermissÃµes</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">Usuários</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.permissions.index') }}">Permissões</a></li>
     <li class="breadcrumb-item active">Perfis</li>
 @endsection
 
@@ -32,21 +32,21 @@
                     </div>
                 @endif
                 <div class="card-body">
-                    <p class="text-muted">{{ $profile->description ?? 'Sem descriÃ§Ã£o' }}</p>
+                    <p class="text-muted">{{ $profile->description ?? 'Sem descrição' }}</p>
                     <hr>
                     <div class="d-flex justify-content-between align-items-center">
-                        <span><i class="fas fa-users me-1"></i>UsuÃ¡rios:</span>
+                        <span><i class="fas fa-users me-1"></i>Usuários:</span>
                         <span class="badge bg-info fs-6">{{ $profile->users_count ?? 0 }}</span>
                     </div>
                     @if($profile->id === 1)
                         <div class="mt-2">
-                            <span class="badge bg-warning"><i class="fas fa-exclamation-triangle me-1"></i>Perfil padrÃ£o do sistema</span>
+                            <span class="badge bg-warning"><i class="fas fa-exclamation-triangle me-1"></i>Perfil padrão do sistema</span>
                         </div>
                     @endif
                 </div>
                 <div class="card-footer text-center">
                     <a href="{{ route('admin.permissions.index') }}?profile={{ $profile->id }}" class="btn btn-sm btn-primary">
-                        <i class="fas fa-lock me-1"></i>Gerenciar PermissÃµes
+                        <i class="fas fa-lock me-1"></i>Gerenciar Permissões
                     </a>
                 </div>
             </div>
@@ -88,8 +88,8 @@
                         <input type="text" id="profile_name" name="name" class="form-control" placeholder="Ex: Editor, Admin" required>
                     </div>
                     <div class="mb-3">
-                        <label for="profile_description" class="form-label">DescriÃ§Ã£o</label>
-                        <textarea id="profile_description" name="description" class="form-control" rows="2" placeholder="DescriÃ§Ã£o opcional"></textarea>
+                        <label for="profile_description" class="form-label">Descrição</label>
+                        <textarea id="profile_description" name="description" class="form-control" rows="2" placeholder="Descrição opcional"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -153,7 +153,7 @@
             var id = $(this).data('id');
             Swal.fire({
                 title: 'Excluir Perfil?',
-                text: 'UsuÃ¡rios vinculados perderÃ£o o acesso.',
+                text: 'Usuários vinculados perderão o acesso.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc3545',
@@ -167,7 +167,7 @@
                         data: { _token: '{{ csrf_token() }}' },
                         success: function(res) {
                             if (window.isSuccessfulResponse(res)) {
-                                toastr.success(res.message || 'Perfil excluÃ­do!');
+                                toastr.success(res.message || 'Perfil excluído!');
                                 setTimeout(function() { location.reload(); }, 1000);
                             } else {
                                 toastr.error(res.message || 'Erro ao excluir.');

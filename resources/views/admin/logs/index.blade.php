@@ -24,16 +24,16 @@
                     <div class="col-md-3">
                         <select id="logTypeFilter" class="form-select">
                             <option value="">Todos os Tipos</option>
-                            <option value="auth">AutenticaÃ§Ã£o</option>
+                            <option value="auth">Autenticação</option>
                             <option value="crud">CRUD</option>
                             <option value="system">Sistema</option>
                             <option value="error">Erros</option>
-                            <option value="security">SeguranÃ§a</option>
+                            <option value="security">Segurança</option>
                         </select>
                     </div>
                     <div class="col-md-3">
                         <select id="logUserFilter" class="form-select">
-                            <option value="">Todos os UsuÃ¡rios</option>
+                            <option value="">Todos os Usuários</option>
                             @foreach($users ?? [] as $user)
                                 <option value="{{ $user->id }}">{{ $user->name }}</option>
                             @endforeach
@@ -53,12 +53,12 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Tipo</th>
-                                <th>AÃ§Ã£o</th>
-                                <th>DescriÃ§Ã£o</th>
-                                <th>UsuÃ¡rio</th>
+                                <th>Ação</th>
+                                <th>Descrição</th>
+                                <th>Usuário</th>
                                 <th>IP</th>
                                 <th>Data/Hora</th>
-                                <th style="width: 80px;">AÃ§Ãµes</th>
+                                <th style="width: 80px;">Ações</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -143,9 +143,9 @@
                 var html = '<table class="table table-sm">' +
                     '<tr><th style="width:100px">ID</th><td>' + data.id + '</td></tr>' +
                     '<tr><th>Tipo</th><td>' + (data.type || '') + '</td></tr>' +
-                    '<tr><th>AÃ§Ã£o</th><td>' + (data.action || '') + '</td></tr>' +
-                    '<tr><th>DescriÃ§Ã£o</th><td>' + (data.description || '') + '</td></tr>' +
-                    '<tr><th>UsuÃ¡rio</th><td>' + (data.user?.name || 'Sistema') + '</td></tr>' +
+                    '<tr><th>Ação</th><td>' + (data.action || '') + '</td></tr>' +
+                    '<tr><th>Descrição</th><td>' + (data.description || '') + '</td></tr>' +
+                    '<tr><th>Usuário</th><td>' + (data.user?.name || 'Sistema') + '</td></tr>' +
                     '<tr><th>IP</th><td><code>' + (data.ip || '-') + '</code></td></tr>' +
                     '<tr><th>User Agent</th><td style="word-break:break-all;"><small>' + (data.user_agent || '-') + '</small></td></tr>' +
                     '<tr><th>Data</th><td>' + formatDate(data.created_at, true) + '</td></tr>' +
@@ -161,7 +161,7 @@
         $('#btnClearLogs').on('click', function() {
             Swal.fire({
                 title: 'Limpar Logs?',
-                text: 'Todos os registros de log serÃ£o excluÃ­dos permanentemente.',
+                text: 'Todos os registros de log serão excluídos permanentemente.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc3545',

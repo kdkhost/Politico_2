@@ -25,8 +25,8 @@
                         <th>Nome</th>
                         <th>Slug</th>
                         <th>Tipo</th>
-                        <th>DescriÃ§Ã£o</th>
-                        <th class="actions-column">AÃ§Ãµes</th>
+                        <th>Descrição</th>
+                        <th class="actions-column">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -92,7 +92,7 @@
                         </select>
                     </div>
                     <div class="mb-0">
-                        <label for="financial_category_descricao" class="form-label">DescriÃ§Ã£o</label>
+                        <label for="financial_category_descricao" class="form-label">Descrição</label>
                         <textarea id="financial_category_descricao" name="descricao" class="form-control" rows="3"></textarea>
                     </div>
                 </div>
@@ -153,7 +153,7 @@ $(function () {
         var id = $(this).data('id');
         Swal.fire({
             title: 'Excluir categoria?',
-            text: 'Categorias com transaÃ§Ãµes vinculadas nÃ£o serÃ£o excluÃ­das.',
+            text: 'Categorias com transações vinculadas não serão excluídas.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sim, excluir',
@@ -163,7 +163,7 @@ $(function () {
             if (!result.isConfirmed) return;
             $.ajax({ url: '{{ route("admin.financeiro.categorias.destroy", ":id") }}'.replace(':id', id), method: 'DELETE' })
                 .done(function (res) {
-                    toastr.success(res.message || 'Categoria excluÃ­da.');
+                    toastr.success(res.message || 'Categoria excluída.');
                     setTimeout(function () { location.reload(); }, 800);
                 })
                 .fail(function (xhr) { toastr.error(xhr.responseJSON?.message || 'Erro ao excluir categoria.'); });

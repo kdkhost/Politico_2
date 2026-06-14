@@ -1,11 +1,11 @@
 @extends('admin.layouts.master')
 
-@section('title', 'Perfis e PermissÃµes - ' . config('app.name'))
-@section('page_title', 'Perfis e PermissÃµes')
+@section('title', 'Perfis e Permissões - ' . config('app.name'))
+@section('page_title', 'Perfis e Permissões')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">UsuÃ¡rios</a></li>
-    <li class="breadcrumb-item active">Perfis e PermissÃµes</li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">Usuários</a></li>
+    <li class="breadcrumb-item active">Perfis e Permissões</li>
 @endsection
 
 @section('content')
@@ -26,9 +26,9 @@
                         <thead>
                             <tr>
                                 <th>Nome</th>
-                                <th>DescriÃ§Ã£o</th>
-                                <th>UsuÃ¡rios</th>
-                                <th style="width: 100px;">AÃ§Ãµes</th>
+                                <th>Descrição</th>
+                                <th>Usuários</th>
+                                <th style="width: 100px;">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -59,7 +59,7 @@
     <div class="col-md-7">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-lock me-1"></i>PermissÃµes</h3>
+                <h3 class="card-title"><i class="fas fa-lock me-1"></i>Permissões</h3>
                 <div class="card-tools">
                     <select id="profileFilter" class="form-select form-select-sm" style="width: auto;">
                         <option value="">Selecione um perfil</option>
@@ -73,7 +73,7 @@
                 <div id="permissionsContainer">
                     <div class="text-center text-muted py-5">
                         <i class="fas fa-arrow-left fa-3x mb-3"></i>
-                        <p>Selecione um perfil ao lado para gerenciar suas permissÃµes.</p>
+                        <p>Selecione um perfil ao lado para gerenciar suas permissões.</p>
                     </div>
                 </div>
             </div>
@@ -97,8 +97,8 @@
                         <input type="text" id="profile_name" name="name" class="form-control" placeholder="Ex: Editor, Admin, etc." required>
                     </div>
                     <div class="mb-3">
-                        <label for="profile_description" class="form-label">DescriÃ§Ã£o</label>
-                        <textarea id="profile_description" name="description" class="form-control" rows="2" placeholder="DescriÃ§Ã£o opcional do perfil"></textarea>
+                        <label for="profile_description" class="form-label">Descrição</label>
+                        <textarea id="profile_description" name="description" class="form-control" rows="2" placeholder="Descrição opcional do perfil"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -117,7 +117,7 @@
             var profileId = $(this).val();
             if (!profileId) {
                 $('#permissionsContainer').html(
-                    '<div class="text-center text-muted py-5"><i class="fas fa-arrow-left fa-3x mb-3"></i><p>Selecione um perfil para gerenciar suas permissÃµes.</p></div>'
+                    '<div class="text-center text-muted py-5"><i class="fas fa-arrow-left fa-3x mb-3"></i><p>Selecione um perfil para gerenciar suas permissões.</p></div>'
                 );
                 return;
             }
@@ -143,7 +143,7 @@
                     });
                     html += '</div></div></div>';
                 }
-                html += '<div class="text-end mt-2"><button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Salvar PermissÃµes</button></div></form>';
+                html += '<div class="text-end mt-2"><button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Salvar Permissões</button></div></form>';
                 $('#permissionsContainer').html(html);
             });
         });
@@ -158,16 +158,16 @@
                 data: $(this).serialize(),
                 success: function(res) {
                     if (window.isSuccessfulResponse(res)) {
-                        toastr.success(res.message || 'PermissÃµes salvas com sucesso!');
+                        toastr.success(res.message || 'Permissões salvas com sucesso!');
                     } else {
-                        toastr.error(res.message || 'Erro ao salvar permissÃµes.');
+                        toastr.error(res.message || 'Erro ao salvar permissões.');
                     }
                 },
                 error: function(xhr) {
-                    toastr.error(xhr.responseJSON?.message || 'Erro ao salvar permissÃµes.');
+                    toastr.error(xhr.responseJSON?.message || 'Erro ao salvar permissões.');
                 },
                 complete: function() {
-                    btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i>Salvar PermissÃµes');
+                    btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i>Salvar Permissões');
                 }
             });
         });
@@ -221,7 +221,7 @@
             var id = $(this).data('id');
             Swal.fire({
                 title: 'Excluir Perfil?',
-                text: 'UsuÃ¡rios vinculados a este perfil perderÃ£o o acesso.',
+                text: 'Usuários vinculados a este perfil perderão o acesso.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc3545',
@@ -236,7 +236,7 @@
                         data: { _token: '{{ csrf_token() }}' },
                         success: function(res) {
                             if (window.isSuccessfulResponse(res)) {
-                                toastr.success(res.message || 'Perfil excluÃ­do!');
+                                toastr.success(res.message || 'Perfil excluído!');
                                 setTimeout(function() { location.reload(); }, 1000);
                             } else {
                                 toastr.error(res.message || 'Erro ao excluir.');

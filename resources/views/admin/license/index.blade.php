@@ -1,10 +1,10 @@
 @extends('admin.layouts.master')
 
-@section('title', 'LicenÃ§a - ' . config('app.name'))
-@section('page_title', 'Gerenciamento de LicenÃ§a')
+@section('title', 'Licença - ' . config('app.name'))
+@section('page_title', 'Gerenciamento de Licença')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item active">LicenÃ§a</li>
+    <li class="breadcrumb-item active">Licença</li>
 @endsection
 
 @section('content')
@@ -12,34 +12,34 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-key me-1"></i>Status da LicenÃ§a</h3>
+                <h3 class="card-title"><i class="fas fa-key me-1"></i>Status da Licença</h3>
             </div>
             <div class="card-body">
                 <div class="text-center mb-4">
                     @if($license->activated ?? false)
                         <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
-                        <h4 class="mt-2 text-success">LicenÃ§a Ativada</h4>
+                        <h4 class="mt-2 text-success">Licença Ativada</h4>
                     @else
                         <i class="fas fa-times-circle text-danger" style="font-size: 4rem;"></i>
-                        <h4 class="mt-2 text-danger">LicenÃ§a NÃ£o Ativada</h4>
+                        <h4 class="mt-2 text-danger">Licença Não Ativada</h4>
                     @endif
                 </div>
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
-                            <th style="width: 180px;">DomÃ­nio</th>
+                            <th style="width: 180px;">Domínio</th>
                             <td>{{ $license->domain ?? config('app.url') }}</td>
                         </tr>
                         <tr>
                             <th>Cliente</th>
-                            <td>{{ $license->cliente ?? 'NÃ£o informado' }}</td>
+                            <td>{{ $license->cliente ?? 'Não informado' }}</td>
                         </tr>
                         <tr>
                             <th>E-mail</th>
-                            <td>{{ $license->email_cliente ?? 'NÃ£o informado' }}</td>
+                            <td>{{ $license->email_cliente ?? 'Não informado' }}</td>
                         </tr>
                         <tr>
-                            <th>VersÃ£o</th>
+                            <th>Versão</th>
                             <td>{{ config('app.version', '1.0.0') }}</td>
                         </tr>
                         <tr>
@@ -48,17 +48,17 @@
                                 @if($license->verified ?? false)
                                     <span class="badge bg-success">Verificada</span>
                                 @else
-                                    <span class="badge bg-warning">NÃ£o Verificada</span>
+                                    <span class="badge bg-warning">Não Verificada</span>
                                 @endif
                             </td>
                         </tr>
                         <tr>
-                            <th>Ãšltima VerificaÃ§Ã£o</th>
+                            <th>Última Verificação</th>
                             <td>{{ $license->last_verified_at ? \Carbon\Carbon::parse($license->last_verified_at)->format('d/m/Y H:i') : 'Nunca' }}</td>
                         </tr>
                         <tr>
                             <th>Expira em</th>
-                            <td>{{ $license->expires_at ? \Carbon\Carbon::parse($license->expires_at)->format('d/m/Y') : 'VitalÃ­cio' }}</td>
+                            <td>{{ $license->expires_at ? \Carbon\Carbon::parse($license->expires_at)->format('d/m/Y') : 'Vitalício' }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -69,7 +69,7 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-certificate me-1"></i>Ativar LicenÃ§a</h3>
+                <h3 class="card-title"><i class="fas fa-certificate me-1"></i>Ativar Licença</h3>
             </div>
             <div class="card-body">
                 <form id="licenseActivateForm">
@@ -83,14 +83,14 @@
                         <input type="email" id="client_email" name="client_email" class="form-control" placeholder="cliente@email.com" value="{{ $license->email_cliente ?? '' }}">
                     </div>
                     <div class="mb-3">
-                        <label for="license_key" class="form-label">Chave de LicenÃ§a</label>
+                        <label for="license_key" class="form-label">Chave de Licença</label>
                         <div class="input-group">
-                            <input type="text" id="license_key" name="license_key" class="form-control" placeholder="Insira sua chave de licenÃ§a" value="{{ $license->license_key ?? '' }}" required>
+                            <input type="text" id="license_key" name="license_key" class="form-control" placeholder="Insira sua chave de licença" value="{{ $license->license_key ?? '' }}" required>
                             <button type="submit" class="btn btn-primary" id="btnActivate">
                                 <i class="fas fa-check me-1"></i>Ativar
                             </button>
                         </div>
-                        <div class="form-text">Digite a chave de licenÃ§a fornecida no momento da compra do sistema.</div>
+                        <div class="form-text">Digite a chave de licença fornecida no momento da compra do sistema.</div>
                     </div>
                 </form>
                 <hr>
@@ -99,11 +99,11 @@
                         <i class="fas fa-sync me-1"></i>Verificar Agora
                     </button>
                     <button type="button" class="btn btn-warning" id="btnCheckUpdates">
-                        <i class="fas fa-download me-1"></i>Verificar AtualizaÃ§Ãµes
+                        <i class="fas fa-download me-1"></i>Verificar Atualizações
                     </button>
                     @if($license->activated ?? false)
                         <button type="button" class="btn btn-danger" id="btnDeactivate">
-                            <i class="fas fa-power-off me-1"></i>Desativar LicenÃ§a
+                            <i class="fas fa-power-off me-1"></i>Desativar Licença
                         </button>
                     @endif
                 </div>
@@ -112,7 +112,7 @@
 
         <div class="card d-none" id="updateProgressCard">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-download me-1"></i>AtualizaÃ§Ã£o em Andamento</h3>
+                <h3 class="card-title"><i class="fas fa-download me-1"></i>Atualização em Andamento</h3>
             </div>
             <div class="card-body">
                 <div class="progress mb-3" style="height: 25px;">
@@ -124,7 +124,7 @@
 
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-history me-1"></i>Logs de LicenÃ§a</h3>
+                <h3 class="card-title"><i class="fas fa-history me-1"></i>Logs de Licença</h3>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -132,7 +132,7 @@
                         <thead>
                             <tr>
                                 <th>Data</th>
-                                <th>AÃ§Ã£o</th>
+                                <th>Ação</th>
                                 <th>Detalhes</th>
                             </tr>
                         </thead>
@@ -142,11 +142,11 @@
                                     <td>{{ \Carbon\Carbon::parse($log->created_at)->format('d/m/Y H:i') }}</td>
                                     <td>
                                         @if($log->action === 'activated')
-                                            <span class="badge bg-success">AtivaÃ§Ã£o</span>
+                                            <span class="badge bg-success">Ativação</span>
                                         @elseif($log->action === 'deactivated')
-                                            <span class="badge bg-danger">DesativaÃ§Ã£o</span>
+                                            <span class="badge bg-danger">Desativação</span>
                                         @elseif($log->action === 'verified')
-                                            <span class="badge bg-info">VerificaÃ§Ã£o</span>
+                                            <span class="badge bg-info">Verificação</span>
                                         @else
                                             <span class="badge bg-secondary">{{ $log->action }}</span>
                                         @endif
@@ -177,14 +177,14 @@
                 data: $(this).serialize(),
                 success: function(res) {
                     if (window.isSuccessfulResponse(res)) {
-                        toastr.success(res.message || 'LicenÃ§a ativada com sucesso!');
+                        toastr.success(res.message || 'Licença ativada com sucesso!');
                         setTimeout(function() { location.reload(); }, 1500);
                     } else {
-                        toastr.error(res.message || 'Erro ao ativar licenÃ§a.');
+                        toastr.error(res.message || 'Erro ao ativar licença.');
                     }
                 },
                 error: function(xhr) {
-                    toastr.error(xhr.responseJSON?.message || 'Erro ao ativar licenÃ§a.');
+                    toastr.error(xhr.responseJSON?.message || 'Erro ao ativar licença.');
                 },
                 complete: function() {
                     btn.prop('disabled', false).html('<i class="fas fa-check me-1"></i>Ativar');
@@ -201,14 +201,14 @@
                 data: { _token: '{{ csrf_token() }}' },
                 success: function(res) {
                     if (window.isSuccessfulResponse(res)) {
-                        toastr.success(res.message || 'LicenÃ§a verificada com sucesso!');
+                        toastr.success(res.message || 'Licença verificada com sucesso!');
                         setTimeout(function() { location.reload(); }, 1500);
                     } else {
-                        toastr.error(res.message || 'Falha na verificaÃ§Ã£o.');
+                        toastr.error(res.message || 'Falha na verificação.');
                     }
                 },
                 error: function(xhr) {
-                    toastr.error(xhr.responseJSON?.message || 'Erro ao verificar licenÃ§a.');
+                    toastr.error(xhr.responseJSON?.message || 'Erro ao verificar licença.');
                 },
                 complete: function() {
                     btn.prop('disabled', false).html('<i class="fas fa-sync me-1"></i>Verificar Agora');
@@ -219,8 +219,8 @@
         $('#btnDeactivate').on('click', function() {
             var btn = $(this);
             Swal.fire({
-                title: 'Desativar LicenÃ§a?',
-                text: 'Tem certeza que deseja desativar a licenÃ§a deste domÃ­nio?',
+                title: 'Desativar Licença?',
+                text: 'Tem certeza que deseja desativar a licença deste domínio?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc3545',
@@ -236,17 +236,17 @@
                         data: { _token: '{{ csrf_token() }}' },
                         success: function(res) {
                             if (window.isSuccessfulResponse(res)) {
-                                toastr.success(res.message || 'LicenÃ§a desativada.');
+                                toastr.success(res.message || 'Licença desativada.');
                                 setTimeout(function() { location.reload(); }, 1500);
                             } else {
                                 toastr.error(res.message || 'Erro ao desativar.');
                             }
                         },
                         error: function(xhr) {
-                            toastr.error(xhr.responseJSON?.message || 'Erro ao desativar licenÃ§a.');
+                            toastr.error(xhr.responseJSON?.message || 'Erro ao desativar licença.');
                         },
                         complete: function() {
-                            btn.prop('disabled', false).html('<i class="fas fa-power-off me-1"></i>Desativar LicenÃ§a');
+                            btn.prop('disabled', false).html('<i class="fas fa-power-off me-1"></i>Desativar Licença');
                         }
                     });
                 }
@@ -261,7 +261,7 @@
                 progress += 5;
                 if (progress > 90) clearInterval(interval);
                 $('#updateProgressBar').css('width', progress + '%').text(progress + '%');
-                $('#updateStatusText').text('Verificando atualizaÃ§Ãµes... (' + progress + '%)');
+                $('#updateStatusText').text('Verificando atualizações... (' + progress + '%)');
             }, 300);
 
             btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Verificando...');
@@ -272,10 +272,10 @@
                 success: function(res) {
                     clearInterval(interval);
                     $('#updateProgressBar').css('width', '100%').text('100%');
-                    $('#updateStatusText').text(res.message || 'VerificaÃ§Ã£o concluÃ­da.');
+                    $('#updateStatusText').text(res.message || 'Verificação concluída.');
                     var updateData = res.data || {};
                     if (res.update_available || updateData.has_update) {
-                        toastr.info('Nova versÃ£o disponÃ­vel: ' + (res.latest_version || ''));
+                        toastr.info('Nova versão disponível: ' + (res.latest_version || ''));
                     } else {
                         toastr.success('Sistema atualizado!');
                     }
@@ -283,11 +283,11 @@
                 error: function(xhr) {
                     clearInterval(interval);
                     $('#updateProgressBar').css('width', '100%').removeClass('progress-bar-animated').addClass('bg-danger');
-                    $('#updateStatusText').text(xhr.responseJSON?.message || 'Erro na verificaÃ§Ã£o.');
-                    toastr.error('Erro ao verificar atualizaÃ§Ãµes.');
+                    $('#updateStatusText').text(xhr.responseJSON?.message || 'Erro na verificação.');
+                    toastr.error('Erro ao verificar atualizações.');
                 },
                 complete: function() {
-                    btn.prop('disabled', false).html('<i class="fas fa-download me-1"></i>Verificar AtualizaÃ§Ãµes');
+                    btn.prop('disabled', false).html('<i class="fas fa-download me-1"></i>Verificar Atualizações');
                 }
             });
         });

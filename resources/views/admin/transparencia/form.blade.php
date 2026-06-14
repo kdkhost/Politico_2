@@ -5,20 +5,20 @@
                 @csrf
                 <input type="hidden" id="transparencia_id" name="transparencia_id" value="">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="transparenciaModalLabel"><i class="fas fa-eye me-1"></i>Novo Item de TransparÃªncia</h5>
+                    <h5 class="modal-title" id="transparenciaModalLabel"><i class="fas fa-eye me-1"></i>Novo Item de Transparência</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-8">
                             <div class="mb-3">
-                                <label for="transparencia_title" class="form-label">TÃ­tulo <span class="text-danger">*</span></label>
-                                <input type="text" id="transparencia_title" name="title" class="form-control" placeholder="TÃ­tulo do item" required>
+                                <label for="transparencia_title" class="form-label">Título <span class="text-danger">*</span></label>
+                                <input type="text" id="transparencia_title" name="title" class="form-control" placeholder="Título do item" required>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
-                                <label for="transparencia_year" class="form-label">Ano/PerÃ­odo <span class="text-danger">*</span></label>
+                                <label for="transparencia_year" class="form-label">Ano/Período <span class="text-danger">*</span></label>
                                 <input type="number" id="transparencia_year" name="year" class="form-control" value="{{ date('Y') }}" min="2000" max="{{ date('Y') + 1 }}" required>
                             </div>
                         </div>
@@ -42,23 +42,23 @@
                                     <option value="">Selecione</option>
                                     <option value="documento">Documento</option>
                                     <option value="planilha">Planilha</option>
-                                    <option value="relatorio">RelatÃ³rio</option>
+                                    <option value="relatorio">Relatório</option>
                                     <option value="contrato">Contrato</option>
-                                    <option value="licitacao">LicitaÃ§Ã£o</option>
-                                    <option value="convenio">ConvÃªnio</option>
+                                    <option value="licitacao">Licitação</option>
+                                    <option value="convenio">Convênio</option>
                                     <option value="outro">Outro</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="transparencia_description" class="form-label">DescriÃ§Ã£o</label>
-                        <textarea id="transparencia_description" name="description" class="form-control" rows="3" placeholder="DescriÃ§Ã£o detalhada do item"></textarea>
+                        <label for="transparencia_description" class="form-label">Descrição</label>
+                        <textarea id="transparencia_description" name="description" class="form-control" rows="3" placeholder="Descrição detalhada do item"></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="transparencia_file" class="form-label">Arquivo <span class="text-danger">*</span></label>
                         <input type="file" id="transparencia_file" name="file" class="form-control" required>
-                        <div class="form-text">PDF, XLS, XLSX, DOC, DOCX. Tamanho mÃ¡ximo: 10MB.</div>
+                        <div class="form-text">PDF, XLS, XLSX, DOC, DOCX. Tamanho máximo: 10MB.</div>
                     </div>
                     <div class="mb-3">
                         <div class="form-check form-switch">
@@ -82,7 +82,7 @@
             $('#transparenciaForm')[0].reset();
             $('#transparencia_id').val('');
             $('#transparencia_file').prop('required', true);
-            $('#transparenciaModalLabel').text('Novo Item de TransparÃªncia');
+            $('#transparenciaModalLabel').text('Novo Item de Transparência');
         });
 
         $('#transparenciaForm').on('submit', function(e) {

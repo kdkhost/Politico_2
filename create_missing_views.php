@@ -66,7 +66,7 @@ $templates = [
                 </div>
             </div>
             <div class=\"card-body\">
-                <p>ConteÃƒÆ’Ã‚Âºdo da listagem serÃƒÆ’Ã‚Â¡ implementado aqui.</p>
+                <p>Conteúdo da listagem será implementado aqui.</p>
             </div>
         </div>
     </div>
@@ -106,7 +106,7 @@ $templates = [
                 <h3 class=\"card-title\">Novo {{ \$title ?? 'Item' }}</h3>
             </div>
             <div class=\"card-body\">
-                <p>FormulÃƒÆ’Ã‚Â¡rio de criaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o serÃƒÆ’Ã‚Â¡ implementado aqui.</p>
+                <p>Formulário de criação será implementado aqui.</p>
             </div>
         </div>
     </div>
@@ -146,7 +146,7 @@ $templates = [
                 <h3 class=\"card-title\">Editar {{ \$title ?? 'Item' }}</h3>
             </div>
             <div class=\"card-body\">
-                <p>FormulÃƒÆ’Ã‚Â¡rio de ediÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o serÃƒÆ’Ã‚Â¡ implementado aqui.</p>
+                <p>Formulário de edição será implementado aqui.</p>
             </div>
         </div>
     </div>
@@ -196,7 +196,7 @@ $templates = [
                 </div>
             </div>
             <div class=\"card-body\">
-                <p>Detalhes do item serÃƒÆ’Ã‚Â£o exibidos aqui.</p>
+                <p>Detalhes do item serão exibidos aqui.</p>
             </div>
         </div>
     </div>
@@ -204,10 +204,10 @@ $templates = [
 @endsection",
     'settings' => "@extends('admin.layouts.master')
 
-@section('title', 'ConfiguraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes')
+@section('title', 'Configurações')
 @section('breadcrumb', [
     ['title' => 'Dashboard', 'url' => route('admin.dashboard')],
-    ['title' => 'ConfiguraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes', 'url' => '']
+    ['title' => 'Configurações', 'url' => '']
 ])
 
 @section('content')
@@ -215,12 +215,12 @@ $templates = [
     <div class=\"container-fluid\">
         <div class=\"row mb-2\">
             <div class=\"col-sm-6\">
-                <h1 class=\"m-0\">ConfiguraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes</h1>
+                <h1 class=\"m-0\">Configurações</h1>
             </div>
             <div class=\"col-sm-6\">
                 <ol class=\"breadcrumb float-sm-right\">
                     <li class=\"breadcrumb-item\"><a href=\"{{ route('admin.dashboard') }}\">Dashboard</a></li>
-                    <li class=\"breadcrumb-item active\">ConfiguraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes</li>
+                    <li class=\"breadcrumb-item active\">Configurações</li>
                 </ol>
             </div>
         </div>
@@ -231,10 +231,10 @@ $templates = [
     <div class=\"container-fluid\">
         <div class=\"card\">
             <div class=\"card-header\">
-                <h3 class=\"card-title\">ConfiguraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes do Sistema</h3>
+                <h3 class=\"card-title\">Configurações do Sistema</h3>
             </div>
             <div class=\"card-body\">
-                <p>FormulÃƒÆ’Ã‚Â¡rio de configuraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes serÃƒÆ’Ã‚Â¡ implementado aqui.</p>
+                <p>Formulário de configurações será implementado aqui.</p>
             </div>
         </div>
     </div>
@@ -242,10 +242,10 @@ $templates = [
 @endsection",
     'smtp' => "@extends('admin.layouts.master')
 
-@section('title', 'ConfiguraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes SMTP')
+@section('title', 'Configurações SMTP')
 @section('breadcrumb', [
     ['title' => 'Dashboard', 'url' => route('admin.dashboard')],
-    ['title' => 'ConfiguraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes', 'url' => route('admin.settings.index')],
+    ['title' => 'Configurações', 'url' => route('admin.settings.index')],
     ['title' => 'SMTP', 'url' => '']
 ])
 
@@ -254,12 +254,12 @@ $templates = [
     <div class=\"container-fluid\">
         <div class=\"row mb-2\">
             <div class=\"col-sm-6\">
-                <h1 class=\"m-0\">ConfiguraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes SMTP</h1>
+                <h1 class=\"m-0\">Configurações SMTP</h1>
             </div>
             <div class=\"col-sm-6\">
                 <ol class=\"breadcrumb float-sm-right\">
                     <li class=\"breadcrumb-item\"><a href=\"{{ route('admin.dashboard') }}\">Dashboard</a></li>
-                    <li class=\"breadcrumb-item\"><a href=\"{{ route('admin.settings.index') }}\">ConfiguraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes</a></li>
+                    <li class=\"breadcrumb-item\"><a href=\"{{ route('admin.settings.index') }}\">Configurações</a></li>
                     <li class=\"breadcrumb-item active\">SMTP</li>
                 </ol>
             </div>
@@ -271,10 +271,10 @@ $templates = [
     <div class=\"container-fluid\">
         <div class=\"card\">
             <div class=\"card-header\">
-                <h3 class=\"card-title\">ConfiguraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes de Email</h3>
+                <h3 class=\"card-title\">Configurações de Email</h3>
             </div>
             <div class=\"card-body\">
-                <p>FormulÃƒÆ’Ã‚Â¡rio de configuraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes SMTP serÃƒÆ’Ã‚Â¡ implementado aqui.</p>
+                <p>Formulário de configurações SMTP será implementado aqui.</p>
             </div>
         </div>
     </div>

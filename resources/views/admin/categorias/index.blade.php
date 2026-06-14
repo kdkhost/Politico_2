@@ -26,7 +26,7 @@
                         <th>Categoria Pai</th>
                         <th>Posts</th>
                         <th>Status</th>
-                        <th class="actions-column">AÃ§Ãµes</th>
+                        <th class="actions-column">Ações</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -55,12 +55,12 @@
                         <input type="text" class="form-control" id="category_slug" name="slug" placeholder="gerado automaticamente se ficar vazio">
                     </div>
                     <div class="mb-3">
-                        <label for="category_descricao" class="form-label">DescriÃ§Ã£o</label>
+                        <label for="category_descricao" class="form-label">Descrição</label>
                         <textarea class="form-control" id="category_descricao" name="descricao" rows="3"></textarea>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="category_icone" class="form-label">Ãcone</label>
+                            <label for="category_icone" class="form-label">Ícone</label>
                             <input type="text" class="form-control" id="category_icone" name="icone" placeholder="fas fa-folder">
                         </div>
                         <div class="col-md-6 mb-3">
@@ -167,7 +167,7 @@ $(function () {
         var id = $(this).data('id');
         Swal.fire({
             title: 'Excluir categoria?',
-            text: 'A categoria serÃ¡ removida do blog.',
+            text: 'A categoria será removida do blog.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sim, excluir',
@@ -179,7 +179,7 @@ $(function () {
                 url: '{{ route("admin.blog.categories.destroy", ":id") }}'.replace(':id', id),
                 method: 'DELETE'
             }).done(function (res) {
-                toastr.success(res.message || 'Categoria excluÃ­da.');
+                toastr.success(res.message || 'Categoria excluída.');
                 table.ajax.reload(null, false);
             }).fail(function (xhr) {
                 toastr.error(xhr.responseJSON?.message || 'Erro ao excluir categoria.');

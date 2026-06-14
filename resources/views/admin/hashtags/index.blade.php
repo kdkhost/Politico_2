@@ -25,7 +25,7 @@
                         <th>Slug</th>
                         <th>Tipo</th>
                         <th>Usos</th>
-                        <th class="actions-column">AÃ§Ãµes</th>
+                        <th class="actions-column">Ações</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -59,8 +59,8 @@
                             <option value="global">Global</option>
                             <option value="campanha">Campanha</option>
                             <option value="blog">Blog</option>
-                            <option value="pagina">PÃ¡gina</option>
-                            <option value="midia">MÃ­dia</option>
+                            <option value="pagina">Página</option>
+                            <option value="midia">Mídia</option>
                         </select>
                     </div>
                 </div>
@@ -149,7 +149,7 @@ $(function () {
         var id = $(this).data('id');
         Swal.fire({
             title: 'Excluir hashtag?',
-            text: 'A hashtag serÃ¡ desvinculada dos conteÃºdos.',
+            text: 'A hashtag será desvinculada dos conteúdos.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sim, excluir',
@@ -159,7 +159,7 @@ $(function () {
             if (!result.isConfirmed) return;
             $.ajax({ url: '{{ route("admin.hashtags.destroy", ":id") }}'.replace(':id', id), method: 'DELETE' })
                 .done(function (res) {
-                    toastr.success(res.message || 'Hashtag excluÃ­da.');
+                    toastr.success(res.message || 'Hashtag excluída.');
                     table.ajax.reload(null, false);
                 })
                 .fail(function (xhr) { toastr.error(xhr.responseJSON?.message || 'Erro ao excluir hashtag.'); });

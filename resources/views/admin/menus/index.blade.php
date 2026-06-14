@@ -25,7 +25,7 @@
                         <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center menu-item {{ ($selectedMenu->id ?? '') == $menu->id ? 'active' : '' }}" data-id="{{ $menu->id }}">
                             <div>
                                 <strong>{{ $menu->name }}</strong>
-                                <br><small class="text-muted">{{ $menu->location ?? 'Sem localizaÃ§Ã£o' }} | {{ $menu->items_count ?? 0 }} itens</small>
+                                <br><small class="text-muted">{{ $menu->location ?? 'Sem localização' }} | {{ $menu->items_count ?? 0 }} itens</small>
                             </div>
                             <div class="btn-group btn-group-sm">
                                 <button class="btn btn-info btn-edit-menu" data-id="{{ $menu->id }}"><i class="fas fa-edit"></i></button>
@@ -117,17 +117,17 @@
                         <input type="text" id="menu_name" name="nome" class="form-control" placeholder="Ex: Menu Principal" required>
                     </div>
                     <div class="mb-3">
-                        <label for="menu_location" class="form-label">LocalizaÃ§Ã£o</label>
+                        <label for="menu_location" class="form-label">Localização</label>
                         <select id="menu_location" name="localizacao" class="form-select">
-                            <option value="header">CabeÃ§alho</option>
-                            <option value="footer">RodapÃ©</option>
+                            <option value="header">Cabeçalho</option>
+                            <option value="footer">Rodapé</option>
                             <option value="sidebar">Sidebar</option>
                             <option value="mobile">Mobile</option>
                             <option value="custom">Customizado</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="menu_description" class="form-label">DescriÃ§Ã£o</label>
+                        <label for="menu_description" class="form-label">Descrição</label>
                         <textarea id="menu_description" name="descricao" class="form-control" rows="2"></textarea>
                     </div>
                 </div>
@@ -163,7 +163,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="item_icon" class="form-label">Ãcone (Font Awesome)</label>
+                                <label for="item_icon" class="form-label">Ícone (Font Awesome)</label>
                                 <input type="text" id="item_icon" name="icone" class="form-control" placeholder="fas fa-home">
                             </div>
                         </div>
@@ -180,7 +180,7 @@
                     <div class="mb-3">
                         <label for="item_parent" class="form-label">Item Pai</label>
                         <select id="item_parent" name="parent_id" class="form-select">
-                            <option value="">Nenhum (nÃ­vel principal)</option>
+                            <option value="">Nenhum (nível principal)</option>
                             @foreach($menuItems ?? [] as $item)
                                 <option value="{{ $item->id }}">{{ $item->titulo ?? $item->label }}</option>
                             @endforeach
@@ -265,7 +265,7 @@
         $(document).on('click', '.btn-delete-menu', function(e) {
             e.stopPropagation();
             var id = $(this).data('id');
-            confirmDelete('{{ route("admin.menus.destroy", ":id") }}'.replace(':id', id), 'O menu e todos os itens serÃ£o excluÃ­dos.');
+            confirmDelete('{{ route("admin.menus.destroy", ":id") }}'.replace(':id', id), 'O menu e todos os itens serão excluídos.');
         });
 
         $('#menuModal').on('hidden.bs.modal', function() {
@@ -316,12 +316,12 @@
         $(document).on('click', '.btn-delete-item', function(e) {
             e.stopPropagation();
             var id = $(this).data('id');
-            confirmDelete('{{ route("admin.menus.item.destroy", ":id") }}'.replace(':id', id), 'O item serÃ¡ excluÃ­do.');
+            confirmDelete('{{ route("admin.menus.item.destroy", ":id") }}'.replace(':id', id), 'O item será excluído.');
         });
 
         $('#btnDeleteItem').on('click', function() {
             var id = $(this).data('id');
-            confirmDelete('{{ route("admin.menus.item.destroy", ":id") }}'.replace(':id', id), 'O item serÃ¡ excluÃ­do.');
+            confirmDelete('{{ route("admin.menus.item.destroy", ":id") }}'.replace(':id', id), 'O item será excluído.');
             $('#menuItemModal').modal('hide');
         });
 

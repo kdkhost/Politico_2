@@ -1,10 +1,10 @@
 @extends('admin.layouts.master')
 
-@section('title', 'Perfis e PermissÃµes - ' . config('app.name'))
-@section('page_title', 'Perfis e PermissÃµes')
+@section('title', 'Perfis e Permissões - ' . config('app.name'))
+@section('page_title', 'Perfis e Permissões')
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">UsuÃ¡rios</a></li>
-    <li class="breadcrumb-item active">Perfis e PermissÃµes</li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">Usuários</a></li>
+    <li class="breadcrumb-item active">Perfis e Permissões</li>
 @endsection
 
 @section('content')
@@ -29,9 +29,9 @@
                         <thead>
                             <tr>
                                 <th>Perfil</th>
-                                <th>NÃ­vel</th>
-                                <th>UsuÃ¡rios</th>
-                                <th class="actions-column">AÃ§Ãµes</th>
+                                <th>Nível</th>
+                                <th>Usuários</th>
+                                <th class="actions-column">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,7 +39,7 @@
                                 <tr data-profile-id="{{ $profile->id }}">
                                     <td>
                                         <strong>{{ $profile->nome }}</strong>
-                                        <br><small class="text-muted">{{ $profile->descricao ?: 'Sem descriÃ§Ã£o' }}</small>
+                                        <br><small class="text-muted">{{ $profile->descricao ?: 'Sem descrição' }}</small>
                                     </td>
                                     <td><span class="badge bg-primary">{{ $profile->nivel }}</span></td>
                                     <td><span class="badge bg-info">{{ $profile->users_count ?? 0 }}</span></td>
@@ -77,12 +77,12 @@
     <div class="col-lg-7">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-shield-alt me-1"></i>PermissÃµes do Perfil</h3>
+                <h3 class="card-title"><i class="fas fa-shield-alt me-1"></i>Permissões do Perfil</h3>
             </div>
             <div class="card-body">
                 <div id="permissionsEmpty" class="text-center text-muted py-5">
                     <i class="fas fa-user-lock fa-3x mb-3"></i>
-                    <p class="mb-0">Selecione um perfil para gerenciar permissÃµes granulares.</p>
+                    <p class="mb-0">Selecione um perfil para gerenciar permissões granulares.</p>
                 </div>
 
                 <form id="profilePermissionsForm" class="d-none">
@@ -94,7 +94,7 @@
                             <h5 class="mb-0" id="permissionsProfileName">-</h5>
                         </div>
                         <button type="submit" class="btn btn-primary" id="btnSaveProfilePermissions">
-                            <i class="fas fa-save me-1"></i>Salvar PermissÃµes
+                            <i class="fas fa-save me-1"></i>Salvar Permissões
                         </button>
                     </div>
 
@@ -121,7 +121,7 @@
                                                     </div>
                                                 </div>
                                             @empty
-                                                <div class="col-12 text-muted">Nenhuma permissÃ£o neste grupo.</div>
+                                                <div class="col-12 text-muted">Nenhuma permissão neste grupo.</div>
                                             @endforelse
                                         </div>
                                     </div>
@@ -155,11 +155,11 @@
                         <input type="text" id="profile_slug" name="slug" class="form-control" placeholder="gerado automaticamente se ficar vazio">
                     </div>
                     <div class="mb-3">
-                        <label for="profile_descricao" class="form-label">DescriÃ§Ã£o</label>
+                        <label for="profile_descricao" class="form-label">Descrição</label>
                         <textarea id="profile_descricao" name="descricao" class="form-control" rows="3"></textarea>
                     </div>
                     <div class="mb-0">
-                        <label for="profile_nivel" class="form-label">NÃ­vel de acesso <span class="text-danger">*</span></label>
+                        <label for="profile_nivel" class="form-label">Nível de acesso <span class="text-danger">*</span></label>
                         <input type="number" id="profile_nivel" name="nivel" class="form-control" min="1" max="100" value="50" required>
                     </div>
                 </div>
@@ -196,7 +196,7 @@ $(function () {
                 });
             })
             .fail(function (xhr) {
-                toastr.error(xhr.responseJSON?.message || 'Erro ao carregar permissÃµes do perfil.');
+                toastr.error(xhr.responseJSON?.message || 'Erro ao carregar permissões do perfil.');
             });
     }
 
@@ -248,18 +248,18 @@ $(function () {
         btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Salvando...');
         $.post('{{ route("admin.permissions.profiles.sync-permissions", ":id") }}'.replace(':id', id), $(this).serialize())
             .done(function (res) {
-                if (window.isSuccessfulResponse(res)) toastr.success(res.message || 'PermissÃµes salvas.');
-                else toastr.error(res.message || 'Erro ao salvar permissÃµes.');
+                if (window.isSuccessfulResponse(res)) toastr.success(res.message || 'Permissões salvas.');
+                else toastr.error(res.message || 'Erro ao salvar permissões.');
             })
-            .fail(function (xhr) { toastr.error(xhr.responseJSON?.message || 'Erro ao salvar permissÃµes.'); })
-            .always(function () { btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i>Salvar PermissÃµes'); });
+            .fail(function (xhr) { toastr.error(xhr.responseJSON?.message || 'Erro ao salvar permissões.'); })
+            .always(function () { btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i>Salvar Permissões'); });
     });
 
     $(document).on('click', '.btn-delete-profile', function () {
         var id = $(this).data('id');
         Swal.fire({
             title: 'Excluir perfil?',
-            text: 'Perfis com usuÃ¡rios vinculados nÃ£o podem ser excluÃ­dos.',
+            text: 'Perfis com usuários vinculados não podem ser excluídos.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sim, excluir',
@@ -269,7 +269,7 @@ $(function () {
             if (!result.isConfirmed) return;
             $.ajax({ url: '{{ route("admin.permissions.profiles.destroy", ":id") }}'.replace(':id', id), method: 'DELETE' })
                 .done(function (res) {
-                    toastr.success(res.message || 'Perfil excluÃ­do.');
+                    toastr.success(res.message || 'Perfil excluído.');
                     setTimeout(function () { location.reload(); }, 800);
                 })
                 .fail(function (xhr) { toastr.error(xhr.responseJSON?.message || 'Erro ao excluir perfil.'); });

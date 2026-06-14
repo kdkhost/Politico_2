@@ -48,11 +48,11 @@ foreach ($routes as $route) {
     ];
 }
 
-echo "=== MÃƒÆ’Ã¢â‚¬Â°TODOS EXISTENTES ===\n";
-echo count($existingMethods) . " mÃƒÆ’Ã‚Â©todos encontrados\n\n";
+echo "=== MÉTODOS EXISTENTES ===\n";
+echo count($existingMethods) . " métodos encontrados\n\n";
 
-echo "=== MÃƒÆ’Ã¢â‚¬Â°TODOS FALTANTES ===\n";
-echo count($missingMethods) . " mÃƒÆ’Ã‚Â©todos faltantes\n\n";
+echo "=== MÉTODOS FALTANTES ===\n";
+echo count($missingMethods) . " métodos faltantes\n\n";
 
 foreach ($missingMethods as $missing) {
     echo "Route: {$missing['route']}\n";
@@ -63,5 +63,5 @@ foreach ($missingMethods as $missing) {
 }
 
 if (empty($missingMethods)) {
-    echo "\nÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ Todos os controllers e mÃƒÆ’Ã‚Â©todos necessÃƒÆ’Ã‚Â¡rios existem!\n";
+    echo "\n✓ Todos os controllers e métodos necessários existem!\n";
 }

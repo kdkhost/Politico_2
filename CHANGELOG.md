@@ -12,10 +12,22 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 - Branch publicada: `master`
 - Commit publicado no Git e sincronizado no servidor: consultar `HEAD` atual da branch `master`
-- Servidor remoto validado em `2026-06-13`
+- Servidor remoto validado em `2026-06-14`
 - Rotas principais do painel administrativo validadas com `HTTP 200` após autenticação
 
 ## Linha do tempo
+
+### 2026-06-14 - corrige alinhamento do tema claro e normaliza UTF-8 sem BOM
+
+- corrigida a geometria do shell administrativo no tema claro para sincronizar `--lte-sidebar-width`, `--admin-sidebar-width`, sidebar, header, conteúdo principal e footer
+- removido o cálculo duplicado de largura/margem do header e do conteúdo, usando offset único para evitar faixa branca entre sidebar e corpo da página
+- reforçadas as larguras mínima e máxima da sidebar em desktop, modo recolhido e mobile para impedir diferença visual entre tema claro e dark
+- normalizado conteúdo com mojibake real em views administrativas e scripts auxiliares, mantendo UTF-8 sem BOM
+- regenerado `routes_admin.txt` por `php artisan route:list` com saída UTF-8 válida
+- recompilado o bundle Vite do admin com novo asset `public/build/assets/admin-Bm63BcvE.css`
+- validações locais executadas: `composer dump-autoload`, `php artisan optimize:clear`, `php artisan view:cache`, `php artisan view:clear`, `php artisan route:list`, `php artisan test`, `npm run build`, `git diff --check`, `php -l` nos scripts PHP alterados e varredura de BOM/mojibake
+- varredura final confirmou `BOM_COUNT 0` e nenhum padrão real de mojibake restante nos arquivos versionados de texto
+- publicado no Git e sincronizado no servidor remoto em `2026-06-14`
 
 ### 2026-06-13 - reforca licenciamento, APP_KEY e permissoes granulares
 

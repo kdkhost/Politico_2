@@ -5,13 +5,13 @@
                 @csrf
                 <input type="hidden" id="transaction_id" name="transaction_id" value="">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="transactionModalLabel"><i class="fas fa-money-bill me-1"></i>Nova TransaÃ§Ã£o</h5>
+                    <h5 class="modal-title" id="transactionModalLabel"><i class="fas fa-money-bill me-1"></i>Nova Transação</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="transaction_description" class="form-label">DescriÃ§Ã£o <span class="text-danger">*</span></label>
-                        <input type="text" id="transaction_description" name="description" class="form-control" placeholder="DescriÃ§Ã£o da transaÃ§Ã£o" required>
+                        <label for="transaction_description" class="form-label">Descrição <span class="text-danger">*</span></label>
+                        <input type="text" id="transaction_description" name="description" class="form-control" placeholder="Descrição da transação" required>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -58,10 +58,10 @@
                                     <option value="">Selecione</option>
                                     <option value="dinheiro">Dinheiro</option>
                                     <option value="pix">PIX</option>
-                                    <option value="credito">CartÃ£o de CrÃ©dito</option>
-                                    <option value="debito">CartÃ£o de DÃ©bito</option>
+                                    <option value="credito">Cartão de Crédito</option>
+                                    <option value="debito">Cartão de Débito</option>
                                     <option value="boleto">Boleto</option>
-                                    <option value="transferencia">TransferÃªncia</option>
+                                    <option value="transferencia">Transferência</option>
                                     <option value="outro">Outro</option>
                                 </select>
                             </div>
@@ -78,8 +78,8 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="transaction_notes" class="form-label">ObservaÃ§Ãµes</label>
-                        <textarea id="transaction_notes" name="notes" class="form-control" rows="2" placeholder="ObservaÃ§Ãµes opcionais"></textarea>
+                        <label for="transaction_notes" class="form-label">Observações</label>
+                        <textarea id="transaction_notes" name="notes" class="form-control" rows="2" placeholder="Observações opcionais"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -96,7 +96,7 @@
         $('#transactionModal').on('hidden.bs.modal', function() {
             $('#transactionForm')[0].reset();
             $('#transaction_id').val('');
-            $('#transactionModalLabel').text('Nova TransaÃ§Ã£o');
+            $('#transactionModalLabel').text('Nova Transação');
         });
 
         $('#transactionForm').on('submit', function(e) {
@@ -111,7 +111,7 @@
                 data: $(this).serialize(),
                 success: function(res) {
                     if (window.isSuccessfulResponse(res)) {
-                        toastr.success(res.message || 'TransaÃ§Ã£o salva!');
+                        toastr.success(res.message || 'Transação salva!');
                         $('#transactionModal').modal('hide');
                         table.ajax.reload();
                         loadSummaries();
@@ -126,7 +126,7 @@
                             $.each(msgs, function(i, msg) { toastr.error(msg); });
                         });
                     } else {
-                        toastr.error(xhr.responseJSON?.message || 'Erro ao salvar transaÃ§Ã£o.');
+                        toastr.error(xhr.responseJSON?.message || 'Erro ao salvar transação.');
                     }
                 },
                 complete: function() {

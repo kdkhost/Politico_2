@@ -13,7 +13,7 @@
     --admin-card-radius: 12px;
     --admin-transition: all 0.25s ease;
     --admin-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --admin-sidebar-width: 260px;
+    --admin-sidebar-width: 280px;
     --admin-header-height: 60px;
     --admin-badge-font-size: 0.7rem;
     --admin-border-color: #e9ecef;
@@ -1448,8 +1448,8 @@ textarea.form-control {
 
 /* AdminLTE 4 premium shell */
 :root {
-    --lte-sidebar-width: 280px;
     --admin-sidebar-width: 280px;
+    --lte-sidebar-width: var(--admin-sidebar-width);
     --admin-header-height: 72px;
     --admin-card-radius: 8px;
     --admin-surface: #ffffff;
@@ -1467,6 +1467,12 @@ textarea.form-control {
     --admin-shadow-lift: 0 18px 44px rgba(21, 32, 51, 0.12);
     --admin-transition: 180ms ease;
     --admin-font: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+html[data-bs-theme="light"],
+html[data-bs-theme="dark"] {
+    --admin-sidebar-width: 280px;
+    --lte-sidebar-width: var(--admin-sidebar-width);
 }
 
 html,
@@ -2289,42 +2295,61 @@ body.admin-premium.dark-mode .page-link {
 /* Stable admin shell: same geometry for light and dark */
 body.admin-premium {
     --admin-shell-sidebar-offset: var(--admin-sidebar-width);
+    --lte-sidebar-width: var(--admin-sidebar-width);
     overflow-x: hidden;
 }
 
 .admin-shell.app-wrapper {
-    display: block;
+    display: block !important;
+    position: relative;
     min-height: 100vh;
     padding-left: 0;
+    max-width: 100%;
+    overflow-x: clip;
 }
 
 .admin-sidebar.app-sidebar {
     position: fixed;
     inset: 0 auto 0 0;
-    width: var(--admin-sidebar-width);
+    width: var(--admin-sidebar-width) !important;
+    min-width: var(--admin-sidebar-width) !important;
+    max-width: var(--admin-sidebar-width) !important;
+    margin-left: 0 !important;
+    box-sizing: border-box;
     z-index: 1045;
-    transition: width var(--admin-transition), transform var(--admin-transition), box-shadow var(--admin-transition);
+    transition: width var(--admin-transition), min-width var(--admin-transition), max-width var(--admin-transition), transform var(--admin-transition), box-shadow var(--admin-transition);
+}
+
+.admin-sidebar .sidebar-brand,
+.admin-sidebar .sidebar-wrapper {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .admin-topbar.app-header {
     position: fixed;
     top: 0;
-    left: 0;
+    left: var(--admin-shell-sidebar-offset);
     right: 0;
-    width: calc(100% - var(--admin-shell-sidebar-offset));
-    margin: 0 0 0 var(--admin-shell-sidebar-offset) !important;
+    width: auto;
+    max-width: none;
+    margin: 0 !important;
 }
 
 .admin-main.app-main {
     min-height: 100vh;
-    width: calc(100% - var(--admin-shell-sidebar-offset));
+    width: auto;
+    max-width: none;
     margin: 0 0 0 var(--admin-shell-sidebar-offset) !important;
     padding-top: var(--admin-header-height);
     overflow-x: hidden;
 }
 
 .admin-footer.app-footer {
-    width: calc(100% - var(--admin-shell-sidebar-offset));
+    width: auto;
+    max-width: none;
     margin-left: var(--admin-shell-sidebar-offset) !important;
 }
 
@@ -2361,7 +2386,9 @@ body.admin-premium.admin-sidebar-collapsed {
 }
 
 body.admin-premium.admin-sidebar-collapsed .admin-sidebar.app-sidebar {
-    width: 88px;
+    width: var(--admin-shell-sidebar-offset) !important;
+    min-width: var(--admin-shell-sidebar-offset) !important;
+    max-width: var(--admin-shell-sidebar-offset) !important;
 }
 
 body.admin-premium.admin-sidebar-collapsed .admin-sidebar .brand-text,
@@ -2419,7 +2446,12 @@ body.admin-premium.admin-sidebar-collapsed .admin-content {
     .admin-main.app-main,
     .admin-footer.app-footer {
         width: 100%;
+        max-width: 100%;
         margin-left: 0 !important;
+    }
+
+    .admin-topbar.app-header {
+        left: 0;
     }
 
     .admin-main.app-main {
@@ -2428,6 +2460,8 @@ body.admin-premium.admin-sidebar-collapsed .admin-content {
 
     .admin-sidebar.app-sidebar {
         width: min(86vw, 304px);
+        min-width: min(86vw, 304px) !important;
+        max-width: min(86vw, 304px) !important;
         transform: translateX(-100%);
         box-shadow: none;
     }
