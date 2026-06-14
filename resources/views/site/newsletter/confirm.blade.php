@@ -31,7 +31,7 @@
               <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
             </div>
             <h2 class="fw-800 mb-3">Inscrição Confirmada!</h2>
-            <p class="text-muted mb-4">Agora você receberá nossas novidades e atualizações diretamente no seu e-mail. Fique atento à sua caixa de entrada!</p>
+            <p class="text-muted mb-4">Agora você receberá nossas novidades e atualizações diretamente no seu e-mail. Fique atento à sua caixa de entrada.</p>
             <a href="{{ url('/') }}" class="btn btn-blue rounded-pill px-5">Voltar ao início</a>
           </div>
         @elseif(session('status') === 'erro' || $erro ?? false)
@@ -50,7 +50,7 @@
             </div>
             <h2 class="fw-800 mb-3">Quase lá!</h2>
             <p class="text-muted mb-4">Enviamos um e-mail de confirmação para você. Clique no link enviado para ativar sua inscrição na nossa newsletter.</p>
-            <p class="small text-muted">Não recebeu? Verifique sua caixa de spam ou <a href="{{ route('site.newsletter.subscribe') }}">tente novamente</a>.</p>
+            <p class="small text-muted">Não recebeu? Verifique sua caixa de spam ou <a href="{{ route('site.home') }}#newsletter">tente novamente</a>.</p>
             <a href="{{ url('/') }}" class="btn btn-outline-secondary rounded-pill px-5">Voltar ao início</a>
           </div>
         @endif

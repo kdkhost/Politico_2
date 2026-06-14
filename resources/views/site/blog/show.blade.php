@@ -24,7 +24,7 @@
               <li class="breadcrumb-item"><a href="{{ url('/') }}">Início</a></li>
               <li class="breadcrumb-item"><a href="{{ route('site.blog') }}">Blog</a></li>
               @if($post->category)
-                <li class="breadcrumb-item"><a href="{{ route('site.blog', ['category' => $post->category->slug]) }}">{{ $post->category->nome }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('site.blog.categoria', $post->category->slug) }}">{{ $post->category->nome }}</a></li>
               @endif
               <li class="breadcrumb-item active" aria-current="page">{{ Str::limit($post->titulo, 40) }}</li>
             </ol>
@@ -65,7 +65,7 @@
             <div class="mt-4 pt-3 border-top">
               <strong class="me-2"><i class="fas fa-tags me-1 text-green"></i>Tags:</strong>
               @foreach($post->tags as $tag)
-                <a href="{{ route('site.blog', ['tag' => $tag->slug]) }}" class="tag">{{ $tag->nome }}</a>
+                <a href="{{ route('site.blog.tag', $tag->slug) }}" class="tag">{{ $tag->nome }}</a>
               @endforeach
             </div>
           @endif

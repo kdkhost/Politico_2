@@ -30,7 +30,12 @@ class TermosController extends Controller
             ->first();
 
         if (!$page) {
-            abort(404);
+            $page = (object) [
+                'titulo' => 'Termos de Uso',
+                'conteudo' => null,
+                'seo_title' => 'Termos de Uso - ' . config('app.name'),
+                'seo_description' => 'Condições para utilização do site.',
+            ];
         }
 
         $meta = $this->seoService->generateMetaTags($page, 'page');

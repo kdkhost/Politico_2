@@ -29,14 +29,18 @@ class NoticiasController extends Controller
     {
         $category = Category::where('slug', 'noticias')->where('active', true)->first();
 
-        if (!$category) {
-            abort(404, 'Categoria de notícias não encontrada.');
-        }
-
         $query = Post::with(['author:id,name', 'tags:id,nome,slug'])
-            ->where('category_id', $category->id)
             ->where('status', 'published')
             ->whereDate('published_at', '<=', now());
+
+        if ($category) {
+            $query->where('category_id', $category->id);
+        } else {
+            $query->where(function ($builder) {
+                $builder->where('formato', 'noticia')
+                    ->orWhereHas('category', fn ($categoryQuery) => $categoryQuery->where('slug', 'noticias'));
+            });
+        }
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -49,13 +53,26 @@ class NoticiasController extends Controller
 
         $posts = $query->orderByDesc('published_at')->paginate(12);
 
-        $destaques = Post::where('category_id', $category->id)
-            ->where('status', 'published')
+        $destaques = Post::where('status', 'published')
             ->whereDate('published_at', '<=', now())
-            ->where('formato', 'destaque')
+            ->when($category, fn ($builder) => $builder->where('category_id', $category->id))
+            ->when(!$category, function ($builder) {
+                $builder->where(function ($innerBuilder) {
+                    $innerBuilder->where('formato', 'destaque')
+                        ->orWhereHas('category', fn ($categoryQuery) => $categoryQuery->where('slug', 'noticias'));
+                });
+            })
             ->orderByDesc('published_at')
             ->limit(3)
             ->get();
+
+        if (!$category) {
+            $category = (object) [
+                'nome' => 'Notícias',
+                'slug' => 'noticias',
+                'descricao' => 'Últimas notícias e comunicados oficiais.',
+            ];
+        }
 
         $meta = $this->seoService->generateMetaTags(null, 'page');
         $meta['title'] = 'Notícias - ' . config('app.name');

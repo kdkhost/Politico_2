@@ -13,7 +13,7 @@
               'url' => $item->url,
               'icon' => $item->icone,
               'target' => $item->target ?? '_self',
-              'active' => $itemPath !== '' && request()->is($itemPath),
+              'active' => ($itemPath === '' && request()->routeIs('site.home')) || ($itemPath !== '' && request()->is($itemPath)),
           ];
       }
   } else {

@@ -38,7 +38,10 @@ class PropostasController extends Controller
         if ($category) {
             $query->where('category_id', $category->id);
         } else {
-            $query->whereRaw('1 = 0');
+            $query->where(function ($builder) {
+                $builder->where('formato', 'proposta')
+                    ->orWhereHas('category', fn ($categoryQuery) => $categoryQuery->where('slug', 'propostas'));
+            });
         }
 
         if ($request->filled('search')) {
@@ -51,6 +54,14 @@ class PropostasController extends Controller
         }
 
         $propostas = $query->orderByDesc('published_at')->paginate(12);
+
+        if (!$category) {
+            $category = (object) [
+                'nome' => 'Propostas',
+                'slug' => 'propostas',
+                'descricao' => 'Veja nossas propostas e compromissos com a população.',
+            ];
+        }
 
         $meta = $this->seoService->generateMetaTags(null, 'page');
         $meta['title'] = 'Propostas - ' . config('app.name');

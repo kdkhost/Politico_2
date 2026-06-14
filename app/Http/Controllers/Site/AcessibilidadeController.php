@@ -30,7 +30,12 @@ class AcessibilidadeController extends Controller
             ->first();
 
         if (!$page) {
-            abort(404);
+            $page = (object) [
+                'titulo' => 'Acessibilidade',
+                'conteudo' => null,
+                'seo_title' => 'Acessibilidade - ' . config('app.name'),
+                'seo_description' => 'Nosso compromisso com a inclusão digital.',
+            ];
         }
 
         $meta = $this->seoService->generateMetaTags($page, 'page');

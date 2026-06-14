@@ -30,7 +30,12 @@ class PrivacidadeController extends Controller
             ->first();
 
         if (!$page) {
-            abort(404);
+            $page = (object) [
+                'titulo' => 'Política de Privacidade',
+                'conteudo' => null,
+                'seo_title' => 'Política de Privacidade - ' . config('app.name'),
+                'seo_description' => 'Saiba como seus dados pessoais são tratados.',
+            ];
         }
 
         $meta = $this->seoService->generateMetaTags($page, 'page');

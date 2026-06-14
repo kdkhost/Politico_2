@@ -28,12 +28,12 @@
       <div class="row g-4">
         @foreach($propostas as $proposta)
           <div class="col-md-6 col-lg-4">
-            <div class="card-icon">
+            <div class="card-icon premium-card premium-pillar-card h-100">
               <div class="icon-wrapper {{ $loop->index % 3 === 0 ? 'icon-bg-green' : ($loop->index % 3 === 1 ? 'icon-bg-yellow' : 'icon-bg-blue') }}">
                 <i class="{{ $proposta->icone ?? 'fas fa-check-double' }}"></i>
               </div>
               <h5>{{ $proposta->titulo }}</h5>
-              <p class="text-muted small mb-0">{{ $proposta->resumo }}</p>
+              <p class="text-muted small mb-0">{{ $proposta->resumo ?: Str::limit(strip_tags($proposta->conteudo ?? ''), 140) }}</p>
               @if($proposta->status)
                 <span class="badge bg-{{ $proposta->status === 'concluida' ? 'success' : ($proposta->status === 'andamento' ? 'warning text-dark' : 'info') }} rounded-pill mt-2">
                   {{ ucfirst($proposta->status) }}

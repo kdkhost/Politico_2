@@ -28,18 +28,18 @@
       <div class="row g-4">
         @foreach($projetos as $projeto)
           <div class="col-md-6 col-lg-4">
-            <div class="card-icon text-start">
+            <div class="card-icon premium-card premium-pillar-card text-start h-100">
               <div class="d-flex align-items-center mb-3">
                 <div class="icon-wrapper icon-bg-blue me-3" style="width: 50px; height: 50px; font-size: 1.2rem; margin: 0;">
                   <i class="fas fa-file-signature"></i>
                 </div>
                 <div>
-                  <span class="badge bg-{{ $projeto->status === 'aprovado' ? 'success' : ($projeto->status === 'andamento' ? 'warning text-dark' : 'secondary') }} rounded-pill">{{ ucfirst($projeto->status) }}</span>
+                  <span class="badge bg-{{ ($projeto->status ?? '') === 'aprovado' ? 'success' : (($projeto->status ?? '') === 'andamento' ? 'warning text-dark' : 'secondary') }} rounded-pill">{{ ucfirst($projeto->status ?? 'pendente') }}</span>
                 </div>
               </div>
               <h5>{{ $projeto->titulo }}</h5>
-              <p class="text-muted small mb-2">{{ Str::limit($projeto->descricao, 150) }}</p>
-              <small class="text-muted"><i class="far fa-calendar-alt me-1"></i>{{ formatarData($projeto->data_apresentacao ?? $projeto->created_at) }}</small>
+              <p class="text-muted small mb-2">{{ Str::limit($projeto->resumo ?: strip_tags($projeto->conteudo ?? ''), 150) }}</p>
+              <small class="text-muted"><i class="far fa-calendar-alt me-1"></i>{{ formatarData($projeto->published_at ?? $projeto->created_at) }}</small>
             </div>
           </div>
         @endforeach

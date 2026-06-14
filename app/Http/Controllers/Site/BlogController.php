@@ -81,7 +81,7 @@ class BlogController extends Controller
         $openGraph = $this->seoService->generateOpenGraph($post, 'post');
         $twitterCards = $this->seoService->generateTwitterCards($post, 'post');
         $breadcrumbs = $this->seoService->generateBreadcrumbs([
-            ['label' => 'Blog', 'url' => route('site.blog.index')],
+            ['label' => 'Blog', 'url' => route('site.blog')],
             ['label' => $post->titulo],
         ]);
         $breadcrumbsHtml = $this->seoService->generateJsonLd($breadcrumbs);
