@@ -17,7 +17,6 @@ use App\Models\Media;
 use App\Services\Midia\MidiaService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class UploadService
@@ -47,7 +46,7 @@ class UploadService
         $pasta = $this->organizeByDate($pasta);
         $nomeSanitizado = $this->sanitizeFilename(pathinfo($nomeOriginal, PATHINFO_FILENAME));
         $nomeArquivo = $nomeSanitizado . '-' . Str::random(8) . '.' . $extensao;
-        $caminho = $file->storeAs($pasta, $nomeArquivo, 'public');
+        $caminho = $this->storePublicFile($file, $pasta, $nomeArquivo);
 
         if (!$caminho) {
             throw new \RuntimeException('Falha ao armazenar o arquivo.');
@@ -58,7 +57,7 @@ class UploadService
             'nome' => $nomeSanitizado,
             'nome_original' => $nomeOriginal,
             'caminho' => $caminho,
-            'url' => Storage::url($caminho),
+            'url' => $this->publicUrl($caminho),
             'tipo' => $this->resolveTipo((string) $mimeType),
             'mime_type' => $mimeType,
             'extensao' => $extensao,
@@ -112,15 +111,10 @@ class UploadService
     {
         $media = Media::findOrFail($mediaId);
 
-        if (Storage::disk('public')->exists($media->caminho)) {
-            Storage::disk('public')->delete($media->caminho);
-        }
+        $this->deletePublicFile($media->caminho);
 
         $thumbnailPath = 'thumbnails/' . $media->caminho;
-
-        if (Storage::disk('public')->exists($thumbnailPath)) {
-            Storage::disk('public')->delete($thumbnailPath);
-        }
+        $this->deletePublicFile($thumbnailPath);
 
         return (bool) $media->delete();
     }
@@ -137,19 +131,17 @@ class UploadService
             return $existingMedia;
         }
 
-        if (Storage::disk('public')->exists($media->caminho)) {
-            Storage::disk('public')->delete($media->caminho);
-        }
+        $this->deletePublicFile($media->caminho);
 
         $extensao = $file->getClientOriginalExtension();
         $mimeType = $file->getMimeType();
         $tamanho = $file->getSize();
         $nomeArquivo = $media->nome . '-' . Str::random(8) . '.' . $extensao;
-        $caminho = $file->storeAs(dirname($media->caminho), $nomeArquivo, 'public');
+        $caminho = $this->storePublicFile($file, dirname($media->caminho), $nomeArquivo);
 
         $media->update([
             'caminho' => $caminho,
-            'url' => Storage::url($caminho),
+            'url' => $this->publicUrl($caminho),
             'mime_type' => $mimeType,
             'extensao' => $extensao,
             'tamanho' => $tamanho,
@@ -212,14 +204,14 @@ class UploadService
     public function generateThumbnail(Media $media): ?string
     {
         $extensao = $media->extensao;
-        $caminho = Storage::disk('public')->path($media->caminho);
+        $caminho = $this->publicStoragePath($media->caminho);
 
         if (!file_exists($caminho)) {
             return null;
         }
 
         $thumbnailPath = 'thumbnails/' . $media->caminho;
-        $thumbnailFullPath = Storage::disk('public')->path($thumbnailPath);
+        $thumbnailFullPath = $this->publicStoragePath($thumbnailPath);
         $dir = dirname($thumbnailFullPath);
 
         if (!is_dir($dir)) {
@@ -271,7 +263,7 @@ class UploadService
             imagedestroy($srcImage);
             imagedestroy($thumbImage);
 
-            return Storage::url($thumbnailPath);
+            return $this->publicUrl($thumbnailPath);
         } catch (\Throwable $e) {
             Log::warning('Falha ao gerar thumbnail: ' . $e->getMessage());
 
@@ -303,6 +295,53 @@ class UploadService
         }
 
         return $pasta . '/' . now()->format('Y/m');
+    }
+
+    protected function storePublicFile(UploadedFile $file, string $directory, string $filename): string
+    {
+        $directory = trim(str_replace('\\', '/', $directory), '/');
+        $relativePath = ($directory !== '' ? $directory . '/' : '') . $filename;
+        $absolutePath = $this->publicStoragePath($relativePath);
+        $targetDirectory = dirname($absolutePath);
+
+        if (!is_dir($targetDirectory) && !mkdir($targetDirectory, 0755, true) && !is_dir($targetDirectory)) {
+            throw new \RuntimeException('Falha ao criar diretorio de upload.');
+        }
+
+        $sourcePath = $file->getRealPath();
+        if (!$sourcePath || !is_file($sourcePath)) {
+            throw new \RuntimeException('Arquivo temporario de upload nao encontrado.');
+        }
+
+        if (!@copy($sourcePath, $absolutePath)) {
+            throw new \RuntimeException('Falha ao armazenar o arquivo.');
+        }
+
+        @chmod($absolutePath, 0644);
+
+        return $relativePath;
+    }
+
+    protected function deletePublicFile(?string $relativePath): void
+    {
+        if (!$relativePath) {
+            return;
+        }
+
+        $absolutePath = $this->publicStoragePath($relativePath);
+        if (is_file($absolutePath)) {
+            @unlink($absolutePath);
+        }
+    }
+
+    protected function publicStoragePath(string $relativePath): string
+    {
+        return storage_path('app/public/' . ltrim(str_replace('\\', '/', $relativePath), '/'));
+    }
+
+    protected function publicUrl(string $relativePath): string
+    {
+        return '/storage/' . ltrim(str_replace('\\', '/', $relativePath), '/');
     }
 
     protected function resolveTipo(string $mimeType): string
