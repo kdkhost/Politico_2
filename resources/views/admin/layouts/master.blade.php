@@ -149,6 +149,133 @@
             };
         }
 
+        window.AdminDataTableLanguage = window.AdminDataTableLanguage || {
+            emptyTable: 'Nenhum registro encontrado',
+            info: 'Mostrando de _START_ até _END_ de _TOTAL_ registros',
+            infoEmpty: 'Mostrando 0 até 0 de 0 registros',
+            infoFiltered: '(filtrado de _MAX_ registros no total)',
+            lengthMenu: '_MENU_ resultados por página',
+            loadingRecords: 'Carregando...',
+            processing: 'Processando...',
+            search: 'Pesquisar',
+            zeroRecords: 'Nenhum registro encontrado',
+            paginate: {
+                first: 'Primeiro',
+                last: 'Último',
+                next: 'Próximo',
+                previous: 'Anterior'
+            },
+            aria: {
+                orderable: 'Ordenar por esta coluna',
+                orderableReverse: 'Inverter ordenação desta coluna',
+                orderableRemove: 'Remover ordenação desta coluna'
+            },
+            buttons: {
+                copy: 'Copiar',
+                copyTitle: 'Copiado para a área de transferência',
+                copySuccess: {
+                    _: '%d linhas copiadas',
+                    1: '1 linha copiada'
+                },
+                excel: 'Excel',
+                pdf: 'PDF',
+                print: 'Imprimir',
+                colvis: 'Colunas visíveis'
+            }
+        };
+
+        if ($.fn.dataTable) {
+            $.fn.dataTable.ext.errMode = 'none';
+
+            $.extend(true, $.fn.dataTable.defaults, {
+                language: window.AdminDataTableLanguage,
+                pageLength: 25,
+                lengthMenu: [10, 25, 50, 100],
+                stateSave: true,
+                responsive: true,
+                autoWidth: false
+            });
+
+            if ($.fn.DataTable && !$.fn.DataTable.__adminPatched) {
+                var originalDataTable = $.fn.DataTable;
+                var patchedDataTable = function () {
+                    var args = Array.prototype.slice.call(arguments);
+
+                    if (args.length && args[0] && typeof args[0] === 'object') {
+                        args[0] = $.extend(true, {}, args[0]);
+
+                        if (args[0].language && args[0].language.url) {
+                            delete args[0].language.url;
+                            args[0].language = $.extend(true, {}, window.AdminDataTableLanguage, args[0].language);
+                        }
+                    }
+
+                    return originalDataTable.apply(this, args);
+                };
+
+                Object.getOwnPropertyNames(originalDataTable).forEach(function (property) {
+                    if (['length', 'name', 'prototype'].indexOf(property) !== -1) {
+                        return;
+                    }
+
+                    try {
+                        Object.defineProperty(
+                            patchedDataTable,
+                            property,
+                            Object.getOwnPropertyDescriptor(originalDataTable, property)
+                        );
+                    } catch (error) {
+                        patchedDataTable[property] = originalDataTable[property];
+                    }
+                });
+
+                patchedDataTable.__adminPatched = true;
+                $.fn.DataTable = patchedDataTable;
+            }
+
+            $(document)
+                .off('error.dt.adminDataTables')
+                .on('error.dt.adminDataTables', function (event, settings, technicalNote, message) {
+                    event.preventDefault();
+
+                    if (String(message || '').indexOf('i18n file loading error') !== -1) {
+                        return;
+                    }
+
+                    window.AdminDataTableErrors = window.AdminDataTableErrors || {};
+
+                    var tableId = (settings && (settings.sTableId || (settings.nTable && settings.nTable.id))) || '';
+                    var key = (tableId || 'datatable') + ':' + (technicalNote || '0') + ':' + (message || '');
+                    var now = Date.now();
+
+                    if (window.AdminDataTableErrors[key] && now - window.AdminDataTableErrors[key] < 60000) {
+                        return;
+                    }
+
+                    window.AdminDataTableErrors[key] = now;
+
+                    var text = tableId
+                        ? 'Não foi possível carregar a tabela ' + tableId + '. Tente atualizar a página.'
+                        : 'Não foi possível carregar uma tabela desta página. Tente atualizar a página.';
+
+                    if (window.Swal) {
+                        window.Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'warning',
+                            title: 'Falha ao carregar tabela',
+                            text: text,
+                            timer: 6000,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        });
+                        return;
+                    }
+
+                    window.toastr?.warning(text, 'Falha ao carregar tabela');
+                });
+        }
+
         if (typeof window.confirmDelete !== 'function' || window.confirmDelete.length < 2) {
             window.confirmDelete = function (url, msg, callback) {
                 return Swal.fire({

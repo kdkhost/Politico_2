@@ -95,53 +95,103 @@ function confirmAction(options) {
 window.confirmDelete = confirmDelete;
 window.confirmAction = confirmAction;
 
-$.fn.DataTable.ext.pager.numbers_length = 7;
+const adminDataTableLanguage = window.AdminDataTableLanguage || {
+    emptyTable: 'Nenhum registro encontrado',
+    info: 'Mostrando de _START_ até _END_ de _TOTAL_ registros',
+    infoEmpty: 'Mostrando 0 até 0 de 0 registros',
+    infoFiltered: '(filtrado de _MAX_ registros no total)',
+    lengthMenu: '_MENU_ resultados por página',
+    loadingRecords: 'Carregando...',
+    processing: 'Processando...',
+    search: 'Pesquisar',
+    zeroRecords: 'Nenhum registro encontrado',
+    paginate: {
+        first: 'Primeiro',
+        last: 'Último',
+        next: 'Próximo',
+        previous: 'Anterior',
+    },
+    aria: {
+        orderable: 'Ordenar por esta coluna',
+        orderableReverse: 'Inverter ordenação desta coluna',
+        orderableRemove: 'Remover ordenação desta coluna',
+    },
+    buttons: {
+        copy: 'Copiar',
+        copyTitle: 'Copiado para a área de transferência',
+        copySuccess: {
+            _: '%d linhas copiadas',
+            1: '1 linha copiada',
+        },
+        excel: 'Excel',
+        pdf: 'PDF',
+        print: 'Imprimir',
+        colvis: 'Colunas visíveis',
+    },
+};
+
+window.AdminDataTableLanguage = adminDataTableLanguage;
+
+function normalizeDataTableOptions(options) {
+    if (!options || typeof options !== 'object') {
+        return options;
+    }
+
+    const normalized = $.extend(true, {}, options);
+
+    if (normalized.language && normalized.language.url) {
+        delete normalized.language.url;
+        normalized.language = $.extend(true, {}, adminDataTableLanguage, normalized.language);
+    }
+
+    return normalized;
+}
+
+function notifyDataTableError(tableId, message, technicalNote) {
+    if (String(message || '').includes('i18n file loading error')) {
+        return;
+    }
+
+    const now = Date.now();
+    window.AdminDataTableErrors = window.AdminDataTableErrors || {};
+    const key = `${tableId || 'datatable'}:${technicalNote || '0'}:${message || ''}`;
+
+    if (window.AdminDataTableErrors[key] && now - window.AdminDataTableErrors[key] < 60000) {
+        return;
+    }
+
+    window.AdminDataTableErrors[key] = now;
+
+    const text = tableId
+        ? `Não foi possível carregar a tabela ${tableId}. Tente atualizar a página.`
+        : 'Não foi possível carregar uma tabela desta página. Tente atualizar a página.';
+
+    if (window.Swal) {
+        window.Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Falha ao carregar tabela',
+            text,
+            timer: 6000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+        });
+        return;
+    }
+
+    window.toastr?.warning(text, 'Falha ao carregar tabela');
+}
+
+if ($.fn.DataTable?.ext?.pager) {
+    $.fn.DataTable.ext.pager.numbers_length = 7;
+}
 
 if ($.fn.dataTable) {
+    $.fn.dataTable.ext.errMode = 'none';
+
     $.extend(true, $.fn.dataTable.defaults, {
-        language: {
-            url: '//cdn.datatables.net/plug-ins/2.1.8/i18n/pt-BR.json',
-            sEmptyTable: 'Nenhum registro encontrado',
-            sInfo: 'Mostrando de _START_ até _END_ de _TOTAL_ registros',
-            sInfoEmpty: 'Mostrando 0 até 0 de 0 registros',
-            sInfoFiltered: '(Filtrados de _MAX_ registros)',
-            sInfoPostFix: '',
-            sInfoThousands: '.',
-            sLengthMenu: '_MENU_ resultados por página',
-            sLoadingRecords: 'Carregando...',
-            sProcessing: 'Processando...',
-            sZeroRecords: 'Nenhum registro encontrado',
-            sSearch: 'Pesquisar',
-            oPaginate: {
-                sNext: 'Próximo',
-                sPrevious: 'Anterior',
-                sFirst: 'Primeiro',
-                sLast: 'Último',
-            },
-            oAria: {
-                sSortAscending: ': Ordenar colunas de forma ascendente',
-                sSortDescending: ': Ordenar colunas de forma descendente',
-            },
-            select: {
-                rows: {
-                    _: '%d linhas selecionadas',
-                    0: 'Nenhuma linha selecionada',
-                    1: '1 linha selecionada',
-                },
-            },
-            buttons: {
-                copy: 'Copiar',
-                copyTitle: 'Copiado para a área de transferência',
-                copySuccess: {
-                    _: '%d linhas copiadas',
-                    1: '1 linha copiada',
-                },
-                excel: 'Excel',
-                pdf: 'PDF',
-                print: 'Imprimir',
-                colvis: 'Colunas visíveis',
-            },
-        },
+        language: adminDataTableLanguage,
         pageLength: 25,
         lengthMenu: [10, 25, 50, 100],
         stateSave: true,
@@ -151,6 +201,44 @@ if ($.fn.dataTable) {
         serverSide: false,
         deferRender: true,
     });
+
+    if ($.fn.DataTable && !$.fn.DataTable.__adminPatched) {
+        const originalDataTable = $.fn.DataTable;
+        const patchedDataTable = function (...args) {
+            if (args.length > 0) {
+                args[0] = normalizeDataTableOptions(args[0]);
+            }
+
+            return originalDataTable.apply(this, args);
+        };
+
+        Object.getOwnPropertyNames(originalDataTable).forEach((property) => {
+            if (['length', 'name', 'prototype'].includes(property)) {
+                return;
+            }
+
+            try {
+                Object.defineProperty(
+                    patchedDataTable,
+                    property,
+                    Object.getOwnPropertyDescriptor(originalDataTable, property),
+                );
+            } catch (error) {
+                patchedDataTable[property] = originalDataTable[property];
+            }
+        });
+
+        patchedDataTable.__adminPatched = true;
+        $.fn.DataTable = patchedDataTable;
+    }
+
+    $(document)
+        .off('error.dt.adminDataTables')
+        .on('error.dt.adminDataTables', function (event, settings, technicalNote, message) {
+            event.preventDefault();
+            const tableId = settings?.sTableId || settings?.nTable?.id || '';
+            notifyDataTableError(tableId, message, technicalNote);
+        });
 }
 
 $.fn.loadForm = function (url, options) {

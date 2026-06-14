@@ -17,6 +17,16 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-14 - remove alert nativo do DataTables no admin
+
+- removida a dependência do JSON externo `i18n/pt-BR.json` do DataTables nas telas administrativas com tabelas AJAX
+- adicionada tradução PT-BR local/inline para DataTables no layout principal e no bundle `resources/js/admin/admin.js`
+- configurado `$.fn.dataTable.ext.errMode = 'none'` para impedir `alert()` padrão do navegador
+- erros reais de DataTables agora são exibidos por aviso controlado com SweetAlert2/toastr, com deduplicação por tabela por 60 segundos
+- adicionada normalização defensiva para remover `language.url` caso alguma tabela futura tente usar tradução por URL externa
+- telas atualizadas: Blog, Páginas, Usuários, Financeiro, Contatos, Logs, Notificações, Transparência e Visitas
+- mantido UTF-8 sem BOM e sem geração de arquivo `.zip`
+
 ### 2026-06-14 - corrige submenus da sidebar e scrollbar temática
 
 - removida a dependência do treeview nativo do AdminLTE na sidebar para impedir conflito com o handler próprio do painel

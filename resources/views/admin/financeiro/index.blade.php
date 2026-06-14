@@ -108,9 +108,7 @@
                 { data: 'status', name: 'status', orderable: false, searchable: false },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
-            language: {
-                url: '//cdn.datatables.net/plug-ins/2.2.2/i18n/pt-BR.json'
-            },
+            language: window.AdminDataTableLanguage,
             order: [[1, 'desc']],
             pageLength: 25
         });
