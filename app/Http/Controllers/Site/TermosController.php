@@ -38,7 +38,13 @@ class TermosController extends Controller
             ];
         }
 
-        $meta = $this->seoService->generateMetaTags($page, 'page');
+        $meta = $page instanceof Page
+            ? $this->seoService->generateMetaTags($page, 'page')
+            : [
+                'title' => $page->seo_title,
+                'description' => $page->seo_description,
+                'keywords' => config('seo.default_keywords'),
+            ];
 
         return view('site.termos.index', compact('page', 'meta'));
     }
