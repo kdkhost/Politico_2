@@ -79,8 +79,9 @@ class TransparenciaService
             $query->where('orgao_responsavel', 'like', "%{$filters['orgao_responsavel']}%");
         }
 
-        $sortField = in_array(($filters['sort_by'] ?? 'data_publicacao'), self::SORTABLE_FIELDS, true)
-            ? $filters['sort_by']
+        $requestedSortField = (string) ($filters['sort_by'] ?? 'data_publicacao');
+        $sortField = in_array($requestedSortField, self::SORTABLE_FIELDS, true)
+            ? $requestedSortField
             : 'data_publicacao';
         $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
 

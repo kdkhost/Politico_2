@@ -76,8 +76,9 @@ class FinanceiroService
             $query->where('forma_pagamento', $filters['forma_pagamento']);
         }
 
-        $sortField = in_array(($filters['sort_by'] ?? 'data_vencimento'), self::SORTABLE_FIELDS, true)
-            ? $filters['sort_by']
+        $requestedSortField = (string) ($filters['sort_by'] ?? 'data_vencimento');
+        $sortField = in_array($requestedSortField, self::SORTABLE_FIELDS, true)
+            ? $requestedSortField
             : 'data_vencimento';
         $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
 

@@ -230,8 +230,9 @@ class WafService
             });
         }
 
-        $sortField = in_array(($filters['sort_by'] ?? 'created_at'), self::SORTABLE_FIELDS, true)
-            ? $filters['sort_by']
+        $requestedSortField = (string) ($filters['sort_by'] ?? 'created_at');
+        $sortField = in_array($requestedSortField, self::SORTABLE_FIELDS, true)
+            ? $requestedSortField
             : 'created_at';
         $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
 

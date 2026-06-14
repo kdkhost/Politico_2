@@ -22,6 +22,7 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 - corrigido o helper global `settings()` para armazenar em cache apenas array serializavel com `valor` e `tipo`, removendo o cache incorreto de `stdClass` bruto vindo do query builder
 - eliminado o erro de desserializacao em producao que fazia configuracoes gravadas no banco voltarem como `null` ou valor padrao ao serem lidas pelo frontend e pelo painel
 - hotfix resolve o caso em que `default_theme` salvava como `premium` no banco, mas o HTML publico continuava renderizando `data-site-theme="default"`
+- corrigido o padrao inseguro de ordenacao em services criticos (`BlogService`, `AgendaService`, `FinanceiroService`, `MidiaService`, `TransparenciaService`, `AuditoriaService`, `NotificacaoService` e `WafService`) para nao acessar `sort_by` ausente e nao gerar erro 500 em producao
 - validacao local executada: `php artisan optimize:clear` e leitura direta de `settings('default_theme')` com cache repovoado no formato correto
 
 ### 2026-06-14 - adiciona segundo tema visual no frontend publico

@@ -190,8 +190,9 @@ class NotificacaoService
             ? self::LEGACY_SORTABLE_FIELDS
             : self::NOTIFICATION_SORTABLE_FIELDS;
 
-        $sortField = in_array(($filters['sort_by'] ?? 'created_at'), $sortableFields, true)
-            ? $filters['sort_by']
+        $requestedSortField = (string) ($filters['sort_by'] ?? 'created_at');
+        $sortField = in_array($requestedSortField, $sortableFields, true)
+            ? $requestedSortField
             : 'created_at';
         $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
 

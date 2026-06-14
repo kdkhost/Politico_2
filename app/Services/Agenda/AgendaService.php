@@ -64,8 +64,9 @@ class AgendaService
             $query->whereDate('data_fim', '<=', $filters['date_to']);
         }
 
-        $sortField = in_array(($filters['sort_by'] ?? 'data_inicio'), self::SORTABLE_FIELDS, true)
-            ? $filters['sort_by']
+        $requestedSortField = (string) ($filters['sort_by'] ?? 'data_inicio');
+        $sortField = in_array($requestedSortField, self::SORTABLE_FIELDS, true)
+            ? $requestedSortField
             : 'data_inicio';
         $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'asc')) === 'desc' ? 'desc' : 'asc';
 
