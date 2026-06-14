@@ -62,7 +62,7 @@
                     if (res.status === 'success') {
                         toastr.success(res.message || 'Menu criado!');
                         if (res.redirect) {
-                            setTimeout(function() { window.location.href = res.redirect; }, 1000);
+                            window.location.href = res.redirect;
                         }
                     } else {
                         toastr.error(res.message || 'Erro ao criar menu.');

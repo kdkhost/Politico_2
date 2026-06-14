@@ -152,9 +152,9 @@ $(function () {
         ]
     });
 
-    $('#btnNewsletterFilter').on('click', function () { table.ajax.reload(); });
+    $('#btnNewsletterFilter').on('click', function () { window.refreshAdminDataTable(table, false); });
     $('#newsletterSearch').on('keyup', function (e) {
-        if (e.key === 'Enter') table.ajax.reload();
+        if (e.key === 'Enter') window.refreshAdminDataTable(table, false);
     });
 
     $(document).on('click', '.btn-delete-subscriber', function () {

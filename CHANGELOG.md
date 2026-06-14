@@ -17,6 +17,23 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-14 - otimiza CRUDs AJAX, DataTables e consultas do admin
+
+- adicionado `App\Support\DataTableRequest` para normalizar `start`, `length`, busca, paginação e ordenação enviados pelo DataTables
+- DataTables administrativos agora limitam requisições a no máximo 100 registros por página para evitar travamentos no banco
+- salvamento e exclusão AJAX passaram a recarregar DataTables com `ajax.reload(null, false)`, preservando paginação e evitando reload completo desnecessário
+- removidos atrasos artificiais de redirecionamento/feedback nos helpers globais de salvar e excluir
+- removidos timers artificiais restantes de reload/redirecionamento em backups, menus, licença, mídia, financeiro, módulos, perfis, permissões e WAF
+- corrigido o cadastro/edição do Financeiro para aceitar os aliases reais do formulário (`type`, `amount`, `date`, `payment_method`) e gravar nos campos do banco em PT-BR
+- corrigido o cadastro/edição da Transparência para aceitar aliases do modal (`title`, `type`, `year`, `description`) e converter status booleano para `publicado/rascunho`
+- corrigida resposta de Contatos para aceitar `reply` como alias de `resposta` e retornar dados compatíveis com modal/tabela
+- corrigidos retornos formatados de Páginas, Usuários, Financeiro, Contatos, Transparência, Notificações e Logs para reduzir processamento no frontend
+- otimizado resumo financeiro, substituindo quatro somatórios separados por uma consulta agregada
+- corrigida consulta de registro de visitas que usava coluna inexistente `url` em vez de `page_url`
+- adicionada migration `2026_06_14_083000_add_admin_performance_indexes.php` com índices incrementais para posts, páginas, usuários, agenda, financeiro, transparência, contatos, notificações, logs, visitas e mídia
+- validações locais executadas: `php -l` nos PHP alterados, `node --check resources/js/admin/admin.js`, `php artisan migrate`, `npm run build`, `php artisan test`, `php artisan route:list --path=admin`, `php artisan view:cache` e `php artisan view:clear`
+- mantido UTF-8 sem BOM e sem geração de arquivo `.zip`
+
 ### 2026-06-14 - remove alert nativo do DataTables no admin
 
 - removida a dependência do JSON externo `i18n/pt-BR.json` do DataTables nas telas administrativas com tabelas AJAX

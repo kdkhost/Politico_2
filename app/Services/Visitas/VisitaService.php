@@ -30,7 +30,7 @@ class VisitaService
         $bot = $this->isBot($userAgent);
 
         $exists = Visit::where('ip', $ip)
-            ->where('url', $url)
+            ->where('page_url', $url)
             ->where('visit_time', '>=', now()->subMinutes(5))
             ->exists();
 
@@ -98,9 +98,10 @@ class VisitaService
 
         $query->orderBy($sortField, $sortOrder);
 
-        $perPage = (int) ($filters['per_page'] ?? config('sistema.pagination_per_page', 15));
+        $perPage = min(max((int) ($filters['per_page'] ?? config('sistema.pagination_per_page', 15)), 1), 100);
+        $page = max((int) ($filters['page'] ?? 1), 1);
 
-        return $query->paginate($perPage);
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function getUniqueVisitors(string|null $period = null): int

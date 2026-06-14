@@ -84,9 +84,10 @@ class BlogService
 
         $query->orderBy($sortField, $sortOrder);
 
-        $perPage = (int) ($filters['per_page'] ?? config('sistema.pagination_per_page', 15));
+        $perPage = min(max((int) ($filters['per_page'] ?? config('sistema.pagination_per_page', 15)), 1), 100);
+        $page = max((int) ($filters['page'] ?? 1), 1);
 
-        return $query->paginate($perPage);
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function findPostBySlug(string $slug): Post

@@ -14,7 +14,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Services\Notificacao\NotificacaoService;
+use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,13 +34,19 @@ class NotificacaoController extends Controller
     public function list(Request $request)
     {
         try {
-            $filters = $request->only(['tipo', 'lida', 'date_from', 'date_to', 'sort_by', 'sort_order', 'per_page']);
+            $filters = DataTableRequest::filters($request, [
+                'tipo' => 'type',
+                'titulo' => 'type',
+                'mensagem' => 'type',
+            ], ['tipo', 'lida', 'date_from', 'date_to']);
 
             $notifications = $this->notificacaoService->getAll(Auth::id(), $filters);
+            $data = collect($notifications->items())->map(fn (Notification $notification): array => $this->formatNotificationRow($notification))->all();
 
             return response()->json([
                 'status' => 'success',
-                'data' => $notifications->items(),
+                'success' => true,
+                'data' => $data,
                 'draw' => (int) $request->draw,
                 'recordsTotal' => $notifications->total(),
                 'recordsFiltered' => $notifications->total(),
@@ -48,7 +56,7 @@ class NotificacaoController extends Controller
         }
     }
 
-    public function markAsRead(int $id)
+    public function markAsRead(int|string $id)
     {
         try {
             $this->notificacaoService->markAsRead($id);
@@ -74,7 +82,7 @@ class NotificacaoController extends Controller
         }
     }
 
-    public function destroy(int $id)
+    public function destroy(int|string $id)
     {
         try {
             $this->notificacaoService->delete($id);
@@ -128,5 +136,27 @@ class NotificacaoController extends Controller
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'count' => 0, 'items' => []], 500);
         }
+    }
+
+    private function formatNotificationRow(Notification $notification): array
+    {
+        $payload = is_array($notification->data)
+            ? $notification->data
+            : json_decode((string) $notification->data, true);
+        $payload = is_array($payload) ? $payload : [];
+
+        $read = array_key_exists('lida', $notification->getAttributes())
+            ? (bool) $notification->lida
+            : $notification->read_at !== null;
+
+        return [
+            'id' => $notification->id,
+            'lida' => $read,
+            'titulo' => e($notification->titulo ?? $payload['titulo'] ?? 'Notificação'),
+            'mensagem' => e($notification->mensagem ?? $payload['mensagem'] ?? $payload['message'] ?? ''),
+            'tipo' => $notification->tipo ?? $notification->type ?? $payload['tipo'] ?? 'info',
+            'created_at' => $notification->created_at?->format('d/m/Y H:i') ?? '-',
+            'action' => '',
+        ];
     }
 }

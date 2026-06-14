@@ -149,6 +149,18 @@
             };
         }
 
+        window.refreshAdminDataTable = window.refreshAdminDataTable || function (table, resetPaging) {
+            var target = table || window.table;
+
+            if (!target || !target.ajax || typeof target.ajax.reload !== 'function') {
+                return false;
+            }
+
+            target.ajax.reload(null, resetPaging === true);
+
+            return true;
+        };
+
         window.AdminDataTableLanguage = window.AdminDataTableLanguage || {
             emptyTable: 'Nenhum registro encontrado',
             info: 'Mostrando de _START_ até _END_ de _TOTAL_ registros',
@@ -193,7 +205,8 @@
                 lengthMenu: [10, 25, 50, 100],
                 stateSave: true,
                 responsive: true,
-                autoWidth: false
+                autoWidth: false,
+                searchDelay: 350
             });
 
             if ($.fn.DataTable && !$.fn.DataTable.__adminPatched) {
@@ -298,10 +311,9 @@
                         type: 'DELETE'
                     }).done(function (res) {
                         if (window.isSuccessfulResponse ? window.isSuccessfulResponse(res) : (res && (res.success || res.status === 'success'))) {
+                            window.Swal?.close();
                             window.toastr?.success(res.message || 'Registro excluido com sucesso!');
-                            if (typeof window.table !== 'undefined' && window.table?.ajax) {
-                                window.table.ajax.reload();
-                            }
+                            window.refreshAdminDataTable(null, false);
                             if (typeof callback === 'function') callback(true, res);
                         } else {
                             window.toastr?.error(res?.message || 'Erro ao excluir registro.');

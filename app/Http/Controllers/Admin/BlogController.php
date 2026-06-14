@@ -18,6 +18,7 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Services\Blog\BlogService;
+use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -35,10 +36,17 @@ class BlogController extends Controller
     public function list(Request $request)
     {
         try {
-            $filters = $request->only([
+            $filters = DataTableRequest::filters($request, [
+                'title' => 'titulo',
+                'titulo' => 'titulo',
+                'category.name' => 'category_id',
+                'category_name' => 'category_id',
+                'author.name' => 'user_id',
+                'author_name' => 'user_id',
+                'visits_count' => 'views_count',
+            ], [
                 'status', 'category_id', 'tag_id', 'author_id',
-                'search', 'date_from', 'date_to', 'formato',
-                'sort_by', 'sort_order', 'per_page',
+                'date_from', 'date_to', 'formato',
             ]);
 
             $posts = $this->blogService->listPosts($filters);

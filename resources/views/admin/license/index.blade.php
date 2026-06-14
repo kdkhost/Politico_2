@@ -178,7 +178,7 @@
                 success: function(res) {
                     if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'Licença ativada com sucesso!');
-                        setTimeout(function() { location.reload(); }, 1500);
+                        location.reload();
                     } else {
                         toastr.error(res.message || 'Erro ao ativar licença.');
                     }
@@ -202,7 +202,7 @@
                 success: function(res) {
                     if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'Licença verificada com sucesso!');
-                        setTimeout(function() { location.reload(); }, 1500);
+                        location.reload();
                     } else {
                         toastr.error(res.message || 'Falha na verificação.');
                     }
@@ -237,7 +237,7 @@
                         success: function(res) {
                             if (window.isSuccessfulResponse(res)) {
                                 toastr.success(res.message || 'Licença desativada.');
-                                setTimeout(function() { location.reload(); }, 1500);
+                                location.reload();
                             } else {
                                 toastr.error(res.message || 'Erro ao desativar.');
                             }

@@ -143,7 +143,7 @@
                 if (!data.read_at) {
                     $.post('{{ route("admin.contato.mark-read", ":id") }}'.replace(':id', id), {
                         _token: '{{ csrf_token() }}'
-                    }, function() { table.ajax.reload(); });
+                    }, function() { window.refreshAdminDataTable(table, false); });
                 }
             });
         });
@@ -161,7 +161,7 @@
                     if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'Resposta enviada!');
                         $('#contatoShowModal').modal('hide');
-                        table.ajax.reload();
+                        window.refreshAdminDataTable(table, false);
                     } else {
                         toastr.error(res.message || 'Erro ao enviar resposta.');
                     }
@@ -188,7 +188,7 @@
                 success: function(res) {
                     if (window.isSuccessfulResponse(res)) {
                         toastr.success('Todas as mensagens marcadas como lidas.');
-                        table.ajax.reload();
+                        window.refreshAdminDataTable(table, false);
                     }
                 }
             });
@@ -212,7 +212,7 @@
                         success: function(res) {
                             if (window.isSuccessfulResponse(res)) {
                                 toastr.success('Mensagens lidas excluídas.');
-                                table.ajax.reload();
+                                window.refreshAdminDataTable(table, false);
                             }
                         }
                     });

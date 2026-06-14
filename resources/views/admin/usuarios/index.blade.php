@@ -124,7 +124,7 @@
                 success: function(res) {
                     if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'Status alterado!');
-                        table.ajax.reload();
+                        window.refreshAdminDataTable(table, false);
                     } else {
                         toastr.error(res.message || 'Erro ao alterar status.');
                     }
@@ -155,7 +155,7 @@
                         success: function(res) {
                             if (window.isSuccessfulResponse(res)) {
                                 toastr.success(res.message || 'Usuário bloqueado!');
-                                table.ajax.reload();
+                                window.refreshAdminDataTable(table, false);
                             } else {
                                 toastr.error(res.message || 'Erro ao bloquear.');
                             }

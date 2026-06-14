@@ -286,7 +286,7 @@
                     if (window.isSuccessfulResponse(res)) {
                         toastr.success('Menu salvo!');
                         $('#menuModal').modal('hide');
-                        setTimeout(function() { location.reload(); }, 1000);
+                        location.reload();
                     } else {
                         toastr.error(res.message || 'Erro.');
                     }
@@ -344,7 +344,7 @@
                     if (window.isSuccessfulResponse(res)) {
                         toastr.success('Item salvo!');
                         $('#menuItemModal').modal('hide');
-                        setTimeout(function() { location.reload(); }, 1000);
+                        location.reload();
                     } else {
                         toastr.error(res.message || 'Erro.');
                     }

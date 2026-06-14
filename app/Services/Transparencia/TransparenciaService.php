@@ -85,9 +85,10 @@ class TransparenciaService
 
         $query->orderBy($sortField, $sortOrder);
 
-        $perPage = (int) ($filters['per_page'] ?? config('transparencia.per_page', 20));
+        $perPage = min(max((int) ($filters['per_page'] ?? config('transparencia.per_page', 20)), 1), 100);
+        $page = max((int) ($filters['page'] ?? 1), 1);
 
-        return $query->paginate($perPage);
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function createItem(array $data): TransparencyItem

@@ -88,7 +88,7 @@ class NotificacaoService
         ]);
     }
 
-    public function markAsRead(int $notificationId): Notification
+    public function markAsRead(int|string $notificationId): Notification
     {
         $notification = Notification::findOrFail($notificationId);
 
@@ -197,12 +197,13 @@ class NotificacaoService
 
         $query->orderBy($sortField, $sortOrder);
 
-        $perPage = (int) ($filters['per_page'] ?? config('sistema.pagination_per_page', 15));
+        $perPage = min(max((int) ($filters['per_page'] ?? config('sistema.pagination_per_page', 15)), 1), 100);
+        $page = max((int) ($filters['page'] ?? 1), 1);
 
-        return $query->paginate($perPage);
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
-    public function delete(int $notificationId): bool
+    public function delete(int|string $notificationId): bool
     {
         return (bool) Notification::findOrFail($notificationId)->delete();
     }

@@ -158,7 +158,7 @@ $(function () {
                 .done(function (res) {
                     if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'Backup criado com sucesso.');
-                        setTimeout(function () { location.reload(); }, 1000);
+                        location.reload();
                     } else {
                         toastr.error(res.message || 'Erro ao criar backup.');
                     }
@@ -183,7 +183,7 @@ $(function () {
             $.ajax({ url: '{{ route("admin.backup.delete", ":id") }}'.replace(':id', id), method: 'DELETE' })
                 .done(function (res) {
                     toastr.success(res.message || 'Backup excluído.');
-                    setTimeout(function () { location.reload(); }, 800);
+                    location.reload();
                 })
                 .fail(function (xhr) { toastr.error(xhr.responseJSON?.message || 'Erro ao excluir backup.'); });
         });

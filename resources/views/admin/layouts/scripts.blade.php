@@ -85,7 +85,7 @@
                     success: function(res) {
                         if (window.isSuccessfulResponse(res)) {
                             toastr.success(res.message || 'Registro excluído com sucesso!');
-                            if (typeof table !== 'undefined') table.ajax.reload();
+                            if (typeof table !== 'undefined') window.refreshAdminDataTable ? window.refreshAdminDataTable(table, false) : table.ajax.reload(null, false);
                             if (typeof callback === 'function') callback(true);
                         } else {
                             toastr.error(res.message || 'Erro ao excluir registro.');

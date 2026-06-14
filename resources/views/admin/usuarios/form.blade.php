@@ -111,7 +111,7 @@
                     if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'Usuário salvo com sucesso!');
                         $('#userModal').modal('hide');
-                        if (typeof table !== 'undefined') table.ajax.reload();
+                        if (typeof table !== 'undefined') window.refreshAdminDataTable(table, false);
                     } else {
                         toastr.error(res.message || 'Erro ao salvar usuário.');
                     }

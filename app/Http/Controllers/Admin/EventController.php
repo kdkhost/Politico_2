@@ -59,6 +59,7 @@ class EventController extends Controller
                     'allDay' => (bool) ($event->all_day ?? false),
                     'description' => $event->descricao ?? '',
                     'local' => $event->local ?? '',
+                    'category_id' => $event->categoria_id,
                     'tipo' => $event->tipo ?? '',
                     'publicado' => (bool) ($event->publicado ?? false),
                     'url' => route('admin.agenda.show', $event->id),

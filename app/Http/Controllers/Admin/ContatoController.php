@@ -15,6 +15,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
+use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
@@ -39,10 +40,16 @@ class ContatoController extends Controller
     public function list(Request $request)
     {
         try {
+            $filters = DataTableRequest::filters($request, [
+                'name' => 'nome',
+                'subject' => 'assunto',
+                'read_at' => 'lido',
+            ], ['status', 'date_from', 'date_to']);
+
             $query = Contact::query();
 
-            if ($request->filled('search')) {
-                $search = $request->search;
+            if (!empty($filters['search'])) {
+                $search = $filters['search'];
                 $query->where(function ($q) use ($search) {
                     $q->where('nome', 'like', "%{$search}%")
                         ->orWhere('email', 'like', "%{$search}%")
@@ -51,33 +58,40 @@ class ContatoController extends Controller
                 });
             }
 
-            if ($request->filled('status')) {
-                if ($request->status === 'nao_lido') {
+            if (!empty($filters['status'])) {
+                if ($filters['status'] === 'nao_lido') {
                     $query->where('lido', false);
-                } elseif ($request->status === 'respondido') {
+                } elseif ($filters['status'] === 'respondido') {
                     $query->where('respondido', true);
                 }
             }
 
-            if ($request->filled('date_from')) {
-                $query->whereDate('created_at', '>=', $request->date_from);
+            if (!empty($filters['date_from'])) {
+                $query->whereDate('created_at', '>=', $filters['date_from']);
             }
 
-            if ($request->filled('date_to')) {
-                $query->whereDate('created_at', '<=', $request->date_to);
+            if (!empty($filters['date_to'])) {
+                $query->whereDate('created_at', '<=', $filters['date_to']);
             }
 
-            $sortField = in_array((string) $request->sort_by, self::SORTABLE_FIELDS, true)
-                ? (string) $request->sort_by
+            $sortField = in_array((string) ($filters['sort_by'] ?? ''), self::SORTABLE_FIELDS, true)
+                ? (string) $filters['sort_by']
                 : 'created_at';
-            $sortOrder = strtolower((string) $request->sort_order) === 'asc' ? 'asc' : 'desc';
+            $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
             $query->orderBy($sortField, $sortOrder);
 
-            $contacts = $query->paginate(config('sistema.pagination_per_page', 15));
+            $contacts = $query->paginate(
+                min(max((int) ($filters['per_page'] ?? config('sistema.pagination_per_page', 15)), 1), 100),
+                ['*'],
+                'page',
+                max((int) ($filters['page'] ?? 1), 1)
+            );
+            $data = collect($contacts->items())->map(fn (Contact $contact): array => $this->formatContactRow($contact))->all();
 
             return response()->json([
                 'status' => 'success',
-                'data' => $contacts->items(),
+                'success' => true,
+                'data' => $data,
                 'draw' => (int) $request->draw,
                 'recordsTotal' => $contacts->total(),
                 'recordsFiltered' => $contacts->total(),
@@ -100,7 +114,7 @@ class ContatoController extends Controller
                 return view('admin.contato.show', compact('contact'));
             }
 
-            return response()->json(['status' => 'success', 'data' => $contact]);
+            return response()->json($this->formatContactForJson($contact));
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Contato não encontrado.'], 404);
         }
@@ -109,6 +123,10 @@ class ContatoController extends Controller
     public function reply(Request $request, int $id)
     {
         try {
+            if (!$request->filled('resposta') && $request->filled('reply')) {
+                $request->merge(['resposta' => $request->input('reply')]);
+            }
+
             $validated = $request->validate([
                 'resposta' => 'required|string|max:5000',
             ]);
@@ -230,5 +248,44 @@ class ContatoController extends Controller
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao excluir contatos lidos.'], 500);
         }
+    }
+
+    private function formatContactForJson(Contact $contact): array
+    {
+        return [
+            'id' => $contact->id,
+            'name' => $contact->nome,
+            'email' => $contact->email,
+            'phone' => $contact->telefone,
+            'subject' => $contact->assunto,
+            'message' => $contact->mensagem,
+            'read_at' => $contact->lido ? ($contact->updated_at ?? now()) : null,
+            'reply' => $contact->resposta,
+            'replied_at' => $contact->responded_at,
+            'created_at' => $contact->created_at,
+        ];
+    }
+
+    private function formatContactRow(Contact $contact): array
+    {
+        $status = $contact->respondido
+            ? '<span class="badge bg-success">Respondida</span>'
+            : ($contact->lido
+                ? '<span class="badge bg-secondary">Lida</span>'
+                : '<span class="badge bg-warning text-dark">Nova</span>');
+
+        return [
+            'id' => $contact->id,
+            'name' => e($contact->nome),
+            'email' => e($contact->email),
+            'subject' => e($contact->assunto),
+            'status' => $status,
+            'read_at' => $contact->lido ? ($contact->updated_at?->toDateTimeString() ?? now()->toDateTimeString()) : null,
+            'created_at' => $contact->created_at?->format('d/m/Y H:i') ?? '-',
+            'action' => '<div class="btn-group btn-group-sm" role="group">'
+                . '<button type="button" class="btn btn-info btn-view-message" data-id="' . $contact->id . '" title="Ver"><i class="fas fa-eye"></i></button>'
+                . '<button type="button" class="btn btn-danger btn-delete-message" data-id="' . $contact->id . '" title="Excluir"><i class="fas fa-trash"></i></button>'
+                . '</div>',
+        ];
     }
 }

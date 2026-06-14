@@ -140,7 +140,7 @@ $(function () {
             .done(function (res) {
                 if (window.isSuccessfulResponse(res)) {
                     toastr.success(res.message || 'Categoria salva.');
-                    setTimeout(function () { location.reload(); }, 800);
+                    location.reload();
                 } else {
                     toastr.error(res.message || 'Erro ao salvar categoria.');
                 }
@@ -164,7 +164,7 @@ $(function () {
             $.ajax({ url: '{{ route("admin.financeiro.categorias.destroy", ":id") }}'.replace(':id', id), method: 'DELETE' })
                 .done(function (res) {
                     toastr.success(res.message || 'Categoria excluída.');
-                    setTimeout(function () { location.reload(); }, 800);
+                    location.reload();
                 })
                 .fail(function (xhr) { toastr.error(xhr.responseJSON?.message || 'Erro ao excluir categoria.'); });
         });

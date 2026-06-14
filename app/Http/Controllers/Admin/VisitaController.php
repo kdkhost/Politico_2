@@ -16,6 +16,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Visit;
 use App\Services\Visitas\VisitaService;
+use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
@@ -64,10 +65,15 @@ class VisitaController extends Controller
     public function list(Request $request)
     {
         try {
-            $filters = $request->only([
+            $filters = DataTableRequest::filters($request, [
+                'page' => 'page',
+                'device' => 'device',
+                'duration' => 'duration',
+                'created_at' => 'visit_time',
+            ], [
                 'date_from', 'date_to', 'device', 'browser', 'os',
-                'bot', 'url', 'page', 'sort_by', 'sort_order', 'per_page',
-            ]);
+                'bot', 'url', 'page',
+            ], 25);
 
             $visits = $this->visitaService->getVisits($filters);
 

@@ -17,6 +17,7 @@ use App\Http\Controllers\Controller;
 use App\Models\FinancialCategory;
 use App\Models\FinancialTransaction;
 use App\Services\Financeiro\FinanceiroService;
+use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Str;
@@ -38,18 +39,29 @@ class FinanceiroController extends Controller
     public function list(Request $request)
     {
         try {
-            $filters = $request->only([
-                'tipo', 'status', 'categoria_id', 'search',
+            $filters = DataTableRequest::filters($request, [
+                'type' => 'tipo',
+                'description' => 'descricao',
+                'date' => 'data_vencimento',
+                'amount' => 'valor',
+                'amount_formatted' => 'valor',
+                'payment_method' => 'forma_pagamento',
+                'category.name' => 'categoria_id',
+                'category_name' => 'categoria_id',
+            ], [
+                'tipo', 'status', 'categoria_id',
                 'date_from', 'date_to', 'payment_date_from', 'payment_date_to',
-                'forma_pagamento', 'sort_by', 'sort_order', 'per_page',
+                'forma_pagamento',
             ]);
 
             $transactions = $this->financeiroService->listTransactions($filters);
             $total = $transactions->total();
+            $data = collect($transactions->items())->map(fn (FinancialTransaction $transaction): array => $this->formatTransactionRow($transaction))->all();
 
             return response()->json([
                 'status' => 'success',
-                'data' => $transactions->items(),
+                'success' => true,
+                'data' => $data,
                 'draw' => (int) $request->draw,
                 'recordsTotal' => $total,
                 'recordsFiltered' => $total,
@@ -97,13 +109,7 @@ class FinanceiroController extends Controller
 
     public function edit(int $id)
     {
-        $transaction = $this->financeiroService->listTransactions(['sort_by' => 'id', 'sort_order' => 'asc']);
-        $item = collect($transaction->items())->firstWhere('id', $id);
-
-        if (!$item) {
-            $item = \App\Models\FinancialTransaction::with(['category', 'user'])->findOrFail($id);
-        }
-
+        $item = $this->financeiroService->getTransactionById($id);
         $categories = FinancialCategory::orderBy('nome')->get();
 
         return view('admin.financeiro.edit', compact('item', 'categories'));
@@ -157,10 +163,17 @@ class FinanceiroController extends Controller
 
             $summary = $this->financeiroService->getFinancialSummary((int) $year);
             $balance = $this->financeiroService->getBalance($period);
+            $payload = array_merge($summary, $balance);
+            $payload['revenue_formatted'] = 'R$ ' . number_format((float) ($payload['total_revenue'] ?? 0), 2, ',', '.');
+            $payload['expense_formatted'] = 'R$ ' . number_format((float) ($payload['total_expenses'] ?? 0), 2, ',', '.');
+            $payload['balance_formatted'] = 'R$ ' . number_format((float) ($payload['balance'] ?? 0), 2, ',', '.');
+            $payload['count'] = $payload['transaction_count'] ?? 0;
 
             return response()->json([
                 'status' => 'success',
-                'data' => array_merge($summary, $balance),
+                'success' => true,
+                'data' => $payload,
+                ...$payload,
             ]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao obter resumo financeiro.'], 500);
@@ -235,10 +248,7 @@ class FinanceiroController extends Controller
                 return view('admin.financeiro.show', compact('transaction'));
             }
 
-            return response()->json([
-                'status' => 'success',
-                'data' => $transaction,
-            ]);
+            return response()->json($this->formatTransactionForJson($transaction));
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao carregar transação.'], 500);
         }
@@ -337,6 +347,27 @@ class FinanceiroController extends Controller
 
     protected function normalizeMoneyPayload(Request $request): void
     {
+        $aliases = [
+            'tipo' => 'type',
+            'categoria_id' => 'category_id',
+            'descricao' => 'description',
+            'valor' => 'amount',
+            'data_vencimento' => 'date',
+            'forma_pagamento' => 'payment_method',
+            'observacoes' => 'notes',
+        ];
+
+        $normalized = [];
+        foreach ($aliases as $target => $source) {
+            if (!$request->filled($target) && $request->filled($source)) {
+                $normalized[$target] = $request->input($source);
+            }
+        }
+
+        if ($normalized !== []) {
+            $request->merge($normalized);
+        }
+
         if (!$request->filled('valor')) {
             return;
         }
@@ -349,6 +380,47 @@ class FinanceiroController extends Controller
         }
 
         $request->merge(['valor' => $value]);
+    }
+
+    private function formatTransactionForJson(FinancialTransaction $transaction): array
+    {
+        return [
+            'id' => $transaction->id,
+            'description' => $transaction->descricao,
+            'type' => $transaction->tipo,
+            'category_id' => $transaction->categoria_id,
+            'amount' => (string) $transaction->valor,
+            'date' => $transaction->data_vencimento?->toDateString(),
+            'payment_method' => $transaction->forma_pagamento,
+            'status' => $transaction->status,
+            'notes' => $transaction->observacoes,
+            'category_name' => $transaction->category?->nome ?? 'Sem categoria',
+        ];
+    }
+
+    private function formatTransactionRow(FinancialTransaction $transaction): array
+    {
+        $typeClass = $transaction->tipo === 'receita' ? 'success' : 'danger';
+        $statusClass = match ($transaction->status) {
+            'pago' => 'success',
+            'cancelado' => 'danger',
+            default => 'warning text-dark',
+        };
+
+        return [
+            'id' => $transaction->id,
+            'date' => $transaction->data_vencimento?->format('d/m/Y') ?? '-',
+            'description' => e($transaction->descricao),
+            'category_name' => e($transaction->category?->nome ?? 'Sem categoria'),
+            'type' => '<span class="badge bg-' . $typeClass . '">' . e(ucfirst((string) $transaction->tipo)) . '</span>',
+            'amount_formatted' => 'R$ ' . number_format((float) $transaction->valor, 2, ',', '.'),
+            'payment_method' => e($transaction->forma_pagamento ?: '-'),
+            'status' => '<span class="badge bg-' . $statusClass . '">' . e(ucfirst((string) $transaction->status)) . '</span>',
+            'action' => '<div class="btn-group btn-group-sm" role="group">'
+                . '<button type="button" class="btn btn-primary btn-edit-transaction" data-id="' . $transaction->id . '" title="Editar"><i class="fas fa-edit"></i></button>'
+                . '<button type="button" class="btn btn-danger btn-delete-transaction" data-id="' . $transaction->id . '" title="Excluir"><i class="fas fa-trash"></i></button>'
+                . '</div>',
+        ];
     }
 
     protected function buildExportQuery(array $filters)

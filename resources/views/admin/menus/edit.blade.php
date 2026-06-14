@@ -205,7 +205,7 @@
                     if (res.status === 'success') {
                         toastr.success('Item salvo!');
                         $('#menuItemModal').modal('hide');
-                        if (res.reload) setTimeout(function() { location.reload(); }, 1000);
+                        if (res.reload) location.reload();
                     } else {
                         toastr.error(res.message || 'Erro.');
                     }
@@ -248,7 +248,7 @@
                             if (res.status === 'success') {
                                 toastr.success('Item excluído!');
                                 $('#menuItemModal').modal('hide');
-                                if (res.reload) setTimeout(function() { location.reload(); }, 1000);
+                                if (res.reload) location.reload();
                             } else {
                                 toastr.error(res.message || 'Erro.');
                             }
@@ -277,7 +277,7 @@
                         success: function(res) {
                             if (res.status === 'success') {
                                 toastr.success('Item excluído!');
-                                if (res.reload) setTimeout(function() { location.reload(); }, 1000);
+                                if (res.reload) location.reload();
                             } else {
                                 toastr.error(res.message || 'Erro.');
                             }

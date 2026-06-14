@@ -95,6 +95,20 @@ function confirmAction(options) {
 window.confirmDelete = confirmDelete;
 window.confirmAction = confirmAction;
 
+function refreshAdminDataTable(table, resetPaging = false) {
+    const target = table || window.table;
+
+    if (!target?.ajax?.reload) {
+        return false;
+    }
+
+    target.ajax.reload(null, resetPaging);
+
+    return true;
+}
+
+window.refreshAdminDataTable = refreshAdminDataTable;
+
 const adminDataTableLanguage = window.AdminDataTableLanguage || {
     emptyTable: 'Nenhum registro encontrado',
     info: 'Mostrando de _START_ até _END_ de _TOTAL_ registros',
@@ -200,6 +214,7 @@ if ($.fn.dataTable) {
         processing: true,
         serverSide: false,
         deferRender: true,
+        searchDelay: 350,
     });
 
     if ($.fn.DataTable && !$.fn.DataTable.__adminPatched) {
@@ -301,10 +316,10 @@ $.fn.saveForm = function (options) {
         success: function (response) {
             toastr.success(response.message || 'Registro salvo com sucesso!', 'Sucesso');
             form.trigger('form.saved', [response]);
+            refreshAdminDataTable(null, false);
+
             if (response.redirect) {
-                setTimeout(function () {
-                    window.location.href = response.redirect;
-                }, 1000);
+                window.location.href = response.redirect;
             } else if (response.reset) {
                 form[0].reset();
             }
@@ -367,21 +382,17 @@ $.fn.deleteRecord = function (url, options) {
                     Swal.showLoading();
                 },
                 success: function (response) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Excluído!',
-                        text: response.message || config.successMessage,
-                        timer: 2000,
-                        showConfirmButton: false,
-                    });
+                    Swal.close();
+                    toastr.success(response.message || config.successMessage, 'Sucesso');
+
                     if (config.row) {
                         config.row.remove().draw();
+                    } else {
+                        refreshAdminDataTable(null, false);
                     }
+
                     if (response.redirect || config.redirect) {
-                        setTimeout(function () {
-                            window.location.href =
-                                response.redirect || config.redirect;
-                        }, 1500);
+                        window.location.href = response.redirect || config.redirect;
                     }
                 },
                 error: function (xhr) {

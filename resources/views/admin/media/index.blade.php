@@ -349,7 +349,7 @@
                         toastr.success('Pasta criada!');
                         $('#newFolderModal').modal('hide');
                         $('#newFolderForm')[0].reset();
-                        setTimeout(function() { location.reload(); }, 1000);
+                        location.reload();
                     } else {
                         toastr.error(res.message || 'Erro ao criar pasta.');
                     }

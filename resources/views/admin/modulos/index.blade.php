@@ -145,7 +145,7 @@
                     if (res.status === 'success') {
                         toastr.success('Módulo atualizado!');
                         $('#moduleModal').modal('hide');
-                        setTimeout(function() { location.reload(); }, 1000);
+                        location.reload();
                     } else {
                         toastr.error(res.message || 'Erro ao salvar.');
                     }
@@ -165,7 +165,7 @@
                 success: function(res) {
                     if (res.status === 'success') {
                         toastr.success(res.message || 'Status alterado!');
-                        setTimeout(function() { location.reload(); }, 1000);
+                        location.reload();
                     } else {
                         toastr.error(res.message || 'Erro ao alternar.');
                     }

@@ -203,7 +203,7 @@
                     if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'Perfil salvo com sucesso!');
                         $('#profileModal').modal('hide');
-                        setTimeout(function() { location.reload(); }, 1000);
+                        location.reload();
                     } else {
                         toastr.error(res.message || 'Erro ao salvar perfil.');
                     }
@@ -237,7 +237,7 @@
                         success: function(res) {
                             if (window.isSuccessfulResponse(res)) {
                                 toastr.success(res.message || 'Perfil excluído!');
-                                setTimeout(function() { location.reload(); }, 1000);
+                                location.reload();
                             } else {
                                 toastr.error(res.message || 'Erro ao excluir.');
                             }

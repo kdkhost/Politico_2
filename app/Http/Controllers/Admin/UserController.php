@@ -16,6 +16,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Permissions\Profile;
 use App\Models\User;
+use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -47,10 +48,7 @@ class UserController extends Controller
                 return view('admin.usuarios.show', compact('user'));
             }
 
-            return response()->json([
-                'status' => 'success',
-                'data' => $user,
-            ]);
+            return response()->json($this->formatUserForJson($user));
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao carregar usuário.'], 500);
         }
@@ -59,36 +57,50 @@ class UserController extends Controller
     public function list(Request $request)
     {
         try {
+            $filters = DataTableRequest::filters($request, [
+                'profile.name' => 'profile_id',
+                'profile_name' => 'profile_id',
+                'last_login' => 'ultimo_acesso',
+                'last_login_at' => 'ultimo_acesso',
+            ], ['profile_id', 'status']);
+
             $query = User::with('profile:id,nome');
 
-            if ($request->filled('search')) {
-                $search = $request->search;
+            if (!empty($filters['search'])) {
+                $search = $filters['search'];
                 $query->where(function ($q) use ($search): void {
                     $q->where('name', 'like', "%{$search}%")
                         ->orWhere('email', 'like', "%{$search}%");
                 });
             }
 
-            if ($request->filled('profile_id')) {
-                $query->where('profile_id', $request->profile_id);
+            if (!empty($filters['profile_id'])) {
+                $query->where('profile_id', $filters['profile_id']);
             }
 
-            if ($request->filled('status')) {
-                $query->where('status', $request->status);
+            if (!empty($filters['status'])) {
+                $query->where('status', $filters['status']);
             }
 
-            $sortField = in_array((string) $request->sort_by, self::SORTABLE_FIELDS, true)
-                ? (string) $request->sort_by
+            $sortField = in_array((string) ($filters['sort_by'] ?? ''), self::SORTABLE_FIELDS, true)
+                ? (string) $filters['sort_by']
                 : 'created_at';
-            $sortOrder = strtolower((string) $request->sort_order) === 'asc' ? 'asc' : 'desc';
+            $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
             $query->orderBy($sortField, $sortOrder);
 
-            $users = $query->paginate(config('sistema.pagination_per_page', 15));
+            $users = $query->paginate(
+                min(max((int) ($filters['per_page'] ?? config('sistema.pagination_per_page', 15)), 1), 100),
+                ['*'],
+                'page',
+                max((int) ($filters['page'] ?? 1), 1)
+            );
             $total = $users->total();
+            $data = collect($users->items())->map(fn (User $user): array => $this->formatUserRow($user))->all();
 
             return response()->json([
                 'status' => 'success',
-                'data' => $users->items(),
+                'success' => true,
+                'data' => $data,
                 'draw' => (int) $request->draw,
                 'recordsTotal' => $total,
                 'recordsFiltered' => $total,
@@ -297,5 +309,45 @@ class UserController extends Controller
             return redirect()->route('admin.dashboard')
                 ->with('error', 'Erro ao encerrar impersonação.');
         }
+    }
+
+    private function formatUserForJson(User $user): array
+    {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'profile_id' => $user->profile_id,
+            'profile' => [
+                'id' => $user->profile?->id,
+                'name' => $user->profile?->nome,
+            ],
+            'status' => $user->status,
+            'active' => $user->status === 'active' && !$user->is_blocked,
+            'is_blocked' => (bool) $user->is_blocked,
+            'created_at' => $user->created_at,
+            'last_login_at' => $user->ultimo_acesso,
+        ];
+    }
+
+    private function formatUserRow(User $user): array
+    {
+        $isActive = $user->status === 'active' && !$user->is_blocked;
+        $statusClass = $isActive ? 'success' : 'danger';
+        $statusText = $isActive ? 'Ativo' : 'Inativo';
+
+        return [
+            'id' => $user->id,
+            'name' => e($user->name),
+            'email' => e($user->email),
+            'profile_name' => e($user->profile?->nome ?? 'Sem perfil'),
+            'status' => '<span class="badge bg-' . $statusClass . '">' . $statusText . '</span>',
+            'last_login' => $user->ultimo_acesso?->format('d/m/Y H:i') ?? '<span class="text-muted">Nunca</span>',
+            'action' => '<div class="btn-group btn-group-sm" role="group">'
+                . '<button type="button" class="btn btn-info btn-view-user" data-id="' . $user->id . '" title="Ver"><i class="fas fa-eye"></i></button>'
+                . '<button type="button" class="btn btn-primary btn-edit-user" data-id="' . $user->id . '" title="Editar"><i class="fas fa-edit"></i></button>'
+                . '<button type="button" class="btn btn-warning btn-toggle-user" data-id="' . $user->id . '" title="Ativar/desativar"><i class="fas fa-power-off"></i></button>'
+                . '</div>',
+        ];
     }
 }

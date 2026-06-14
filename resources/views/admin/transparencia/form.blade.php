@@ -103,7 +103,7 @@
                     if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'Item salvo!');
                         $('#transparenciaModal').modal('hide');
-                        table.ajax.reload();
+                        window.refreshAdminDataTable(table, false);
                     } else {
                         toastr.error(res.message || 'Erro ao salvar.');
                     }

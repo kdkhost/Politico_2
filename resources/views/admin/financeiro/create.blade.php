@@ -121,7 +121,7 @@
                     if (res.status === 'success') {
                         toastr.success(res.message || 'Transação criada!');
                         if (res.redirect) {
-                            setTimeout(function() { window.location.href = res.redirect; }, 1000);
+                            window.location.href = res.redirect;
                         }
                     } else {
                         toastr.error(res.message || 'Erro ao criar transação.');

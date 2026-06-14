@@ -130,7 +130,7 @@
         });
 
         $('#btnFilter').on('click', function() {
-            table.ajax.reload();
+            window.refreshAdminDataTable(table, false);
         });
 
         $(document).on('click', '.btn-mark-read', function() {
@@ -142,7 +142,7 @@
                 success: function(res) {
                     if (res.status === 'success') {
                         toastr.success(res.message || 'Notificação marcada como lida.');
-                        table.ajax.reload();
+                        window.refreshAdminDataTable(table, false);
                         if (res.data?.unread_count !== undefined) {
                             $('.notifications-count').text(res.data.unread_count);
                             if (res.data.unread_count > 0) {
@@ -178,7 +178,7 @@
                         success: function(res) {
                             if (res.status === 'success') {
                                 toastr.success(res.message);
-                                if (res.reload) table.ajax.reload();
+                                if (res.reload) window.refreshAdminDataTable(table, false);
                                 $('.notifications-count').text('0').addClass('d-none');
                             } else {
                                 toastr.error(res.message || 'Erro ao marcar notificações.');
@@ -212,7 +212,7 @@
                         success: function(res) {
                             if (res.status === 'success') {
                                 toastr.success(res.message || 'Notificação excluída com sucesso!');
-                                table.ajax.reload();
+                                window.refreshAdminDataTable(table, false);
                                 if (res.data?.unread_count !== undefined) {
                                     $('.notifications-count').text(res.data.unread_count);
                                     if (res.data.unread_count > 0) $('.notifications-count').removeClass('d-none');

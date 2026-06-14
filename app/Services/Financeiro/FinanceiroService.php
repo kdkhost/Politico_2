@@ -83,9 +83,10 @@ class FinanceiroService
 
         $query->orderBy($sortField, $sortOrder);
 
-        $perPage = (int) ($filters['per_page'] ?? config('sistema.pagination_per_page', 15));
+        $perPage = min(max((int) ($filters['per_page'] ?? config('sistema.pagination_per_page', 15)), 1), 100);
+        $page = max((int) ($filters['page'] ?? 1), 1);
 
-        return $query->paginate($perPage);
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function createTransaction(array $data): FinancialTransaction
@@ -94,7 +95,7 @@ class FinanceiroService
             $data['user_id'] = auth()->id();
         }
 
-        return FinancialTransaction::create($data);
+        return FinancialTransaction::create($data)->load(['category:id,nome,slug,tipo', 'user:id,name']);
     }
 
     public function updateTransaction(int $id, array $data): FinancialTransaction
@@ -102,7 +103,7 @@ class FinanceiroService
         $transaction = FinancialTransaction::findOrFail($id);
         $transaction->update($data);
 
-        return $transaction->fresh();
+        return $transaction->fresh(['category:id,nome,slug,tipo', 'user:id,name']);
     }
 
     public function getTransactionById(int $id): FinancialTransaction
@@ -129,10 +130,19 @@ class FinanceiroService
             $query->whereYear('created_at', now()->year);
         }
 
-        $revenue = (float) $query->clone()->where('tipo', 'receita')->where('status', 'pago')->sum('valor');
-        $expenses = (float) $query->clone()->where('tipo', 'despesa')->where('status', 'pago')->sum('valor');
-        $pendingRevenue = (float) $query->clone()->where('tipo', 'receita')->where('status', 'pendente')->sum('valor');
-        $pendingExpenses = (float) $query->clone()->where('tipo', 'despesa')->where('status', 'pendente')->sum('valor');
+        $summary = $query
+            ->selectRaw("
+                COALESCE(SUM(CASE WHEN tipo = 'receita' AND status = 'pago' THEN valor ELSE 0 END), 0) as revenue,
+                COALESCE(SUM(CASE WHEN tipo = 'despesa' AND status = 'pago' THEN valor ELSE 0 END), 0) as expenses,
+                COALESCE(SUM(CASE WHEN tipo = 'receita' AND status = 'pendente' THEN valor ELSE 0 END), 0) as pending_revenue,
+                COALESCE(SUM(CASE WHEN tipo = 'despesa' AND status = 'pendente' THEN valor ELSE 0 END), 0) as pending_expenses
+            ")
+            ->first();
+
+        $revenue = (float) ($summary->revenue ?? 0);
+        $expenses = (float) ($summary->expenses ?? 0);
+        $pendingRevenue = (float) ($summary->pending_revenue ?? 0);
+        $pendingExpenses = (float) ($summary->pending_expenses ?? 0);
 
         return [
             'total_revenue' => $revenue,

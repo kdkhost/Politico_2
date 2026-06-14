@@ -232,7 +232,7 @@ $(function () {
             .done(function (res) {
                 if (window.isSuccessfulResponse(res)) {
                     toastr.success(res.message || 'Perfil salvo com sucesso.');
-                    setTimeout(function () { location.reload(); }, 800);
+                    location.reload();
                 } else {
                     toastr.error(res.message || 'Erro ao salvar perfil.');
                 }
@@ -270,7 +270,7 @@ $(function () {
             $.ajax({ url: '{{ route("admin.permissions.profiles.destroy", ":id") }}'.replace(':id', id), method: 'DELETE' })
                 .done(function (res) {
                     toastr.success(res.message || 'Perfil excluído.');
-                    setTimeout(function () { location.reload(); }, 800);
+                    location.reload();
                 })
                 .fail(function (xhr) { toastr.error(xhr.responseJSON?.message || 'Erro ao excluir perfil.'); });
         });

@@ -15,6 +15,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
+use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -38,32 +39,66 @@ class PageController extends Controller
     public function list(Request $request)
     {
         try {
+            $filters = DataTableRequest::filters($request, [
+                'title' => 'titulo',
+                'titulo' => 'titulo',
+                'author.name' => 'user_id',
+                'author_name' => 'user_id',
+            ], ['status']);
+
             $query = Page::with('author:id,name');
 
-            if ($request->filled('search')) {
-                $search = $request->search;
+            if (!empty($filters['search'])) {
+                $search = $filters['search'];
                 $query->where(function ($q) use ($search) {
                     $q->where('titulo', 'like', "%{$search}%")
                         ->orWhere('conteudo', 'like', "%{$search}%");
                 });
             }
 
-            if ($request->filled('status')) {
-                $query->where('status', $request->status);
+            if (!empty($filters['status'])) {
+                $query->where('status', $filters['status']);
             }
 
-            $sortField = in_array((string) $request->sort_by, self::SORTABLE_FIELDS, true)
-                ? (string) $request->sort_by
+            $sortField = in_array((string) ($filters['sort_by'] ?? ''), self::SORTABLE_FIELDS, true)
+                ? (string) $filters['sort_by']
                 : 'created_at';
-            $sortOrder = strtolower((string) $request->sort_order) === 'asc' ? 'asc' : 'desc';
+            $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
             $query->orderBy($sortField, $sortOrder);
 
-            $pages = $query->paginate(config('sistema.pagination_per_page', 15));
+            $pages = $query->paginate(
+                min(max((int) ($filters['per_page'] ?? config('sistema.pagination_per_page', 15)), 1), 100),
+                ['*'],
+                'page',
+                max((int) ($filters['page'] ?? 1), 1)
+            );
             $total = $pages->total();
+            $data = collect($pages->items())->map(function (Page $page): array {
+                $statusLabels = [
+                    'draft' => ['Rascunho', 'secondary'],
+                    'published' => ['Publicada', 'success'],
+                    'archived' => ['Arquivada', 'dark'],
+                ];
+                [$statusText, $statusClass] = $statusLabels[$page->status] ?? [$page->status ?: 'Indefinida', 'secondary'];
+
+                return [
+                    'id' => $page->id,
+                    'title' => e($page->titulo),
+                    'slug' => e($page->slug),
+                    'status' => '<span class="badge bg-' . $statusClass . '">' . e($statusText) . '</span>',
+                    'author_name' => e($page->author?->name ?? 'N/A'),
+                    'created_at' => $page->created_at?->format('d/m/Y H:i') ?? '-',
+                    'action' => '<div class="btn-group btn-group-sm" role="group">'
+                        . '<a href="' . route('admin.pages.edit', $page->id) . '" class="btn btn-primary" title="Editar"><i class="fas fa-edit"></i></a>'
+                        . '<button type="button" class="btn btn-danger btn-delete-page" data-id="' . $page->id . '" title="Excluir"><i class="fas fa-trash"></i></button>'
+                        . '</div>',
+                ];
+            })->all();
 
             return response()->json([
                 'status' => 'success',
-                'data' => $pages->items(),
+                'success' => true,
+                'data' => $data,
                 'draw' => (int) $request->draw,
                 'recordsTotal' => $total,
                 'recordsFiltered' => $total,

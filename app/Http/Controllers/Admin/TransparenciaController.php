@@ -14,7 +14,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\TransparencyItem;
 use App\Services\Transparencia\TransparenciaService;
+use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
@@ -33,18 +35,26 @@ class TransparenciaController extends Controller
     public function list(Request $request)
     {
         try {
-            $filters = $request->only([
-                'tipo', 'categoria', 'status', 'search',
+            $filters = DataTableRequest::filters($request, [
+                'title' => 'titulo',
+                'category.name' => 'categoria',
+                'category_name' => 'categoria',
+                'type' => 'tipo',
+                'year' => 'data_publicacao',
+            ], [
+                'tipo', 'categoria', 'status',
                 'date_from', 'date_to', 'fornecedor',
-                'orgao_responsavel', 'sort_by', 'sort_order', 'per_page',
+                'orgao_responsavel',
             ]);
 
             $items = $this->transparenciaService->listItems($filters);
             $total = $items->total();
+            $data = collect($items->items())->map(fn (TransparencyItem $item): array => $this->formatTransparencyRow($item))->all();
 
             return response()->json([
                 'status' => 'success',
-                'data' => $items->items(),
+                'success' => true,
+                'data' => $data,
                 'draw' => (int) $request->draw,
                 'recordsTotal' => $total,
                 'recordsFiltered' => $total,
@@ -62,6 +72,8 @@ class TransparenciaController extends Controller
     public function store(Request $request)
     {
         try {
+            $this->normalizePayload($request);
+
             $validated = $request->validate([
                 'tipo' => 'required|string|max:100',
                 'titulo' => 'required|string|max:255',
@@ -98,10 +110,7 @@ class TransparenciaController extends Controller
                 return view('admin.transparencia.show', compact('item'));
             }
 
-            return response()->json([
-                'status' => 'success',
-                'data' => $item,
-            ]);
+            return response()->json($this->formatTransparencyForJson($item));
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao carregar item.'], 500);
         }
@@ -116,6 +125,8 @@ class TransparenciaController extends Controller
     public function update(Request $request, int $id)
     {
         try {
+            $this->normalizePayload($request);
+
             $validated = $request->validate([
                 'tipo' => 'required|string|max:100',
                 'titulo' => 'required|string|max:255',
@@ -168,5 +179,70 @@ class TransparenciaController extends Controller
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao exportar: ' . $e->getMessage()], 500);
         }
+    }
+
+    private function normalizePayload(Request $request): void
+    {
+        $aliases = [
+            'titulo' => 'title',
+            'descricao' => 'description',
+            'tipo' => 'type',
+            'categoria' => 'category_id',
+        ];
+
+        $normalized = [];
+        foreach ($aliases as $target => $source) {
+            if (!$request->filled($target) && $request->filled($source)) {
+                $normalized[$target] = $request->input($source);
+            }
+        }
+
+        if (!$request->filled('data_publicacao') && $request->filled('year')) {
+            $year = max(1900, min((int) $request->input('year'), (int) now()->addYear()->year));
+            $normalized['data_publicacao'] = "{$year}-01-01";
+        }
+
+        if (!$request->filled('status') || in_array((string) $request->input('status'), ['0', '1'], true)) {
+            $normalized['status'] = $request->boolean('status') ? 'publicado' : 'rascunho';
+        }
+
+        if ($normalized !== []) {
+            $request->merge($normalized);
+        }
+    }
+
+    private function formatTransparencyForJson(TransparencyItem $item): array
+    {
+        return [
+            'id' => $item->id,
+            'title' => $item->titulo,
+            'category_id' => $item->categoria,
+            'category_name' => $item->categoria,
+            'type' => $item->tipo,
+            'year' => $item->data_publicacao?->format('Y'),
+            'description' => $item->descricao,
+            'status' => $item->status === 'publicado',
+            'created_at' => $item->created_at,
+        ];
+    }
+
+    private function formatTransparencyRow(TransparencyItem $item): array
+    {
+        $published = $item->status === 'publicado';
+
+        return [
+            'id' => $item->id,
+            'title' => e($item->titulo),
+            'category_name' => e($item->categoria ?: 'Sem categoria'),
+            'type' => e(ucfirst((string) $item->tipo)),
+            'year' => $item->data_publicacao?->format('Y') ?? '-',
+            'status' => $published
+                ? '<span class="badge bg-success">Publicado</span>'
+                : '<span class="badge bg-secondary">Rascunho</span>',
+            'action' => '<div class="btn-group btn-group-sm" role="group">'
+                . '<button type="button" class="btn btn-primary btn-edit-transparencia" data-id="' . $item->id . '" title="Editar"><i class="fas fa-edit"></i></button>'
+                . '<button type="button" class="btn btn-danger btn-delete-transparencia" data-id="' . $item->id . '" title="Excluir"><i class="fas fa-trash"></i></button>'
+                . '</div>',
+        ];
     }
 }

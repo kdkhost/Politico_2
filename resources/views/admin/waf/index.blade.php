@@ -171,7 +171,7 @@
                 success: function(res) {
                     if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'WAF alterado!');
-                        setTimeout(function() { location.reload(); }, 1000);
+                        location.reload();
                     } else {
                         toastr.error(res.message || 'Erro ao alterar WAF.');
                     }

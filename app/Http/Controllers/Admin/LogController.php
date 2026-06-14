@@ -14,7 +14,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Log;
 use App\Services\Auditoria\AuditoriaService;
+use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 
 class LogController extends Controller
@@ -34,17 +36,33 @@ class LogController extends Controller
     public function list(Request $request)
     {
         try {
-            $filters = $request->only([
-                'tipo', 'acao', 'user_id', 'search',
+            $filters = DataTableRequest::filters($request, [
+                'type' => 'tipo',
+                'action' => 'acao',
+                'description' => 'descricao',
+                'user.name' => 'user_id',
+                'user_name' => 'user_id',
+            ], [
+                'tipo', 'acao', 'user_id',
                 'date_from', 'date_to', 'model',
-                'sort_by', 'sort_order', 'per_page',
-            ]);
+            ], 50);
+
+            if (empty($filters['tipo']) && $request->filled('type')) {
+                $filters['tipo'] = $request->input('type');
+            }
+
+            if ($request->filled('date')) {
+                $filters['date_from'] = $request->input('date');
+                $filters['date_to'] = $request->input('date');
+            }
 
             $logs = $this->auditoriaService->getLogs($filters);
+            $data = collect($logs->items())->map(fn (Log $log): array => $this->formatLogRow($log))->all();
 
             return response()->json([
                 'status' => 'success',
-                'data' => $logs->items(),
+                'success' => true,
+                'data' => $data,
                 'draw' => (int) $request->draw,
                 'recordsTotal' => $logs->total(),
                 'recordsFiltered' => $logs->total(),
@@ -93,5 +111,18 @@ class LogController extends Controller
     public function clear(Request $request)
     {
         return $this->clean($request);
+    }
+
+    private function formatLogRow(Log $log): array
+    {
+        return [
+            'id' => $log->id,
+            'type' => e($log->tipo),
+            'action' => e($log->acao),
+            'description' => e(mb_strimwidth((string) $log->descricao, 0, 120, '...')),
+            'user_name' => e($log->user?->name ?? 'Sistema'),
+            'ip' => e($log->ip ?? '-'),
+            'created_at' => $log->created_at?->format('d/m/Y H:i:s') ?? '-',
+        ];
     }
 }

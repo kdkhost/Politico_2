@@ -132,7 +132,7 @@
         });
 
         $('#btnFilterLogs').on('click', function() {
-            table.ajax.reload();
+            window.refreshAdminDataTable(table, false);
         });
 
         $(document).on('click', '.btn-view-log', function() {
@@ -180,7 +180,7 @@
                         success: function(res) {
                             if (window.isSuccessfulResponse(res)) {
                                 toastr.success('Logs limpos com sucesso!');
-                                table.ajax.reload();
+                                window.refreshAdminDataTable(table, false);
                             } else {
                                 toastr.error(res.message || 'Erro ao limpar logs.');
                             }

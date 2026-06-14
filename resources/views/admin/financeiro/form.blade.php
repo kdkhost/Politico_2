@@ -113,7 +113,7 @@
                     if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'Transação salva!');
                         $('#transactionModal').modal('hide');
-                        table.ajax.reload();
+                        window.refreshAdminDataTable(table, false);
                         loadSummaries();
                     } else {
                         toastr.error(res.message || 'Erro ao salvar.');
