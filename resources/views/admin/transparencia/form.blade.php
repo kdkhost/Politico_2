@@ -73,6 +73,7 @@
     </div>
 </div>
 
+@push('scripts')
 <script>
     $(function () {
         const modalElement = document.getElementById('transparenciaModal');
@@ -215,3 +216,4 @@
         });
     });
 </script>
+@endpush
