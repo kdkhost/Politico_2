@@ -1,4 +1,6 @@
 <script setup>
+const appVersion = 'v1.0.0';
+
 defineProps({
     siteName: { type: String, default: '' },
     siteLogo: { type: String, default: '' },
@@ -62,8 +64,15 @@ defineProps({
         </div>
       </div>
 
-      <div class="mt-12 border-t border-white/8 pt-6 text-center text-sm text-slate-400">
-        &copy; {{ new Date().getFullYear() }} {{ siteName }} - Todos os direitos reservados
+      <div class="mt-12 border-t border-white/8 pt-6 text-sm text-slate-400">
+        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div class="text-left">
+            &copy; {{ new Date().getFullYear() }} {{ siteName }} - Todos os direitos reservados
+          </div>
+          <div class="text-left md:text-right">
+            Desenvolvido por <span class="text-white">KDK Host</span> <span class="mx-2 text-slate-600">|</span> Versão {{ appVersion }}
+          </div>
+        </div>
       </div>
     </div>
   </footer>

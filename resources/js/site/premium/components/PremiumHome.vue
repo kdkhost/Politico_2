@@ -16,9 +16,10 @@ const props = defineProps({
   <div class="relative overflow-hidden bg-white pt-24 sm:pt-28">
     <section class="relative overflow-hidden bg-slate-950">
       <div class="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(255,255,255,0.12),transparent_22%),linear-gradient(90deg,rgba(2,6,23,0.95)_0%,rgba(15,23,42,0.88)_45%,rgba(15,23,42,0.58)_65%,rgba(15,23,42,0.16)_100%)]"></div>
-      <div class="absolute inset-y-0 right-0 hidden w-[55%] lg:block">
-        <div class="h-full w-full rounded-bl-[160px] border-l-[10px]" style="border-color: var(--premium-accent);">
-          <img :src="politicianPhoto" :alt="politicianName" class="h-full w-full object-cover opacity-70">
+      <div class="absolute inset-y-0 right-0 hidden w-[55%] overflow-hidden lg:block">
+        <div class="absolute inset-0 rounded-bl-[180px] border-l-[10px] border-b-[10px]" style="border-color: var(--premium-accent);">
+          <img :src="politicianPhoto" :alt="politicianName" class="h-full w-full object-cover">
+          <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,6,23,0.06),rgba(2,6,23,0.34))]"></div>
         </div>
       </div>
 

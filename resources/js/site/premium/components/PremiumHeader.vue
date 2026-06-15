@@ -73,7 +73,7 @@ onBeforeUnmount(() => {
 
         <a
           :href="contactUrl"
-          class="inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-black text-white shadow-[0_18px_44px_rgba(0,0,0,0.24)] transition hover:-translate-y-0.5"
+          class="inline-flex min-w-[198px] items-center justify-center whitespace-nowrap rounded-full px-6 py-3 text-sm font-black text-white shadow-[0_18px_44px_rgba(0,0,0,0.24)] transition hover:-translate-y-0.5"
           style="background: var(--premium-accent);"
         >
           <i class="fas fa-user-check me-2"></i>
@@ -122,7 +122,7 @@ onBeforeUnmount(() => {
 
         <a
           :href="contactUrl"
-          class="mt-4 inline-flex w-full items-center justify-center rounded-full px-5 py-3 text-sm font-black text-white"
+          class="mt-4 inline-flex w-full items-center justify-center whitespace-nowrap rounded-full px-5 py-3 text-sm font-black text-white"
           style="background: var(--premium-accent);"
           @click="closeMenu"
         >
