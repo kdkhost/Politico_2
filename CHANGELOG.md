@@ -17,6 +17,11 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-15 - personaliza scrollbar real do sidebar com a paleta do painel
+
+- corrigido `resources/css/admin/admin.css` para estilizar tambem o scrollbar renderizado por `OverlayScrollbars`, que antes ignorava a personalizacao baseada apenas em `::-webkit-scrollbar`
+- o trilho e o thumb do menu lateral agora seguem as variaveis do tema administrativo, inclusive hover e estado pressionado
+
 ### 2026-06-15 - aplica atualizacao instantanea de midia no painel
 
 - corrigido `resources/js/admin/admin.js` para o preview dos uploads existentes respeitar imagem, video, audio e documento, sem cair sempre em imagem ao recarregar widgets

@@ -1840,6 +1840,37 @@ body.admin-premium.dark-mode .admin-user-toggle:hover {
     background: var(--admin-sidebar-scrollbar-thumb-hover);
 }
 
+.admin-sidebar .os-scrollbar {
+    --os-size: 10px;
+    --os-padding-perpendicular: 2px;
+    --os-padding-axis: 4px;
+    --os-track-bg: transparent;
+    --os-handle-bg: var(--admin-sidebar-scrollbar-thumb);
+    --os-handle-bg-hover: var(--admin-sidebar-scrollbar-thumb-hover);
+    --os-handle-bg-active: var(--admin-secondary);
+}
+
+.admin-sidebar .os-scrollbar .os-scrollbar-track {
+    background: var(--admin-sidebar-scrollbar-track);
+    border-radius: 999px;
+}
+
+.admin-sidebar .os-scrollbar .os-scrollbar-handle {
+    background: var(--admin-sidebar-scrollbar-thumb);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.admin-sidebar .os-scrollbar:hover .os-scrollbar-handle {
+    background: var(--admin-sidebar-scrollbar-thumb-hover);
+}
+
+.admin-sidebar .os-scrollbar.os-scrollbar-pressed .os-scrollbar-handle,
+.admin-sidebar .os-scrollbar .os-scrollbar-handle:active {
+    background: var(--admin-secondary);
+}
+
 .admin-sidebar .sidebar-menu {
     gap: 2px;
 }
