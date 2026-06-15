@@ -1,11 +1,11 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
+import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
     plugins: [
-        react(),
+        vue(),
         tailwindcss(),
         laravel({
             input: [
@@ -14,7 +14,7 @@ export default defineConfig({
                 'resources/css/site/site.css',
                 'resources/css/site/premium.css',
                 'resources/js/site/site.js',
-                'resources/js/site/premium-app.jsx',
+                'resources/js/site/premium-app.js',
             ],
             refresh: true,
         }),
