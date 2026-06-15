@@ -19,8 +19,11 @@
       'urls' => [
           'home' => url('/'),
           'biografia' => route('site.biografia'),
+          'agenda' => route('site.agenda'),
+          'blog' => route('site.blog'),
           'propostas' => route('site.propostas'),
           'transparencia' => route('site.transparencia'),
+          'contato' => route('site.contato'),
       ],
       'social' => [
           'facebook' => config('seo.facebook_page'),
@@ -66,6 +69,7 @@
         <ul class="list-unstyled footer-links">
           <li><a href="{{ url('/') }}">Início</a></li>
           <li><a href="{{ route('site.biografia') }}">Biografia</a></li>
+          <li><a href="{{ route('site.agenda') }}">Agenda</a></li>
           <li><a href="{{ route('site.blog') }}">Blog</a></li>
           <li><a href="{{ route('site.propostas') }}">Propostas</a></li>
           <li><a href="{{ route('site.transparencia') }}">Transparência</a></li>

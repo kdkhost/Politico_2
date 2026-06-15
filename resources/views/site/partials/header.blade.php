@@ -19,8 +19,11 @@
   } else {
       $navItems = [
           ['label' => 'Início', 'url' => url('/'), 'icon' => null, 'target' => '_self', 'active' => request()->routeIs('site.home')],
-          ['label' => 'Sobre', 'url' => route('site.biografia'), 'icon' => null, 'target' => '_self', 'active' => request()->routeIs('site.biografia')],
+          ['label' => 'Biografia', 'url' => route('site.biografia'), 'icon' => null, 'target' => '_self', 'active' => request()->routeIs('site.biografia')],
+          ['label' => 'Agenda', 'url' => route('site.agenda'), 'icon' => null, 'target' => '_self', 'active' => request()->routeIs('site.agenda*')],
+          ['label' => 'Blog', 'url' => route('site.blog'), 'icon' => null, 'target' => '_self', 'active' => request()->routeIs('site.blog*')],
           ['label' => 'Propostas', 'url' => route('site.propostas'), 'icon' => null, 'target' => '_self', 'active' => request()->routeIs('site.propostas')],
+          ['label' => 'Transparência', 'url' => route('site.transparencia'), 'icon' => null, 'target' => '_self', 'active' => request()->routeIs('site.transparencia*')],
           ['label' => 'Contato', 'url' => route('site.contato'), 'icon' => null, 'target' => '_self', 'active' => request()->routeIs('site.contato')],
       ];
   }
@@ -73,9 +76,10 @@
         @else
           <li class="nav-item"><a class="nav-link {{ request()->routeIs('site.home') ? 'active' : '' }}" href="{{ url('/') }}">Início</a></li>
           <li class="nav-item"><a class="nav-link {{ request()->routeIs('site.biografia') ? 'active' : '' }}" href="{{ route('site.biografia') }}">Biografia</a></li>
+          <li class="nav-item"><a class="nav-link {{ request()->routeIs('site.agenda*') ? 'active' : '' }}" href="{{ route('site.agenda') }}">Agenda</a></li>
           <li class="nav-item"><a class="nav-link {{ request()->routeIs('site.blog*') ? 'active' : '' }}" href="{{ route('site.blog') }}">Blog</a></li>
           <li class="nav-item"><a class="nav-link {{ request()->routeIs('site.propostas') ? 'active' : '' }}" href="{{ route('site.propostas') }}">Propostas</a></li>
-          <li class="nav-item"><a class="nav-link {{ request()->routeIs('site.transparencia') ? 'active' : '' }}" href="{{ route('site.transparencia') }}">Transparência</a></li>
+          <li class="nav-item"><a class="nav-link {{ request()->routeIs('site.transparencia*') ? 'active' : '' }}" href="{{ route('site.transparencia') }}">Transparência</a></li>
           <li class="nav-item"><a class="nav-link {{ request()->routeIs('site.contato') ? 'active' : '' }}" href="{{ route('site.contato') }}">Contato</a></li>
         @endif
       </ul>

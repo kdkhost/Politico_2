@@ -17,7 +17,7 @@ defineProps({
     <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div class="grid gap-10 lg:grid-cols-[1.2fr_0.8fr_0.9fr_0.85fr]">
         <div class="space-y-5">
-          <div class="inline-flex h-20 w-48 items-center justify-center rounded-md bg-white px-5 shadow-[0_24px_70px_rgba(15,23,42,0.24)]">
+          <div class="inline-flex h-20 w-48 items-center justify-center rounded-md px-2">
             <img :src="siteLogo" :alt="siteName" :title="siteName" loading="lazy" class="max-h-12 w-full object-contain">
           </div>
 
@@ -32,8 +32,11 @@ defineProps({
           <ul class="mt-5 space-y-3 text-sm font-medium text-slate-200">
             <li><a class="transition hover:text-white" :href="urls.home">Início</a></li>
             <li><a class="transition hover:text-white" :href="urls.biografia">Biografia</a></li>
+            <li><a class="transition hover:text-white" :href="urls.agenda">Agenda</a></li>
+            <li><a class="transition hover:text-white" :href="urls.blog">Blog</a></li>
             <li><a class="transition hover:text-white" :href="urls.propostas">Propostas</a></li>
             <li><a class="transition hover:text-white" :href="urls.transparencia">Transparência</a></li>
+            <li><a class="transition hover:text-white" :href="urls.contato">Contato</a></li>
           </ul>
         </div>
 

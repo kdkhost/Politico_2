@@ -46,11 +46,6 @@ onBeforeUnmount(() => {
         <span class="flex h-14 w-36 shrink-0 items-center justify-center overflow-hidden rounded-md px-2 sm:h-16 sm:w-44">
           <img :src="siteLogo" :alt="siteName" :title="siteName" class="max-h-10 w-full object-contain sm:max-h-12">
         </span>
-
-        <span class="hidden min-w-0 lg:flex lg:flex-col">
-          <strong class="truncate text-base font-black tracking-tight text-white">{{ siteName }}</strong>
-          <small class="truncate text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-300">{{ siteSlogan }}</small>
-        </span>
       </a>
 
       <div class="hidden items-center gap-8 lg:flex">
