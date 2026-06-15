@@ -46,6 +46,9 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
   @vite(['resources/css/site/site.css', 'resources/js/site/site.js'])
+  @if($siteTheme === 'premium')
+    @vite(['resources/css/site/premium.css'])
+  @endif
 
   <style>
     :root {
@@ -57,6 +60,8 @@
       --green-dark: color-mix(in srgb, {{ $siteSecondaryColor }} 76%, #000000);
       --yellow: color-mix(in srgb, {{ $siteSecondaryColor }} 22%, #facc15);
       --yellow-dark: color-mix(in srgb, {{ $siteSecondaryColor }} 20%, #ca8a04);
+      --premium-primary: {{ $sitePrimaryColor }};
+      --premium-secondary: {{ $siteSecondaryColor }};
       --site-theme-name: '{{ $siteTheme }}';
     }
   </style>

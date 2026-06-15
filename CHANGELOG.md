@@ -17,6 +17,16 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-15 - recria o tema premium com Tailwind CSS v4
+
+- adicionado `tailwindcss` v4 e `@tailwindcss/vite` no pipeline do frontend
+- criado `resources/css/site/premium.css` como asset exclusivo do tema premium, sem alterar a base do tema padrão
+- ajustado `resources/views/site/layouts/master.blade.php` para carregar `premium.css` apenas quando `default_theme` for `premium`
+- refeito `resources/views/site/partials/header.blade.php` com navegação premium responsiva em Tailwind, mantendo os mesmos dados e rotas do site
+- refeito `resources/views/site/home/index.blade.php` com nova home premium em Tailwind CSS v4, preservando os dados dinâmicos já existentes
+- refeito `resources/views/site/partials/footer.blade.php` com footer premium responsivo em Tailwind, sem trocar o conteúdo institucional salvo
+- frontend recompilado com novo asset `public/build/assets/premium-CB-M3KYy.css`
+
 ### 2026-06-15 - eleva o tema premium do frontend
 
 - redesenhado o header premium em `resources/views/site/partials/header.blade.php` com navegação central refinada, branding expandido e CTA mais forte

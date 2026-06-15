@@ -10,69 +10,67 @@
 @endphp
 
 @if($siteTheme === 'premium')
-<footer class="site-footer site-footer-premium" role="contentinfo">
-  <div class="container">
-    <div class="premium-footer-shell">
-      <div class="row g-4 align-items-start">
-        <div class="col-lg-4">
-          <div class="premium-footer-brand-block">
-            <div class="premium-footer-logo">
-              <img src="{{ $siteLogo }}" alt="{{ $siteName }}" title="{{ $siteName }}" loading="lazy">
-            </div>
-            <div class="premium-footer-brand">
-              <span>{{ $siteName }}</span>
-            </div>
-            <p class="premium-footer-copy">{{ $siteSlogan }}</p>
+<footer class="relative overflow-hidden px-4 pb-6 pt-14 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-7xl overflow-hidden rounded-[32px] border border-slate-200/70 bg-white shadow-[0_36px_90px_rgba(15,23,42,0.12)]">
+    <div class="relative bg-[radial-gradient(circle_at_top_right,_rgba(15,23,42,0.06),_transparent_34%),linear-gradient(135deg,_rgba(255,255,255,0.96),_rgba(241,245,249,0.96))] px-6 py-10 sm:px-10 lg:px-12">
+      <div class="grid gap-10 lg:grid-cols-[1.2fr_0.8fr_0.9fr_0.9fr]">
+        <div class="space-y-5">
+          <div class="inline-flex h-20 w-44 items-center justify-center rounded-[24px] bg-slate-950 px-5 shadow-[0_24px_70px_rgba(15,23,42,0.22)]">
+            <img src="{{ $siteLogo }}" alt="{{ $siteName }}" title="{{ $siteName }}" loading="lazy" class="max-h-12 w-full object-contain">
+          </div>
+          <div>
+            <h3 class="premium-font-display text-2xl font-black tracking-tight text-slate-950">{{ $siteName }}</h3>
+            <p class="mt-3 max-w-sm text-sm leading-7 text-slate-600">{{ $siteSlogan }}</p>
           </div>
         </div>
 
-        <div class="col-lg-2 col-md-6">
-          <h5>Institucional</h5>
-          <ul class="list-unstyled footer-links">
-            <li><a href="{{ url('/') }}">Início</a></li>
-            <li><a href="{{ route('site.biografia') }}">Biografia</a></li>
-            <li><a href="{{ route('site.propostas') }}">Propostas</a></li>
-            <li><a href="{{ route('site.transparencia') }}">Transparência</a></li>
+        <div>
+          <h4 class="text-sm font-black uppercase tracking-[0.24em] text-slate-500">Institucional</h4>
+          <ul class="mt-5 space-y-3 text-sm font-medium text-slate-700">
+            <li><a class="transition hover:text-slate-950" href="{{ url('/') }}">Início</a></li>
+            <li><a class="transition hover:text-slate-950" href="{{ route('site.biografia') }}">Biografia</a></li>
+            <li><a class="transition hover:text-slate-950" href="{{ route('site.propostas') }}">Propostas</a></li>
+            <li><a class="transition hover:text-slate-950" href="{{ route('site.transparencia') }}">Transparência</a></li>
           </ul>
         </div>
 
-        <div class="col-lg-3 col-md-6">
-          <h5>Contato</h5>
-          <ul class="list-unstyled footer-links">
+        <div>
+          <h4 class="text-sm font-black uppercase tracking-[0.24em] text-slate-500">Contato</h4>
+          <ul class="mt-5 space-y-4 text-sm leading-6 text-slate-600">
             @if($contactEmail)
-              <li><i class="fas fa-envelope me-2"></i>{{ $contactEmail }}</li>
+              <li class="flex gap-3"><i class="fas fa-envelope mt-1 text-slate-400"></i><span>{{ $contactEmail }}</span></li>
             @endif
             @if($contactPhone)
-              <li><i class="fas fa-phone me-2"></i>{{ formatarTelefone($contactPhone) }}</li>
+              <li class="flex gap-3"><i class="fas fa-phone mt-1 text-slate-400"></i><span>{{ formatarTelefone($contactPhone) }}</span></li>
             @endif
             @if($contactAddress)
-              <li><i class="fas fa-map-marker-alt me-2"></i>{{ $contactAddress }}</li>
+              <li class="flex gap-3"><i class="fas fa-map-marker-alt mt-1 text-slate-400"></i><span>{{ $contactAddress }}</span></li>
             @endif
           </ul>
         </div>
 
-        <div class="col-lg-3 col-md-6">
-          <h5>Conexões</h5>
-          <p class="premium-footer-copy mb-3">Acompanhe os canais oficiais e receba atualizações em tempo real.</p>
-          <div class="social-links premium-social-links">
+        <div>
+          <h4 class="text-sm font-black uppercase tracking-[0.24em] text-slate-500">Conexões</h4>
+          <p class="mt-5 text-sm leading-7 text-slate-600">Acompanhe os canais oficiais e receba atualizações em tempo real.</p>
+          <div class="mt-5 flex flex-wrap gap-3">
             @if(config('seo.facebook_page'))
-              <a href="{{ config('seo.facebook_page') }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+              <a href="{{ config('seo.facebook_page') }}" target="_blank" rel="noopener" aria-label="Facebook" class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 transition hover:-translate-y-0.5 hover:bg-slate-950 hover:text-white"><i class="fab fa-facebook-f"></i></a>
             @endif
             @if(config('services.instagram'))
-              <a href="{{ config('services.instagram') }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+              <a href="{{ config('services.instagram') }}" target="_blank" rel="noopener" aria-label="Instagram" class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 transition hover:-translate-y-0.5 hover:bg-slate-950 hover:text-white"><i class="fab fa-instagram"></i></a>
             @endif
             @if(config('services.youtube'))
-              <a href="{{ config('services.youtube') }}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+              <a href="{{ config('services.youtube') }}" target="_blank" rel="noopener" aria-label="YouTube" class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 transition hover:-translate-y-0.5 hover:bg-slate-950 hover:text-white"><i class="fab fa-youtube"></i></a>
             @endif
             @if($contactWhatsapp)
-              <a href="https://wa.me/{{ limparMascara($contactWhatsapp) }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+              <a href="https://wa.me/{{ limparMascara($contactWhatsapp) }}" target="_blank" rel="noopener" aria-label="WhatsApp" class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 transition hover:-translate-y-0.5 hover:bg-slate-950 hover:text-white"><i class="fab fa-whatsapp"></i></a>
             @endif
           </div>
         </div>
       </div>
     </div>
 
-    <div class="footer-bottom text-center">
+    <div class="border-t border-slate-200/80 bg-slate-50 px-6 py-5 text-center text-sm text-slate-500 sm:px-10 lg:px-12">
       &copy; {{ date('Y') }} {{ $siteName }} - Todos os direitos reservados
     </div>
   </div>

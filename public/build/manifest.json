@@ -8,6 +8,15 @@
     "src": "resources/css/admin/admin.css",
     "isEntry": true
   },
+  "resources/css/site/premium.css": {
+    "file": "assets/premium-CB-M3KYy.css",
+    "name": "premium",
+    "names": [
+      "premium.css"
+    ],
+    "src": "resources/css/site/premium.css",
+    "isEntry": true
+  },
   "resources/css/site/site.css": {
     "file": "assets/site-BPAJpNzE.css",
     "name": "site",
