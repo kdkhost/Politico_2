@@ -47,6 +47,11 @@
 <script>
     var table;
     $(function() {
+        const transparenciaModalElement = document.getElementById('transparenciaModal');
+        const transparenciaModalInstance = transparenciaModalElement
+            ? bootstrap.Modal.getOrCreateInstance(transparenciaModalElement)
+            : null;
+
         table = $('#transparenciaTable').DataTable({
             processing: true,
             serverSide: true,
@@ -81,7 +86,10 @@
                 $('#transparencia_status').prop('checked', !!data.status);
                 $('#transparenciaModalLabel').text('Editar Item');
                 $('#transparencia_file').prop('required', false);
-                $('#transparenciaModal').modal('show');
+
+                if (transparenciaModalInstance) {
+                    transparenciaModalInstance.show();
+                }
             });
         });
 
