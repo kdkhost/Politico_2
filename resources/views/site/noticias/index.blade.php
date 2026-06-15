@@ -3,6 +3,10 @@
 @section('title', 'Notícias')
 @section('og_title', 'Notícias - ' . config('app.name'))
 
+@php
+  $isPremiumTheme = (settings('default_theme') ?: 'default') === 'premium';
+@endphp
+
 @section('content')
 
 <section class="page-header">
@@ -28,9 +32,9 @@
       <div class="row g-4">
         @foreach($posts as $post)
           <div class="col-md-6 col-lg-4">
-            <article class="card card-post premium-post-card">
+            <article class="{{ $isPremiumTheme ? 'card card-post premium-post-card' : 'card card-post' }}">
               <img src="{{ $post->imagem_destaque ?: asset('img/blog-placeholder.jpg') }}" class="card-img-top" alt="{{ $post->titulo }}" loading="lazy">
-              <div class="card-body premium-post-content">
+              <div class="{{ $isPremiumTheme ? 'card-body premium-post-content' : 'card-body' }}">
                 @if($post->category)
                   <a href="{{ route('site.blog.categoria', $post->category->slug) }}" class="tag mb-2">{{ $post->category->nome }}</a>
                 @endif
@@ -41,7 +45,7 @@
                 </div>
               </div>
               <div class="card-footer">
-                <a href="{{ route('site.blog.show', $post->slug) }}" class="premium-post-link">Ler mais <i class="fas fa-arrow-right ms-1"></i></a>
+                <a href="{{ route('site.blog.show', $post->slug) }}" class="{{ $isPremiumTheme ? 'premium-post-link' : 'btn-link text-decoration-none fw-semibold' }}">Ler mais <i class="fas fa-arrow-right ms-1"></i></a>
               </div>
             </article>
           </div>

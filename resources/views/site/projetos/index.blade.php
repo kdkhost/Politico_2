@@ -3,6 +3,10 @@
 @section('title', 'Projetos')
 @section('og_title', 'Projetos - ' . config('app.name'))
 
+@php
+  $isPremiumTheme = (settings('default_theme') ?: 'default') === 'premium';
+@endphp
+
 @section('content')
 
 <section class="page-header">
@@ -28,7 +32,7 @@
       <div class="row g-4">
         @foreach($projetos as $projeto)
           <div class="col-md-6 col-lg-4">
-            <div class="card-icon premium-card premium-pillar-card text-start h-100">
+            <div class="{{ $isPremiumTheme ? 'card-icon premium-card premium-pillar-card text-start h-100' : 'card-icon text-start h-100' }}">
               <div class="d-flex align-items-center mb-3">
                 <div class="icon-wrapper icon-bg-blue me-3" style="width: 50px; height: 50px; font-size: 1.2rem; margin: 0;">
                   <i class="fas fa-file-signature"></i>
