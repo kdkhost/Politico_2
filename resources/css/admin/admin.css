@@ -1695,9 +1695,9 @@ body.admin-premium .dropdown-menu::-webkit-scrollbar-thumb:hover {
 }
 
 .admin-sidebar .sidebar-brand {
-    min-height: 0;
+    min-height: 82px;
     height: auto;
-    padding: 6px 6px 4px;
+    padding: 5px 6px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     align-items: center;
@@ -1718,7 +1718,7 @@ body.admin-premium .dropdown-menu::-webkit-scrollbar-thumb:hover {
 .admin-brand-mark {
     width: 100%;
     max-width: 100%;
-    height: auto;
+    height: 72px;
     min-width: 0;
     padding: 0;
     border-radius: 0;
@@ -1732,9 +1732,9 @@ body.admin-premium .dropdown-menu::-webkit-scrollbar-thumb:hover {
 
 .admin-brand-mark img {
     width: 100%;
-    height: auto;
-    aspect-ratio: 920 / 180;
-    object-fit: fill;
+    height: 100%;
+    aspect-ratio: auto;
+    object-fit: contain;
     object-position: center;
     max-width: 100%;
     display: block;
