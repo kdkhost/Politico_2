@@ -15,6 +15,7 @@ namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
 use App\Models\TransparencyItem;
+use App\Services\Financeiro\FinanceiroService;
 use App\Services\SEO\SeoService;
 use App\Services\Transparencia\TransparenciaService;
 use Carbon\Carbon;
@@ -24,6 +25,7 @@ class TransparenciaController extends Controller
 {
     public function __construct(
         protected TransparenciaService $transparenciaService,
+        protected FinanceiroService $financeiroService,
         protected SeoService $seoService,
     ) {}
 
@@ -55,9 +57,9 @@ class TransparenciaController extends Controller
         $currentYear = (int) now()->year;
         $summary = $this->transparenciaService->getSummary($currentYear);
         $summaryByType = collect($summary['by_type'] ?? [])->keyBy('tipo');
+        $financialSummary = $this->financeiroService->getFinancialSummary($currentYear);
+        $financialMonthly = collect($financialSummary['monthly'] ?? [])->keyBy(fn (array $item): int => (int) ($item['mes'] ?? 0));
 
-        $monthlyReceitas = $this->transparenciaService->getMonthlyPublishedTotals($currentYear, 'receita');
-        $monthlyDespesas = $this->transparenciaService->getMonthlyPublishedTotals($currentYear, 'despesa');
         $chartLabels = collect(range(1, 12))
             ->map(fn (int $month): string => Carbon::create()->month($month)->locale('pt_BR')->translatedFormat('F'))
             ->map(fn (string $label): string => ucfirst($label))
@@ -81,14 +83,20 @@ class TransparenciaController extends Controller
         $meta['title'] = 'Transparência - ' . config('app.name');
         $meta['description'] = 'Portal da transparência com informações sobre receitas, despesas, licitações e contratos.';
 
-        $totalReceitas = (float) data_get($summaryByType->get('receita'), 'valor_total', 0);
-        $totalDespesas = (float) data_get($summaryByType->get('despesa'), 'valor_total', 0);
+        $totalReceitas = (float) ($financialSummary['total_revenue'] ?? 0);
+        $totalDespesas = (float) ($financialSummary['total_expenses'] ?? 0);
         $totalLicitacoes = (int) data_get($summaryByType->get('licitacao'), 'publicados', 0);
         $totalContratos = (int) data_get($summaryByType->get('contrato'), 'publicados', 0);
         $chartReceitasLabels = $chartLabels;
-        $chartReceitasData = array_values($monthlyReceitas);
+        $chartReceitasData = collect(range(1, 12))
+            ->map(fn (int $month): float => (float) data_get($financialMonthly->get($month), 'receitas', 0))
+            ->values()
+            ->all();
         $chartDespesasLabels = $chartLabels;
-        $chartDespesasData = array_values($monthlyDespesas);
+        $chartDespesasData = collect(range(1, 12))
+            ->map(fn (int $month): float => (float) data_get($financialMonthly->get($month), 'despesas', 0))
+            ->values()
+            ->all();
         $hasReceitasChartData = collect($chartReceitasData)->sum() > 0;
         $hasDespesasChartData = collect($chartDespesasData)->sum() > 0;
         $itens = $items;

@@ -31,7 +31,6 @@ class DemoContentSeeder extends Seeder
         $this->seedEvents($userId, $now);
         $this->seedContacts($now);
         $this->seedNewsletter($now);
-        $this->seedTransparency($userId, $now);
         $this->seedVisits($now);
     }
 
