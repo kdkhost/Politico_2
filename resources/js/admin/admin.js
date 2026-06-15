@@ -1385,6 +1385,46 @@ function startAutoRefresh(url, interval, targetSelector) {
 window.startNotificationPolling = startNotificationPolling;
 window.startAutoRefresh = startAutoRefresh;
 
+function initializeAdminNavbarDropdowns() {
+    if (typeof bootstrap === 'undefined' || !bootstrap.Dropdown) {
+        return;
+    }
+
+    const toggles = document.querySelectorAll('#adminNotificationToggle, #adminUserMenuToggle');
+
+    toggles.forEach(function (toggleElement) {
+        bootstrap.Dropdown.getOrCreateInstance(toggleElement, {
+            autoClose: 'outside',
+            popperConfig(defaultConfig) {
+                return {
+                    ...defaultConfig,
+                    strategy: 'fixed',
+                };
+            },
+        });
+    });
+
+    document.addEventListener('shown.bs.dropdown', function (event) {
+        const currentToggle = event.target;
+
+        toggles.forEach(function (toggleElement) {
+            if (toggleElement === currentToggle) {
+                return;
+            }
+
+            const instance = bootstrap.Dropdown.getInstance(toggleElement);
+            instance?.hide();
+        });
+    });
+
+    $(document).on('click', '.notifications-dropdown-menu .dropdown-item, .admin-user-menu .dropdown-item, .admin-user-menu .user-body a, .admin-user-menu .user-footer a', function () {
+        toggles.forEach(function (toggleElement) {
+            const instance = bootstrap.Dropdown.getInstance(toggleElement);
+            instance?.hide();
+        });
+    });
+}
+
 $(document).on('change', '.auto-submit', function () {
     $(this).closest('form').trigger('submit');
 });
@@ -1433,6 +1473,7 @@ $(document).on('form.loaded shown.bs.modal', function (event) {
 $(function () {
     loadThemePreference();
     syncSidebarState();
+    initializeAdminNavbarDropdowns();
     if (typeof bootstrap !== 'undefined') {
         document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
             new bootstrap.Tooltip(el);

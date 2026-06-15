@@ -17,6 +17,14 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-15 - corrige dropdowns do navbar administrativo
+
+- refeito o markup de `resources/views/admin/layouts/navbar.blade.php` para usar `button` real nos toggles do sino e do menu do usuario, removendo dependencia de `href="#"` para abrir dropdown
+- adicionada inicializacao explicita de `bootstrap.Dropdown` em `resources/js/admin/admin.js` para `#adminNotificationToggle` e `#adminUserMenuToggle`, com fechamento automatico entre menus e `autoClose: outside`
+- reforcado o CSS em `resources/css/admin/admin.css` para os toggles do topo nao herdarem borda/fundo nativos de `button` e para o dropdown abrir acima do restante do shell
+- recompilado o bundle Vite do admin em `public/build`, garantindo que a correcao chegue ao painel publicado e nao fique apenas no source
+- validacoes locais executadas: `php artisan view:cache`, `npm run build` e verificacao de ausencia de BOM nos arquivos alterados
+
 ### 2026-06-14 - corrige persistencia base, seed de homologacao e contador de visitas
 
 - corrigido `App\Services\Sistema\ConfiguracaoService` para invalidar tambem `site_settings` e todos os caches por grupo ao salvar configuracoes, eliminando o efeito de "salvou mas nao refletiu"

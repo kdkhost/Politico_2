@@ -5,7 +5,7 @@
         </a>
     </li>
     <li class="nav-item d-none d-sm-inline-block">
-        <a href="{{ route('admin.dashboard') }}" class="nav-link admin-top-link">Início</a>
+        <a href="{{ route('admin.dashboard') }}" class="nav-link admin-top-link">Inicio</a>
     </li>
     <li class="nav-item d-none d-sm-inline-block">
         <a href="{{ url('/') }}" class="nav-link admin-top-link" target="_blank" rel="noopener">
@@ -16,12 +16,12 @@
 
 <ul class="navbar-nav ms-auto align-items-center">
     <li class="nav-item dropdown">
-        <a class="nav-link admin-icon-button admin-notification-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" aria-label="Notificacoes">
+        <button type="button" class="nav-link admin-icon-button admin-notification-toggle dropdown-toggle" id="adminNotificationToggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" aria-label="Notificacoes">
             <i class="far fa-bell admin-notification-bell"></i>
             <span class="badge text-bg-warning navbar-badge notifications-count d-none" aria-live="polite">0</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end notifications-dropdown-menu admin-dropdown">
-            <span class="dropdown-item dropdown-header text-center">Nenhuma notificação</span>
+        </button>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end notifications-dropdown-menu admin-dropdown" aria-labelledby="adminNotificationToggle">
+            <span class="dropdown-item dropdown-header text-center">Nenhuma notificacao</span>
         </div>
     </li>
 
@@ -39,11 +39,11 @@
     </li>
 
     <li class="nav-item dropdown user-menu">
-        <a href="#" class="nav-link dropdown-toggle admin-user-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">
+        <button type="button" class="nav-link dropdown-toggle admin-user-toggle" id="adminUserMenuToggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
             <img src="{{ auth()->user()->avatar_url ?? asset('img/default-avatar.png') }}" class="user-image admin-avatar admin-profile-avatar-preview" alt="{{ auth()->user()->name ?? 'Usuario' }}">
             <span class="d-none d-md-inline">{{ auth()->user()->name ?? 'Usuario' }}</span>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end admin-dropdown admin-user-menu">
+        </button>
+        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end admin-dropdown admin-user-menu" aria-labelledby="adminUserMenuToggle">
             <li class="user-header text-center">
                 <div class="admin-profile-avatar-box">
                     <img src="{{ auth()->user()->avatar_url ?? asset('img/default-avatar.png') }}" class="img-circle shadow admin-profile-avatar-preview" alt="{{ auth()->user()->name ?? 'Usuario' }}">

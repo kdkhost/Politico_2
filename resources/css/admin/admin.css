@@ -1614,6 +1614,13 @@ body.admin-premium .dropdown-menu::-webkit-scrollbar-thumb:hover {
     transition: color var(--admin-transition), background var(--admin-transition), box-shadow var(--admin-transition);
 }
 
+button.admin-icon-button,
+button.admin-user-toggle {
+    border: 0;
+    background: transparent;
+    appearance: none;
+}
+
 .admin-icon-button {
     width: 42px;
     display: inline-flex !important;
@@ -1670,6 +1677,7 @@ body.admin-premium .dropdown-menu::-webkit-scrollbar-thumb:hover {
     border-radius: 8px;
     box-shadow: var(--admin-shadow-lift);
     padding: 8px;
+    z-index: 2000;
 }
 
 .admin-user-menu .user-header {
