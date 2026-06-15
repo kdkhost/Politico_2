@@ -148,14 +148,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/data', [App\Http\Controllers\Admin\UserController::class, 'list'])->name('data');
             Route::post('/stop-impersonation', [App\Http\Controllers\Admin\UserController::class, 'stopImpersonation'])->name('stop-impersonation');
             Route::post('/criar', [App\Http\Controllers\Admin\UserController::class, 'store'])->middleware('permission:users.create')->name('store');
-            Route::get('/{id}/editar', [App\Http\Controllers\Admin\UserController::class, 'edit'])->middleware('permission:users.edit')->name('edit');
-            Route::get('/{id}', [App\Http\Controllers\Admin\UserController::class, 'show'])->name('show');
-            Route::match(['post', 'put', 'patch'], '/{id}/atualizar', [App\Http\Controllers\Admin\UserController::class, 'update'])->middleware('permission:users.edit')->name('update');
-            Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->middleware('permission:users.delete')->name('destroy');
-            Route::post('/{id}/bloquear', [App\Http\Controllers\Admin\UserController::class, 'block'])->middleware('permission:users.edit')->name('block');
-            Route::post('/{id}/desbloquear', [App\Http\Controllers\Admin\UserController::class, 'unblock'])->middleware('permission:users.edit')->name('unblock');
-            Route::post('/{id}/alternar-status', [App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->middleware('permission:users.edit')->name('toggle-status');
-            Route::post('/{id}/login-as', [App\Http\Controllers\Admin\UserController::class, 'loginAs'])->middleware('permission:users.impersonar')->name('login-as');
+            Route::get('/{id}/editar', [App\Http\Controllers\Admin\UserController::class, 'edit'])->whereNumber('id')->middleware('permission:users.edit')->name('edit');
+            Route::get('/{id}', [App\Http\Controllers\Admin\UserController::class, 'show'])->whereNumber('id')->name('show');
+            Route::match(['post', 'put', 'patch'], '/{id}/atualizar', [App\Http\Controllers\Admin\UserController::class, 'update'])->whereNumber('id')->middleware('permission:users.edit')->name('update');
+            Route::delete('/{id}/excluir', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->whereNumber('id')->middleware('permission:users.delete')->name('destroy');
+            Route::post('/{id}/bloquear', [App\Http\Controllers\Admin\UserController::class, 'block'])->whereNumber('id')->middleware('permission:users.edit')->name('block');
+            Route::post('/{id}/desbloquear', [App\Http\Controllers\Admin\UserController::class, 'unblock'])->whereNumber('id')->middleware('permission:users.edit')->name('unblock');
+            Route::post('/{id}/alternar-status', [App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->whereNumber('id')->middleware('permission:users.edit')->name('toggle-status');
+            Route::post('/{id}/login-as', [App\Http\Controllers\Admin\UserController::class, 'loginAs'])->whereNumber('id')->middleware('permission:users.impersonar')->name('login-as');
         });
 
         // Permissions

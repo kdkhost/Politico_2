@@ -42,6 +42,73 @@
             --admin-secondary: {{ $adminSecondaryColor }};
             --admin-secondary-light: color-mix(in srgb, {{ $adminSecondaryColor }} 82%, #ffffff);
         }
+
+        .admin-sidebar .sidebar-brand {
+            min-height: 88px;
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+
+        .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .admin-brand-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px !important;
+            min-width: 56px !important;
+            max-width: 56px !important;
+            height: 56px !important;
+            max-height: 56px !important;
+            padding: 8px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.06);
+            overflow: hidden;
+            flex: 0 0 56px !important;
+        }
+
+        .admin-brand-mark img {
+            display: block;
+            width: 100% !important;
+            max-width: 100% !important;
+            height: 100% !important;
+            max-height: 100% !important;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        .admin-brand .brand-text {
+            color: #fff;
+            font-size: .98rem;
+            line-height: 1.15;
+            white-space: normal;
+            word-break: break-word;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+
+        body.admin-sidebar-collapsed .admin-sidebar .sidebar-brand {
+            padding-inline: 10px;
+        }
+
+        body.admin-sidebar-collapsed .admin-brand {
+            justify-content: center;
+        }
+
+        body.admin-sidebar-collapsed .admin-brand .brand-text {
+            display: none;
+        }
     </style>
     @stack('styles')
 </head>
