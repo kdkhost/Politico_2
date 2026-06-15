@@ -13,7 +13,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="relative overflow-hidden bg-white pt-24 sm:pt-28">
+  <div class="relative overflow-hidden bg-white pt-4 sm:pt-6">
     <section class="relative overflow-hidden bg-slate-950">
       <div class="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(255,255,255,0.12),transparent_22%),linear-gradient(90deg,rgba(2,6,23,0.95)_0%,rgba(15,23,42,0.88)_45%,rgba(15,23,42,0.58)_65%,rgba(15,23,42,0.16)_100%)]"></div>
       <div class="absolute inset-y-0 right-0 hidden w-[58%] overflow-hidden lg:block">
