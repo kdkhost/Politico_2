@@ -89,6 +89,8 @@ class TransparenciaController extends Controller
         $chartReceitasData = array_values($monthlyReceitas);
         $chartDespesasLabels = $chartLabels;
         $chartDespesasData = array_values($monthlyDespesas);
+        $hasReceitasChartData = collect($chartReceitasData)->sum() > 0;
+        $hasDespesasChartData = collect($chartDespesasData)->sum() > 0;
         $itens = $items;
 
         return view('site.transparencia.index', compact(
@@ -106,6 +108,8 @@ class TransparenciaController extends Controller
             'chartReceitasData',
             'chartDespesasLabels',
             'chartDespesasData',
+            'hasReceitasChartData',
+            'hasDespesasChartData',
         ));
     }
 

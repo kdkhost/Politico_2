@@ -43,7 +43,7 @@ onBeforeUnmount(() => {
   <header class="fixed inset-x-0 top-0 z-50 border-b border-white/8 bg-slate-950/88 backdrop-blur-xl">
     <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
       <a href="/" class="flex min-w-0 items-center gap-3" :aria-label="siteName">
-        <span class="flex h-14 w-36 shrink-0 items-center justify-center overflow-hidden rounded-md bg-white px-4 shadow-[0_16px_40px_rgba(15,23,42,0.18)] sm:h-16 sm:w-44">
+        <span class="flex h-14 w-36 shrink-0 items-center justify-center overflow-hidden rounded-md px-2 sm:h-16 sm:w-44">
           <img :src="siteLogo" :alt="siteName" :title="siteName" class="max-h-10 w-full object-contain sm:max-h-12">
         </span>
 

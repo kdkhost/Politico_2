@@ -3,6 +3,11 @@
 @section('title', 'Portal da Transparência')
 @section('og_title', 'Portal da Transparência - ' . config('app.name'))
 
+@php
+  $isPremiumTheme = (settings('default_theme') ?: 'default') === 'premium';
+  $showCharts = ($hasReceitasChartData ?? false) || ($hasDespesasChartData ?? false);
+@endphp
+
 @push('styles')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 @endpush
@@ -30,7 +35,7 @@
   <div class="container">
     <div class="row g-4 mb-4">
       <div class="col-md-3 col-6">
-        <div class="transparency-card text-center">
+        <div class="transparency-card text-center {{ $isPremiumTheme ? 'premium-transparency-card' : '' }}">
           <div class="card-header bg-success text-white"><i class="fas fa-arrow-down me-1"></i>Receitas</div>
           <div class="card-body">
             <div class="amount text-success">{{ isset($totalReceitas) ? 'R$ ' . number_format($totalReceitas, 2, ',', '.') : 'R$ 0,00' }}</div>
@@ -39,7 +44,7 @@
         </div>
       </div>
       <div class="col-md-3 col-6">
-        <div class="transparency-card text-center">
+        <div class="transparency-card text-center {{ $isPremiumTheme ? 'premium-transparency-card' : '' }}">
           <div class="card-header bg-danger text-white"><i class="fas fa-arrow-up me-1"></i>Despesas</div>
           <div class="card-body">
             <div class="amount text-danger">{{ isset($totalDespesas) ? 'R$ ' . number_format($totalDespesas, 2, ',', '.') : 'R$ 0,00' }}</div>
@@ -48,7 +53,7 @@
         </div>
       </div>
       <div class="col-md-3 col-6">
-        <div class="transparency-card text-center">
+        <div class="transparency-card text-center {{ $isPremiumTheme ? 'premium-transparency-card' : '' }}">
           <div class="card-header bg-info text-white"><i class="fas fa-gavel me-1"></i>Licitações</div>
           <div class="card-body">
             <div class="amount text-info">{{ $totalLicitacoes ?? 0 }}</div>
@@ -57,7 +62,7 @@
         </div>
       </div>
       <div class="col-md-3 col-6">
-        <div class="transparency-card text-center">
+        <div class="transparency-card text-center {{ $isPremiumTheme ? 'premium-transparency-card' : '' }}">
           <div class="card-header bg-primary text-white"><i class="fas fa-file-contract me-1"></i>Contratos</div>
           <div class="card-body">
             <div class="amount text-primary">{{ $totalContratos ?? 0 }}</div>
@@ -67,20 +72,30 @@
       </div>
     </div>
 
+    @if($showCharts)
     <div class="row g-4 mb-4">
       <div class="col-md-6">
-        <div class="bg-white rounded-4 shadow-sm p-4">
-          <canvas id="receitasChart" height="250"></canvas>
+        <div class="bg-white rounded-4 shadow-sm p-4 {{ $isPremiumTheme ? 'premium-transparency-panel' : '' }}">
+          @if($hasReceitasChartData)
+            <canvas id="receitasChart" height="250"></canvas>
+          @else
+            <div class="py-5 text-center text-muted">Nenhuma receita publicada para exibir no gráfico.</div>
+          @endif
         </div>
       </div>
       <div class="col-md-6">
-        <div class="bg-white rounded-4 shadow-sm p-4">
-          <canvas id="despesasChart" height="250"></canvas>
+        <div class="bg-white rounded-4 shadow-sm p-4 {{ $isPremiumTheme ? 'premium-transparency-panel' : '' }}">
+          @if($hasDespesasChartData)
+            <canvas id="despesasChart" height="250"></canvas>
+          @else
+            <div class="py-5 text-center text-muted">Nenhuma despesa publicada para exibir no gráfico.</div>
+          @endif
         </div>
       </div>
     </div>
+    @endif
 
-    <div class="bg-white rounded-4 shadow-sm p-4">
+    <div class="bg-white rounded-4 shadow-sm p-4 {{ $isPremiumTheme ? 'premium-transparency-panel' : '' }}">
       <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
         <div class="d-flex flex-wrap gap-2">
           @php
@@ -96,15 +111,6 @@
             <input type="text" name="q" class="form-control form-control-sm" placeholder="Buscar..." value="{{ request('q') }}" style="width: 180px;">
             <button type="submit" class="btn btn-blue btn-sm rounded-pill px-3"><i class="fas fa-search"></i></button>
           </form>
-          <!-- Exportar desativado temporariamente -->
-          <div class="dropdown d-none">
-            <button class="btn btn-outline-success btn-sm rounded-pill dropdown-toggle" data-bs-toggle="dropdown"><i class="fas fa-download me-1"></i>Exportar</button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#"><i class="fas fa-file-excel me-2"></i>Excel</a></li>
-              <li><a class="dropdown-item" href="#"><i class="fas fa-file-pdf me-2"></i>PDF</a></li>
-              <li><a class="dropdown-item" href="#"><i class="fas fa-file-code me-2"></i>JSON</a></li>
-            </ul>
-          </div>
         </div>
       </div>
 
@@ -148,10 +154,11 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', function () {
   var ctx1 = document.getElementById('receitasChart');
   var ctx2 = document.getElementById('despesasChart');
-  if(ctx1){
+
+  if (ctx1) {
     new Chart(ctx1, {
       type: 'doughnut',
       data: {
@@ -161,10 +168,17 @@ document.addEventListener('DOMContentLoaded', function(){
           backgroundColor: ['#009c3b','#00c44a','#33d66c','#66e291','#99edb5','#ccf6da']
         }]
       },
-      options: { responsive: true, plugins: { title: { display: true, text: 'Receitas por Mês' }, legend: { position: 'bottom' } } }
+      options: {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: 'Receitas por Mês' },
+          legend: { position: 'bottom' }
+        }
+      }
     });
   }
-  if(ctx2){
+
+  if (ctx2) {
     new Chart(ctx2, {
       type: 'doughnut',
       data: {
@@ -174,7 +188,13 @@ document.addEventListener('DOMContentLoaded', function(){
           backgroundColor: ['#dc3545','#e4606d','#eb8791','#f1aeb5','#f7d4d8','#fce9eb']
         }]
       },
-      options: { responsive: true, plugins: { title: { display: true, text: 'Despesas por Mês' }, legend: { position: 'bottom' } } }
+      options: {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: 'Despesas por Mês' },
+          legend: { position: 'bottom' }
+        }
+      }
     });
   }
 });

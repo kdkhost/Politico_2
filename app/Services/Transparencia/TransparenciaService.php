@@ -119,7 +119,7 @@ class TransparenciaService
 
         $item = TransparencyItem::create($data);
 
-        Cache::forget('transparencia_summary');
+        $this->forgetSummaryCachesForYears([$this->extractItemYear($item), (int) now()->year]);
 
         return $item;
     }
@@ -127,18 +127,21 @@ class TransparenciaService
     public function updateItem(int $id, array $data): TransparencyItem
     {
         $item = TransparencyItem::findOrFail($id);
+        $originalYear = $this->extractItemYear($item);
         $item->update($data);
 
-        Cache::forget('transparencia_summary');
+        $this->forgetSummaryCachesForYears([$originalYear, $this->extractItemYear($item), (int) now()->year]);
 
         return $item->fresh();
     }
 
     public function deleteItem(int $id): bool
     {
-        $result = (bool) TransparencyItem::findOrFail($id)->delete();
+        $item = TransparencyItem::findOrFail($id);
+        $itemYear = $this->extractItemYear($item);
+        $result = (bool) $item->delete();
 
-        Cache::forget('transparencia_summary');
+        $this->forgetSummaryCachesForYears([$itemYear, (int) now()->year]);
 
         return $result;
     }
@@ -320,5 +323,26 @@ class TransparenciaService
             'rascunho', 'draft', '0' => ['rascunho', 'draft', 'inactive'],
             default => [$normalized],
         };
+    }
+
+    private function extractItemYear(TransparencyItem $item): int
+    {
+        return (int) optional($item->data_referencia ?? $item->data_publicacao ?? now())->format('Y');
+    }
+
+    /**
+     * @param array<int, int|null> $years
+     */
+    private function forgetSummaryCachesForYears(array $years): void
+    {
+        $years = collect($years)
+            ->filter(fn ($year) => is_numeric($year) && (int) $year > 0)
+            ->map(fn ($year) => (int) $year)
+            ->unique()
+            ->values();
+
+        foreach ($years as $year) {
+            Cache::forget("transparencia_summary_{$year}");
+        }
     }
 }
