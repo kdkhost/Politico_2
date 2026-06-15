@@ -15,12 +15,15 @@
         "inputmask": "^5.0.9",
         "intersection-observer": "^0.12.2",
         "jquery": "^3.7.1",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
         "summernote": "^0.9.1",
         "sweetalert2": "^11.17.2",
         "toastr": "^2.1.4"
     },
     "devDependencies": {
         "@fortawesome/fontawesome-free": "^6.7.2",
+        "@vitejs/plugin-react": "^5.0.0",
         "@tailwindcss/vite": "^4.1.11",
         "laravel-vite-plugin": "^3.1.0",
         "sass": "^1.86.3",

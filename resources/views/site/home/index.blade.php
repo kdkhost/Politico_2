@@ -15,205 +15,46 @@ Início
 @endphp
 
 @if($siteTheme === 'premium')
-<div class="relative overflow-hidden pt-28 sm:pt-32">
-  <div class="pointer-events-none absolute inset-x-0 top-0 h-[46rem] bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.18),_transparent_28%),linear-gradient(135deg,_color-mix(in_srgb,var(--premium-primary)_90%,#020617)_0%,_#0f172a_48%,_color-mix(in_srgb,var(--premium-secondary)_48%,#020617)_100%)]"></div>
-  <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_18%,_rgba(255,255,255,0.14),_transparent_18%),radial-gradient(circle_at_12%_78%,_color-mix(in_srgb,var(--premium-secondary)_18%,transparent),_transparent_24%)]"></div>
-
-  <section class="relative px-4 pb-16 sm:px-6 lg:px-8">
-    <div class="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(360px,0.92fr)]">
-      <div class="text-white">
-        <div class="inline-flex flex-wrap gap-3">
-          <span class="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.24em] text-white/90">Excelência</span>
-          <span class="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.24em] text-white/90">Resultados</span>
-          <span class="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.24em] text-white/90">Transparência</span>
-        </div>
-
-        <div class="mt-8">
-          <span class="inline-flex items-center gap-3 text-xs font-black uppercase tracking-[0.32em] text-white/70">
-            <span class="h-px w-10 bg-white/40"></span>
-            Gestão pública premium
-          </span>
-          <h1 class="premium-font-display mt-5 max-w-4xl text-5xl font-black leading-[0.94] tracking-tight sm:text-6xl xl:text-7xl">
-            Um tema público
-            <span class="block bg-[linear-gradient(135deg,#ffffff_0%,#cbd5e1_42%,#93c5fd_74%,#bfdbfe_100%)] bg-clip-text text-transparent">realmente premium</span>
-          </h1>
-          <p class="mt-6 max-w-2xl text-base leading-8 text-slate-200 sm:text-lg">
-            {{ $politician->slogan ?? 'Com planejamento estratégico, transparência e gestão eficiente, estamos transformando nossa cidade em referência nacional.' }}
-          </p>
-        </div>
-
-        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-          <a href="{{ route('site.propostas') }}" class="inline-flex items-center justify-center rounded-2xl bg-white px-6 py-4 text-sm font-black text-slate-950 shadow-[0_24px_60px_rgba(255,255,255,0.18)] transition hover:-translate-y-0.5 hover:bg-slate-100">
-            <i class="fas fa-chalkboard-user me-2"></i>Conheça as propostas
-          </a>
-          <a href="{{ route('site.biografia') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-white/8 px-6 py-4 text-sm font-black text-white backdrop-blur-xl transition hover:-translate-y-0.5 hover:bg-white/12">
-            <i class="fas fa-user-tie me-2"></i>Ver trajetória
-          </a>
-        </div>
-
-        <div class="mt-10 grid gap-4 sm:grid-cols-3">
-          <div class="rounded-[28px] border border-white/12 bg-white/10 p-5 backdrop-blur-xl">
-            <div class="text-3xl font-black tracking-tight">{{ $stats->projetos ?? 15 }}+</div>
-            <div class="mt-2 text-sm text-slate-200">Projetos concluídos</div>
-          </div>
-          <div class="rounded-[28px] border border-white/12 bg-white/10 p-5 backdrop-blur-xl">
-            <div class="text-3xl font-black tracking-tight">{{ $stats->obras ?? 50 }}k+</div>
-            <div class="mt-2 text-sm text-slate-200">Cidadãos atendidos</div>
-          </div>
-          <div class="rounded-[28px] border border-white/12 bg-white/10 p-5 backdrop-blur-xl">
-            <div class="text-3xl font-black tracking-tight">{{ $stats->anos ?? 98 }}%</div>
-            <div class="mt-2 text-sm text-slate-200">Índice de satisfação</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="relative lg:pl-6">
-        <div class="relative overflow-hidden rounded-[36px] border border-white/12 bg-white/10 p-3 shadow-[0_40px_120px_rgba(15,23,42,0.34)] backdrop-blur-xl">
-          <div class="absolute left-5 top-5 z-10 inline-flex items-center gap-2 rounded-full bg-slate-950/72 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-white backdrop-blur-xl">
-            <i class="fas fa-award"></i>
-            Destaque institucional
-          </div>
-          <div class="overflow-hidden rounded-[28px] bg-slate-200">
-            <img src="{{ $politicianPhoto }}" alt="{{ $politicianName }}" itemprop="image" loading="eager" class="h-[30rem] w-full object-cover sm:h-[38rem]">
-          </div>
-          <div class="absolute inset-x-5 bottom-5 rounded-[28px] bg-[linear-gradient(180deg,rgba(15,23,42,0.22),rgba(15,23,42,0.86))] p-5 text-white backdrop-blur-xl">
-            <div class="text-[11px] font-black uppercase tracking-[0.22em] text-slate-300">{{ $politicianRole }}</div>
-            <div class="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h2 class="premium-font-display text-2xl font-black tracking-tight">{{ $politicianName }}</h2>
-                <p class="mt-2 text-sm leading-7 text-slate-200">Presença pública, comunicação clara e posicionamento institucional forte.</p>
-              </div>
-              <span class="inline-flex items-center rounded-full border border-white/12 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-white/90">Atuação ativa</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-5 grid gap-4 sm:grid-cols-2">
-          <div class="rounded-[28px] border border-slate-200/70 bg-white/92 p-5 shadow-[0_24px_70px_rgba(15,23,42,0.12)]">
-            <div class="text-sm font-black uppercase tracking-[0.24em] text-slate-500">Agenda aberta</div>
-            <p class="mt-3 text-sm leading-7 text-slate-600">Compromissos públicos, encontros institucionais e participação social com leitura rápida.</p>
-          </div>
-          <div class="rounded-[28px] border border-slate-200/70 bg-white/92 p-5 shadow-[0_24px_70px_rgba(15,23,42,0.12)]">
-            <div class="text-sm font-black uppercase tracking-[0.24em] text-slate-500">Comunicação clara</div>
-            <p class="mt-3 text-sm leading-7 text-slate-600">Visual refinado, hierarquia forte e dados do site preservados sem trocar o conteúdo.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="relative px-4 py-16 sm:px-6 lg:px-8">
-    <div class="mx-auto max-w-7xl rounded-[36px] border border-slate-200/70 bg-white/92 p-8 shadow-[0_40px_100px_rgba(15,23,42,0.10)] backdrop-blur-xl sm:p-10 lg:p-12">
-      <div class="mx-auto max-w-3xl text-center">
-        <span class="inline-flex items-center gap-3 text-xs font-black uppercase tracking-[0.32em] text-slate-500">
-          <span class="h-px w-10 bg-slate-300"></span>
-          Diretrizes da atuação
-          <span class="h-px w-10 bg-slate-300"></span>
-        </span>
-        <h2 class="premium-font-display mt-5 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Pilares da gestão</h2>
-        <p class="mt-5 text-base leading-8 text-slate-600">Quatro compromissos que sustentam uma comunicação pública mais forte, organizada e confiável.</p>
-      </div>
-
-      <div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-        @foreach(($propostas ?? collect())->take(4) as $proposta)
-          <article class="group relative overflow-hidden rounded-[32px] border border-slate-200 bg-slate-50/70 p-6 transition duration-300 hover:-translate-y-1.5 hover:bg-white hover:shadow-[0_30px_80px_rgba(15,23,42,0.12)]">
-            <span class="absolute right-5 top-5 text-4xl font-black tracking-tight text-slate-200">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
-            <div class="relative flex h-16 w-16 items-center justify-center rounded-[22px] bg-[linear-gradient(135deg,color-mix(in_srgb,var(--premium-primary)_12%,#ffffff),color-mix(in_srgb,var(--premium-secondary)_10%,#ffffff))] text-slate-900 shadow-inner">
-              <i class="{{ $proposta->icone ?? 'fas fa-chart-line' }} text-xl"></i>
-            </div>
-            <h3 class="premium-font-display mt-6 text-2xl font-black tracking-tight text-slate-950">{{ $proposta->titulo }}</h3>
-            <p class="mt-4 text-sm leading-7 text-slate-600">{{ $proposta->resumo }}</p>
-          </article>
-        @endforeach
-      </div>
-    </div>
-  </section>
-
-  <section class="relative px-4 pb-16 sm:px-6 lg:px-8">
-    <div class="mx-auto grid max-w-7xl gap-6 xl:grid-cols-[minmax(0,1.05fr)_420px]">
-      <div class="rounded-[36px] border border-slate-200/70 bg-white/94 p-8 shadow-[0_40px_100px_rgba(15,23,42,0.10)] sm:p-10">
-        <span class="inline-flex items-center gap-3 text-xs font-black uppercase tracking-[0.32em] text-slate-500">
-          <span class="h-px w-10 bg-slate-300"></span>
-          Participação e presença
-        </span>
-        <h2 class="premium-font-display mt-5 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Próximos eventos</h2>
-        <p class="mt-5 max-w-2xl text-base leading-8 text-slate-600">Acompanhe a agenda pública, os encontros institucionais e os compromissos abertos à população.</p>
-
-        @php $firstEvent = $eventos->first(); @endphp
-        <div class="mt-8 rounded-[32px] border border-slate-200 bg-slate-50 p-5 shadow-inner sm:p-6">
-          @if($firstEvent)
-            <div class="grid gap-5 sm:grid-cols-[104px_minmax(0,1fr)] sm:items-start">
-              <div class="rounded-[28px] bg-slate-950 px-4 py-5 text-center text-white shadow-[0_24px_70px_rgba(15,23,42,0.24)]">
-                <strong class="block text-4xl font-black tracking-tight">{{ $firstEvent->data_inicio->format('d') }}</strong>
-                <span class="mt-2 block text-xs font-black uppercase tracking-[0.24em] text-slate-300">{{ strtoupper($firstEvent->data_inicio->translatedFormat('M')) }}</span>
-              </div>
-              <div class="min-w-0">
-                <h3 class="premium-font-display text-2xl font-black tracking-tight text-slate-950">{{ $firstEvent->titulo }}</h3>
-                <p class="mt-3 text-sm leading-7 text-slate-600">{{ $firstEvent->local ?: 'Evento público com participação da população.' }}</p>
-                <div class="mt-5 flex flex-wrap gap-3 text-sm font-medium text-slate-500">
-                  <span class="inline-flex items-center rounded-full bg-white px-4 py-2 shadow-sm"><i class="far fa-clock me-2"></i>{{ $firstEvent->data_inicio->format('H\hi') }}</span>
-                  @if($firstEvent->local)
-                    <span class="inline-flex items-center rounded-full bg-white px-4 py-2 shadow-sm"><i class="fas fa-location-dot me-2"></i>{{ $firstEvent->local }}</span>
-                  @endif
-                </div>
-              </div>
-            </div>
-          @else
-            <div class="rounded-[28px] bg-white p-8 text-center">
-              <h3 class="premium-font-display text-2xl font-black tracking-tight text-slate-950">Nenhum evento agendado</h3>
-              <p class="mt-3 text-sm leading-7 text-slate-600">A agenda pública será atualizada em breve.</p>
-            </div>
-          @endif
-        </div>
-      </div>
-
-      <aside class="rounded-[36px] border border-slate-200/70 bg-slate-950 p-8 text-white shadow-[0_40px_100px_rgba(15,23,42,0.24)] sm:p-10">
-        <span class="inline-flex rounded-full border border-white/12 bg-white/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-white/80">Canal direto</span>
-        <div class="mt-6 flex h-16 w-16 items-center justify-center rounded-[24px] bg-white/10 text-2xl text-white shadow-inner">
-          <i class="fas fa-envelope-open-text"></i>
-        </div>
-        <h3 class="premium-font-display mt-6 text-3xl font-black tracking-tight">Quer falar conosco?</h3>
-        <p class="mt-4 text-sm leading-8 text-slate-300">Sua opinião é fundamental para construirmos uma cidade melhor com diálogo, clareza e retorno rápido.</p>
-        <a href="{{ route('site.contato') }}" class="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-white px-6 py-4 text-sm font-black text-slate-950 shadow-[0_24px_60px_rgba(255,255,255,0.16)] transition hover:-translate-y-0.5 hover:bg-slate-100">
-          Fale com o gestor
-        </a>
-      </aside>
-    </div>
-  </section>
-
-  @if(isset($ultimasNoticias) && $ultimasNoticias->count())
-  <section class="relative px-4 pb-20 sm:px-6 lg:px-8">
-    <div class="mx-auto max-w-7xl">
-      <div class="text-center">
-        <span class="inline-flex items-center gap-3 text-xs font-black uppercase tracking-[0.32em] text-slate-500">
-          <span class="h-px w-10 bg-slate-300"></span>
-          Atualizações oficiais
-          <span class="h-px w-10 bg-slate-300"></span>
-        </span>
-        <h2 class="premium-font-display mt-5 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Últimas publicações</h2>
-      </div>
-
-      <div class="mt-10 grid gap-6 lg:grid-cols-3">
-        @foreach($ultimasNoticias->take(3) as $post)
-          <article class="overflow-hidden rounded-[32px] border border-slate-200/80 bg-white shadow-[0_32px_80px_rgba(15,23,42,0.10)] transition duration-300 hover:-translate-y-1.5">
-            <img src="{{ $post->imagem_destaque ?: asset('img/blog-placeholder.jpg') }}" alt="{{ $post->titulo }}" class="h-64 w-full object-cover" loading="lazy">
-            <div class="p-6 sm:p-7">
-              @if($post->category)
-                <span class="inline-flex rounded-full bg-slate-100 px-4 py-2 text-[11px] font-black uppercase tracking-[0.2em] text-slate-700">{{ $post->category->nome }}</span>
-              @endif
-              <h3 class="premium-font-display mt-5 text-2xl font-black tracking-tight text-slate-950">{{ $post->titulo }}</h3>
-              <p class="mt-4 text-sm leading-7 text-slate-600">{{ Str::limit($post->resumo, 110) }}</p>
-              <a href="{{ route('site.blog.show', $post->slug) }}" class="mt-6 inline-flex items-center text-sm font-black text-slate-950 transition hover:text-slate-700">
-                Ler mais <i class="fas fa-arrow-right ms-2"></i>
-              </a>
-            </div>
-          </article>
-        @endforeach
-      </div>
-    </div>
-  </section>
-  @endif
-</div>
+<div
+  data-premium-component="home"
+  data-props='@json([
+    "politicianName" => $politicianName,
+    "politicianPhoto" => $politicianPhoto,
+    "politicianRole" => $politicianRole,
+    "slogan" => $politician->slogan ?? "Com planejamento estratégico, transparência e gestão eficiente, estamos transformando nossa cidade em referência nacional.",
+    "stats" => [
+      "projetos" => ($stats->projetos ?? 15) . "+",
+      "obras" => ($stats->obras ?? 50) . "k+",
+      "anos" => ($stats->anos ?? 98) . "%",
+    ],
+    "propostas" => ($propostas ?? collect())->take(4)->map(fn ($proposta) => [
+      "id" => $proposta->id,
+      "titulo" => $proposta->titulo,
+      "resumo" => $proposta->resumo,
+      "icone" => $proposta->icone ?? "fas fa-chart-line",
+    ])->values(),
+    "noticias" => ($ultimasNoticias ?? collect())->take(3)->map(fn ($post) => [
+      "id" => $post->id,
+      "titulo" => $post->titulo,
+      "resumo" => \Illuminate\Support\Str::limit($post->resumo, 110),
+      "imagem" => $post->imagem_destaque ?: asset("img/blog-placeholder.jpg"),
+      "categoria" => $post->category?->nome,
+      "url" => route("site.blog.show", $post->slug),
+    ])->values(),
+    "firstEvent" => $eventos->first() ? [
+      "titulo" => $eventos->first()->titulo,
+      "local" => $eventos->first()->local,
+      "day" => $eventos->first()->data_inicio->format("d"),
+      "month" => strtoupper($eventos->first()->data_inicio->translatedFormat("M")),
+      "time" => $eventos->first()->data_inicio->format("H\\hi"),
+    ] : null,
+    "urls" => [
+      "propostas" => route("site.propostas"),
+      "biografia" => route("site.biografia"),
+      "contato" => route("site.contato"),
+    ],
+  ])'
+></div>
 @else
 <section class="hero-section" itemscope itemtype="https://schema.org/Person">
   <div class="container hero-content">

@@ -1,4 +1,8 @@
 {
+  "_chunk-QTnfLwEv.js": {
+    "file": "assets/chunk-QTnfLwEv.js",
+    "name": "chunk"
+  },
   "resources/css/admin/admin.css": {
     "file": "assets/admin-C27FU2Vt.css",
     "name": "admin",
@@ -27,12 +31,24 @@
     "isEntry": true
   },
   "resources/js/admin/admin.js": {
-    "file": "assets/admin-BKKYWk6R.js",
+    "file": "assets/admin-BJB-DsgB.js",
     "name": "admin",
     "src": "resources/js/admin/admin.js",
     "isEntry": true,
+    "imports": [
+      "_chunk-QTnfLwEv.js"
+    ],
     "css": [
       "assets/admin--YffHh1i.css"
+    ]
+  },
+  "resources/js/site/premium-app.jsx": {
+    "file": "assets/premium-app-Dpx0kFQy.js",
+    "name": "premium-app",
+    "src": "resources/js/site/premium-app.jsx",
+    "isEntry": true,
+    "imports": [
+      "_chunk-QTnfLwEv.js"
     ]
   },
   "resources/js/site/site.js": {

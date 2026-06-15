@@ -17,6 +17,14 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-15 - recria o tema premium em React
+
+- adicionado `react`, `react-dom` e `@vitejs/plugin-react` ao pipeline Vite do frontend
+- criado `resources/js/site/premium-app.jsx` para renderizar o tema premium a partir dos dados existentes do Laravel, sem alterar rotas nem conteúdo salvo
+- ajustado `resources/views/site/layouts/master.blade.php` para carregar `premium-app.jsx` e `premium.css` apenas quando o tema público selecionado for `premium`
+- refeito o header, a home e o footer premium para virarem mounts React alimentados por `data-props` gerados no Blade
+- recompilado o frontend com os novos assets `public/build/assets/premium-app-Dpx0kFQy.js` e `public/build/assets/premium-CB-M3KYy.css`
+
 ### 2026-06-15 - recria o tema premium com Tailwind CSS v4
 
 - adicionado `tailwindcss` v4 e `@tailwindcss/vite` no pipeline do frontend
