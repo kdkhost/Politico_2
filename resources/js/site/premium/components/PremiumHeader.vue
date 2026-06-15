@@ -21,7 +21,7 @@ function closeMenu() {
 }
 
 function handleResize() {
-    if (window.innerWidth >= 1280) {
+    if (window.innerWidth >= 1024) {
         closeMenu();
     }
 }
@@ -50,7 +50,7 @@ onBeforeUnmount(() => {
       <div class="flex items-center gap-3">
         <button
           type="button"
-          class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/12 bg-white/[0.08] text-sm text-white shadow-[0_14px_34px_rgba(15,23,42,0.28)] transition hover:bg-white/[0.12]"
+          class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/12 bg-white/[0.08] text-sm text-white shadow-[0_14px_34px_rgba(15,23,42,0.28)] transition hover:bg-white/[0.12] lg:hidden"
           :aria-label="mobileOpen ? 'Fechar menu' : 'Abrir menu'"
           :aria-expanded="mobileOpen"
           @click="mobileOpen = !mobileOpen"
@@ -65,10 +65,28 @@ onBeforeUnmount(() => {
         </a>
       </div>
 
-      <div class="hidden items-center xl:flex">
-        <span class="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-slate-200">
-          {{ siteSlogan || siteName }}
-        </span>
+      <div class="hidden items-center gap-6 lg:flex">
+        <nav aria-label="Navegacao principal">
+          <ul class="flex items-center gap-1">
+            <li v-for="item in displayNavItems" :key="`${item.label}-${item.url}`">
+              <a
+                :href="item.url"
+                :target="item.target || '_self'"
+                :class="[
+                  'inline-flex items-center px-4 py-1.5 text-sm font-semibold transition',
+                  item.active
+                    ? 'text-white'
+                    : 'text-slate-300 hover:text-white'
+                ]"
+              >
+                <span class="relative">
+                  {{ item.label }}
+                  <span v-if="item.active" class="absolute -bottom-2 left-0 h-0.5 w-full rounded-full" style="background: var(--premium-accent);"></span>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
 
       <a
