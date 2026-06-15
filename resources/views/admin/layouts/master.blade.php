@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>@yield('title', config('app.name')) - Painel Administrativo</title>
+    @php($adminSiteName = settings('site_name') ?: config('app.name'))
+    <title>@yield('title', $adminSiteName) - Painel Administrativo</title>
 
     <link rel="icon" type="image/x-icon" href="{{ settings('favicon') ?? asset('favicon.ico') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@4/dist/css/adminlte.min.css">
@@ -60,9 +61,9 @@
             <div class="sidebar-brand">
                 <a href="{{ route('admin.dashboard') }}" class="brand-link admin-brand text-decoration-none">
                     <span class="brand-image admin-brand-mark">
-                        <img src="{{ $adminLogo }}" alt="{{ config('app.name') }}">
+                        <img src="{{ $adminLogo }}" alt="{{ $adminSiteName }}">
                     </span>
-                    <span class="brand-text fw-semibold">{{ config('app.name') }}</span>
+                    <span class="brand-text fw-semibold">{{ $adminSiteName }}</span>
                 </a>
             </div>
 
