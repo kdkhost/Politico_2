@@ -29,13 +29,9 @@
 @if($siteTheme === 'premium')
 <nav class="navbar navbar-expand-lg navbar-site navbar-site-premium fixed-top" role="navigation" aria-label="Navegação principal">
   <div class="container premium-navbar-shell">
-    <a class="navbar-brand premium-brand d-flex align-items-center gap-3" href="{{ url('/') }}">
+    <a class="navbar-brand premium-brand d-flex align-items-center" href="{{ url('/') }}" aria-label="{{ $siteName }}">
       <span class="premium-brand-mark">
-        <img src="{{ $siteLogo }}" alt="{{ $siteName }}" loading="eager" width="44" height="44">
-      </span>
-      <span class="premium-brand-text">
-        <strong>{{ $siteName }}</strong>
-        <small>{{ $siteSlogan }}</small>
+        <img src="{{ $siteLogo }}" alt="{{ $siteName }}" title="{{ $siteName }}" loading="eager" width="220" height="64">
       </span>
     </a>
 
@@ -45,12 +41,8 @@
 
     <div class="collapse navbar-collapse" id="navbarMain">
       <div class="navbar-mobile-head d-lg-none">
-        <a class="navbar-mobile-brand d-flex align-items-center" href="{{ url('/') }}">
-          <img src="{{ $siteLogo }}" alt="{{ $siteName }}" loading="eager" width="52" height="52">
-          <div class="navbar-mobile-brand-text">
-            <strong>{{ $siteName }}</strong>
-            <span>{{ $siteSlogan }}</span>
-          </div>
+        <a class="navbar-mobile-brand d-flex align-items-center" href="{{ url('/') }}" aria-label="{{ $siteName }}">
+          <img src="{{ $siteLogo }}" alt="{{ $siteName }}" title="{{ $siteName }}" loading="eager" width="220" height="64">
         </a>
         <button class="navbar-mobile-close" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Fechar menu">
           <i class="fas fa-times"></i>
@@ -78,9 +70,8 @@
 @else
 <nav class="navbar navbar-expand-lg navbar-site fixed-top" role="navigation" aria-label="Navegação principal">
   <div class="container">
-    <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-      <img src="{{ $siteLogo }}" alt="{{ $siteName }}" loading="eager" width="44" height="44">
-      <span class="d-none d-md-inline ms-2">{{ $siteName }}</span>
+    <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}" aria-label="{{ $siteName }}">
+      <img src="{{ $siteLogo }}" alt="{{ $siteName }}" title="{{ $siteName }}" loading="eager" width="220" height="64">
     </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Abrir menu">
@@ -89,12 +80,8 @@
 
     <div class="collapse navbar-collapse" id="navbarMain">
       <div class="navbar-mobile-head d-lg-none">
-        <a class="navbar-mobile-brand d-flex align-items-center" href="{{ url('/') }}">
-          <img src="{{ $siteLogo }}" alt="{{ $siteName }}" loading="eager" width="52" height="52">
-          <div class="navbar-mobile-brand-text">
-            <strong>{{ $siteName }}</strong>
-            <span>Menu principal</span>
-          </div>
+        <a class="navbar-mobile-brand d-flex align-items-center" href="{{ url('/') }}" aria-label="{{ $siteName }}">
+          <img src="{{ $siteLogo }}" alt="{{ $siteName }}" title="{{ $siteName }}" loading="eager" width="220" height="64">
         </a>
         <button class="navbar-mobile-close" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Fechar menu">
           <i class="fas fa-times"></i>
