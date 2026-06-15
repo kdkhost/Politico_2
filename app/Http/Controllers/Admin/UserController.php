@@ -170,6 +170,7 @@ class UserController extends Controller
     {
         try {
             $user = User::findOrFail($id);
+            $previousAvatar = $user->avatar;
 
             $rules = [
                 'name' => 'required|string|max:255',
@@ -204,6 +205,7 @@ class UserController extends Controller
             }
 
             $user->update($validated);
+            $this->deleteReplacedAvatar($previousAvatar, $user->fresh()->avatar);
 
             return response()->json([
                 'status' => 'success',
@@ -223,6 +225,7 @@ class UserController extends Controller
             }
 
             $user = User::findOrFail($id);
+            $this->deleteUserAvatar($user->avatar);
             $user->delete();
 
             return response()->json(['status' => 'success', 'message' => 'Usuário excluído com sucesso.', 'reload' => true]);
@@ -347,9 +350,11 @@ class UserController extends Controller
                 return response()->json(['status' => 'error', 'message' => 'Usuario nao autenticado.'], 401);
             }
 
+            $previousAvatar = $user->avatar;
             $user->update([
                 'avatar' => $this->storeAvatar($request->file('avatar')),
             ]);
+            $this->deleteReplacedAvatar($previousAvatar, $user->fresh()->avatar);
 
             return response()->json([
                 'status' => 'success',
@@ -412,5 +417,19 @@ class UserController extends Controller
         ]);
 
         return $media->url ?: ('storage/' . ltrim((string) $media->caminho, '/'));
+    }
+
+    private function deleteReplacedAvatar(?string $oldReference, ?string $newReference): void
+    {
+        if (!$oldReference || $oldReference === $newReference) {
+            return;
+        }
+
+        $this->deleteUserAvatar($oldReference);
+    }
+
+    private function deleteUserAvatar(?string $reference): void
+    {
+        app(UploadService::class)->deleteReference($reference);
     }
 }

@@ -129,6 +129,7 @@ class TransparenciaController extends Controller
     public function update(Request $request, int $id)
     {
         try {
+            $currentItem = $this->transparenciaService->getItemDetails($id);
             $this->normalizePayload($request);
 
             $validated = $request->validate([
@@ -149,6 +150,7 @@ class TransparenciaController extends Controller
             $this->storeAttachmentIfPresent($request, $validated);
 
             $item = $this->transparenciaService->updateItem($id, $validated);
+            $this->deleteReplacedAttachments($currentItem->arquivos, $item->arquivos);
 
             return response()->json([
                 'status' => 'success',
@@ -163,6 +165,8 @@ class TransparenciaController extends Controller
     public function destroy(int $id)
     {
         try {
+            $item = $this->transparenciaService->getItemDetails($id);
+            $this->deleteAttachmentList($item->arquivos);
             $this->transparenciaService->deleteItem($id);
 
             return response()->json(['status' => 'success', 'message' => 'Item excluído com sucesso.', 'reload' => true]);
@@ -280,5 +284,32 @@ class TransparenciaController extends Controller
                 . '<button type="button" class="btn btn-danger btn-delete-transparencia" data-id="' . $item->id . '" title="Excluir"><i class="fas fa-trash"></i></button>'
                 . '</div>',
         ];
+    }
+
+    private function deleteReplacedAttachments(mixed $oldFiles, mixed $newFiles): void
+    {
+        $oldNormalized = $this->normalizeAttachments($oldFiles);
+        $newNormalized = $this->normalizeAttachments($newFiles);
+
+        if ($oldNormalized === $newNormalized) {
+            return;
+        }
+
+        $this->deleteAttachmentList($oldNormalized);
+    }
+
+    private function deleteAttachmentList(mixed $files): void
+    {
+        foreach ($this->normalizeAttachments($files) as $file) {
+            app(UploadService::class)->deleteReference(
+                $file['url'] ?? $file['caminho'] ?? null,
+                isset($file['media_id']) ? (int) $file['media_id'] : null,
+            );
+        }
+    }
+
+    private function normalizeAttachments(mixed $files): array
+    {
+        return is_array($files) ? array_values($files) : [];
     }
 }

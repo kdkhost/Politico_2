@@ -171,6 +171,7 @@ class PageController extends Controller
     {
         try {
             $page = Page::findOrFail($id);
+            $previousSeoOgImage = $page->seo_og_image;
             $this->normalizePagePayload($request);
 
             $validated = $request->validate([
@@ -202,6 +203,7 @@ class PageController extends Controller
             }
 
             $page->update($validated);
+            $this->deleteReplacedFile($previousSeoOgImage, $page->fresh()->seo_og_image);
 
             return response()->json([
                 'status' => 'success',
@@ -217,6 +219,7 @@ class PageController extends Controller
     {
         try {
             $page = Page::findOrFail($id);
+            $this->deletePageAsset($page->seo_og_image);
             $page->delete();
 
             return response()->json(['status' => 'success', 'message' => 'Página excluída com sucesso.', 'reload' => true]);
@@ -260,5 +263,19 @@ class PageController extends Controller
         ]);
 
         return $media->url ?: ('storage/' . ltrim((string) $media->caminho, '/'));
+    }
+
+    private function deleteReplacedFile(?string $oldReference, ?string $newReference): void
+    {
+        if (!$oldReference || $oldReference === $newReference) {
+            return;
+        }
+
+        $this->deletePageAsset($oldReference);
+    }
+
+    private function deletePageAsset(?string $reference): void
+    {
+        app(UploadService::class)->deleteReference($reference);
     }
 }

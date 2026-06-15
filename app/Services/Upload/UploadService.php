@@ -35,13 +35,7 @@ class UploadService
         $extensao = $file->getClientOriginalExtension();
         $mimeType = $file->getMimeType();
         $tamanho = $file->getSize();
-        $hash = md5_file($file->getRealPath());
-
-        $existingMedia = Media::where('hash_arquivo', $hash)->first();
-
-        if ($existingMedia) {
-            return $existingMedia;
-        }
+        $hash = $this->generateUniqueMediaHash(md5_file($file->getRealPath()) ?: Str::random(32));
 
         $pasta = $this->organizeByDate($pasta);
         $nomeSanitizado = $this->sanitizeFilename(pathinfo($nomeOriginal, PATHINFO_FILENAME));
@@ -110,13 +104,9 @@ class UploadService
     public function delete(int $mediaId): bool
     {
         $media = Media::findOrFail($mediaId);
+        $this->deleteMediaRecord($media);
 
-        $this->deletePublicFile($media->caminho);
-
-        $thumbnailPath = 'thumbnails/' . $media->caminho;
-        $this->deletePublicFile($thumbnailPath);
-
-        return (bool) $media->delete();
+        return true;
     }
 
     public function replace(int $mediaId, UploadedFile $file): Media
@@ -124,14 +114,9 @@ class UploadService
         $this->validateFile($file);
 
         $media = Media::findOrFail($mediaId);
-        $hash = md5_file($file->getRealPath());
-        $existingMedia = Media::where('hash_arquivo', $hash)->where('id', '!=', $mediaId)->first();
-
-        if ($existingMedia) {
-            return $existingMedia;
-        }
-
+        $hash = $this->generateUniqueMediaHash(md5_file($file->getRealPath()) ?: Str::random(32), $mediaId);
         $this->deletePublicFile($media->caminho);
+        $this->deletePublicFile('thumbnails/' . $media->caminho);
 
         $extensao = $file->getClientOriginalExtension();
         $mimeType = $file->getMimeType();
@@ -199,6 +184,39 @@ class UploadService
         }
 
         return true;
+    }
+
+    public function deleteReference(?string $reference, ?int $mediaId = null): void
+    {
+        if ($mediaId !== null) {
+            $media = Media::find($mediaId);
+
+            if ($media) {
+                $this->deleteMediaRecord($media);
+
+                return;
+            }
+        }
+
+        $relativePath = $this->resolvePublicRelativePath($reference);
+
+        if ($relativePath === null) {
+            return;
+        }
+
+        $media = Media::query()
+            ->where('caminho', $relativePath)
+            ->orWhere('url', $this->publicUrl($relativePath))
+            ->first();
+
+        if ($media) {
+            $this->deleteMediaRecord($media);
+
+            return;
+        }
+
+        $this->deletePublicFile($relativePath);
+        $this->deletePublicFile('thumbnails/' . $relativePath);
     }
 
     public function generateThumbnail(Media $media): ?string
@@ -332,6 +350,66 @@ class UploadService
         if (is_file($absolutePath)) {
             @unlink($absolutePath);
         }
+    }
+
+    protected function deleteMediaRecord(Media $media): void
+    {
+        $this->deletePublicFile($media->caminho);
+        $this->deletePublicFile('thumbnails/' . $media->caminho);
+        $media->forceDelete();
+    }
+
+    protected function resolvePublicRelativePath(?string $reference): ?string
+    {
+        $reference = trim((string) $reference);
+
+        if ($reference === '') {
+            return null;
+        }
+
+        if (str_starts_with($reference, 'http://') || str_starts_with($reference, 'https://') || str_starts_with($reference, '//')) {
+            $referencePath = parse_url($reference, PHP_URL_PATH);
+            $reference = is_string($referencePath) ? $referencePath : '';
+        }
+
+        $reference = str_replace('\\', '/', $reference);
+
+        if (str_starts_with($reference, '/storage/')) {
+            return ltrim(substr($reference, strlen('/storage/')), '/');
+        }
+
+        if (str_starts_with($reference, 'storage/')) {
+            return ltrim(substr($reference, strlen('storage/')), '/');
+        }
+
+        if (str_starts_with($reference, '/img/') || str_starts_with($reference, 'img/')) {
+            return null;
+        }
+
+        if (str_contains($reference, '://') || str_starts_with($reference, '//')) {
+            return null;
+        }
+
+        return ltrim($reference, '/');
+    }
+
+    protected function generateUniqueMediaHash(string $baseHash, ?int $ignoreId = null): string
+    {
+        $candidate = $baseHash;
+
+        while ($this->mediaHashExists($candidate, $ignoreId)) {
+            $candidate = $baseHash . '-' . Str::lower(Str::random(6));
+        }
+
+        return $candidate;
+    }
+
+    protected function mediaHashExists(string $hash, ?int $ignoreId = null): bool
+    {
+        return Media::withTrashed()
+            ->when($ignoreId !== null, fn ($query) => $query->where('id', '!=', $ignoreId))
+            ->where('hash_arquivo', $hash)
+            ->exists();
     }
 
     protected function publicStoragePath(string $relativePath): string

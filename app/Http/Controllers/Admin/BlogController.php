@@ -160,6 +160,7 @@ class BlogController extends Controller
     public function update(Request $request, int $id)
     {
         try {
+            $currentPost = Post::findOrFail($id);
             $validated = $request->validate([
                 'titulo' => 'required|string|max:255',
                 'slug' => 'nullable|string|max:255|unique:posts,slug,' . $id,
@@ -183,6 +184,10 @@ class BlogController extends Controller
             $this->storeFeaturedImageIfPresent($request, $validated);
 
             $post = $this->blogService->updatePost($id, $validated);
+            $this->deleteReplacedReferences([
+                [$currentPost->imagem_destaque, $post->imagem_destaque],
+                [$currentPost->seo_og_image, $post->seo_og_image],
+            ]);
 
             return response()->json([
                 'status' => 'success',
@@ -259,6 +264,8 @@ class BlogController extends Controller
     public function destroy(int $id)
     {
         try {
+            $post = Post::findOrFail($id);
+            $this->deletePostAssets($post);
             $this->blogService->deletePost($id);
 
             return response()->json(['status' => 'success', 'success' => true, 'message' => 'Post excluído com sucesso.', 'reload' => true]);
@@ -283,6 +290,29 @@ class BlogController extends Controller
         $validated['imagem_destaque'] = $url;
         if (empty($validated['seo_og_image'])) {
             $validated['seo_og_image'] = $url;
+        }
+    }
+
+    private function deleteReplacedReferences(array $references): void
+    {
+        foreach ($references as [$oldReference, $newReference]) {
+            if (!$oldReference || $oldReference === $newReference) {
+                continue;
+            }
+
+            app(UploadService::class)->deleteReference($oldReference);
+        }
+    }
+
+    private function deletePostAssets(Post $post): void
+    {
+        $references = array_unique(array_filter([
+            $post->imagem_destaque,
+            $post->seo_og_image,
+        ]));
+
+        foreach ($references as $reference) {
+            app(UploadService::class)->deleteReference((string) $reference);
         }
     }
 }
