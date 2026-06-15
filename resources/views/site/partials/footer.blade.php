@@ -7,6 +7,15 @@
   $contactPhone = settings('contact_phone') ?: config('services.phone');
   $contactAddress = settings('contact_address') ?: config('services.address');
   $contactWhatsapp = settings('contact_whatsapp') ?: config('services.whatsapp');
+  $navItems = [
+      ['label' => 'Início', 'url' => url('/'), 'active' => request()->routeIs('site.home')],
+      ['label' => 'Biografia', 'url' => route('site.biografia'), 'active' => request()->routeIs('site.biografia')],
+      ['label' => 'Agenda', 'url' => route('site.agenda'), 'active' => request()->routeIs('site.agenda*')],
+      ['label' => 'Blog', 'url' => route('site.blog'), 'active' => request()->routeIs('site.blog*')],
+      ['label' => 'Propostas', 'url' => route('site.propostas'), 'active' => request()->routeIs('site.propostas')],
+      ['label' => 'Transparência', 'url' => route('site.transparencia'), 'active' => request()->routeIs('site.transparencia*')],
+      ['label' => 'Contato', 'url' => route('site.contato'), 'active' => request()->routeIs('site.contato')],
+  ];
 
   $premiumFooterProps = [
       'siteName' => $siteName,
@@ -16,6 +25,7 @@
       'contactPhone' => $contactPhone ? formatarTelefone($contactPhone) : null,
       'contactAddress' => $contactAddress,
       'contactWhatsapp' => $contactWhatsapp ? limparMascara($contactWhatsapp) : null,
+      'navItems' => $navItems,
       'urls' => [
           'home' => url('/'),
           'biografia' => route('site.biografia'),

@@ -9,6 +9,7 @@ defineProps({
     contactPhone: { type: String, default: '' },
     contactAddress: { type: String, default: '' },
     contactWhatsapp: { type: String, default: '' },
+    navItems: { type: Array, default: () => [] },
     urls: { type: Object, default: () => ({}) },
     social: { type: Object, default: () => ({}) },
 });
@@ -32,13 +33,20 @@ defineProps({
         <div>
           <h4 class="text-sm font-black uppercase tracking-[0.24em]" :style="{ color: 'var(--premium-accent)' }">Institucional</h4>
           <ul class="mt-5 space-y-3 text-sm font-medium">
-            <li><a class="premium-footer-link transition" :href="urls.home">Inicio</a></li>
-            <li><a class="premium-footer-link transition" :href="urls.biografia">Biografia</a></li>
-            <li><a class="premium-footer-link transition" :href="urls.agenda">Agenda</a></li>
-            <li><a class="premium-footer-link transition" :href="urls.blog">Blog</a></li>
-            <li><a class="premium-footer-link transition" :href="urls.propostas">Propostas</a></li>
-            <li><a class="premium-footer-link transition" :href="urls.transparencia">Transparencia</a></li>
-            <li><a class="premium-footer-link transition" :href="urls.contato">Contato</a></li>
+            <li v-for="item in navItems" :key="`footer-${item.label}-${item.url}`">
+              <a
+                :href="item.url"
+                :class="[
+                  'premium-footer-link transition',
+                  item.active ? 'premium-footer-link-active' : ''
+                ]"
+              >
+                <span class="relative inline-flex">
+                  {{ item.label }}
+                  <span v-if="item.active" class="absolute -bottom-1 left-0 h-0.5 w-full rounded-full" style="background: var(--premium-accent);"></span>
+                </span>
+              </a>
+            </li>
           </ul>
         </div>
 
