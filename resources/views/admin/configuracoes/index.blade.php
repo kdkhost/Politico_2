@@ -1,10 +1,10 @@
 @extends('admin.layouts.master')
 
-@section('title', 'Configuracoes - ' . config('app.name'))
-@section('page_title', 'Configuracoes do Sistema')
+@section('title', 'Configurações - ' . config('app.name'))
+@section('page_title', 'Configurações do Sistema')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item active">Configuracoes</li>
+    <li class="breadcrumb-item active">Configurações</li>
 @endsection
 
 @section('content')
@@ -97,10 +97,10 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="admin_logo_compact" class="form-label">Icone Compacto do Painel</label>
+                                        <label for="admin_logo_compact" class="form-label">Ícone Compacto do Painel</label>
                                         <input type="file" id="admin_logo_compact" name="admin_logo_compact" class="form-control" accept="image/*" data-image-size="512x512" data-upload-label="Icone compacto do painel" data-existing-url="{{ settings('admin_logo_compact') }}">
                                         @if(settings('admin_logo_compact'))
-                                            <div class="mt-2"><img src="{{ settings('admin_logo_compact') }}" alt="Icone do painel" style="max-height: 60px;"></div>
+                                            <div class="mt-2"><img src="{{ settings('admin_logo_compact') }}" alt="Ícone do painel" style="max-height: 60px;"></div>
                                         @endif
                                     </div>
                                 </div>
@@ -134,7 +134,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="contact_address" class="form-label">Endereco</label>
+                                        <label for="contact_address" class="form-label">Endereço</label>
                                         <input type="text" id="contact_address" name="contact_address" class="form-control" value="{{ settings('contact_address') }}">
                                     </div>
                                 </div>
@@ -191,18 +191,18 @@
 
                         <div class="tab-pane fade" id="seo" role="tabpanel">
                             <div class="mb-3">
-                                <label for="seo_title" class="form-label">Titulo Global (SEO)</label>
-                                <input type="text" id="seo_title" name="seo_title" class="form-control" value="{{ settings('seo_title') }}" placeholder="Titulo padrao para paginas">
+                                <label for="seo_title" class="form-label">Título Global (SEO)</label>
+                                <input type="text" id="seo_title" name="seo_title" class="form-control" value="{{ settings('seo_title') }}" placeholder="Título padrão para páginas">
                             </div>
                             <div class="mb-3">
-                                <label for="seo_description" class="form-label">Meta Descricao Global</label>
-                                <textarea id="seo_description" name="seo_description" class="form-control" rows="3" maxlength="160" placeholder="Descricao padrao para mecanismos de busca">{{ settings('seo_description') }}</textarea>
-                                <div class="form-text">Maximo de 160 caracteres. Atual: <span id="seoDescCount">{{ strlen(settings('seo_description') ?? '') }}</span></div>
+                                <label for="seo_description" class="form-label">Meta Descrição Global</label>
+                                <textarea id="seo_description" name="seo_description" class="form-control" rows="3" maxlength="160" placeholder="Descrição padrão para mecanismos de busca">{{ settings('seo_description') }}</textarea>
+                                <div class="form-text">Máximo de 160 caracteres. Atual: <span id="seoDescCount">{{ strlen(settings('seo_description') ?? '') }}</span></div>
                             </div>
                             <div class="mb-3">
                                 <label for="seo_keywords" class="form-label">Palavras-chave Globais</label>
                                 <input type="text" id="seo_keywords" name="seo_keywords" class="form-control" value="{{ settings('seo_keywords') }}" placeholder="palavra1, palavra2, palavra3">
-                                <div class="form-text">Separadas por virgula.</div>
+                                <div class="form-text">Separadas por vírgula.</div>
                             </div>
                         </div>
 
@@ -212,17 +212,17 @@
                                     <div class="mb-3">
                                         <label for="default_theme" class="form-label">Tema do Frontend</label>
                                         <select id="default_theme" name="default_theme" class="form-select">
-                                            <option value="default" @selected(settings('default_theme', 'default') === 'default')>Padrao do sistema</option>
+                                            <option value="default" @selected(settings('default_theme', 'default') === 'default')>Padrão do sistema</option>
                                             <option value="premium" @selected(settings('default_theme') === 'premium')>Premium institucional</option>
                                         </select>
-                                        <div class="form-text">As cores deste tema seguem a paleta primaria e secundaria definida abaixo.</div>
+                                        <div class="form-text">As cores deste tema seguem a paleta primária e secundária definida abaixo.</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="primary_color" class="form-label">Cor Primaria</label>
+                                        <label for="primary_color" class="form-label">Cor Primária</label>
                                         <div class="input-group">
                                             <input type="color" id="primary_color" name="primary_color" class="form-control form-control-color" value="{{ settings('primary_color') ?? '#0d6efd' }}">
                                             <input type="text" class="form-control" id="primary_color_hex" value="{{ settings('primary_color') ?? '#0d6efd' }}" style="max-width: 100px;">
@@ -231,7 +231,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="secondary_color" class="form-label">Cor Secundaria</label>
+                                        <label for="secondary_color" class="form-label">Cor Secundária</label>
                                         <div class="input-group">
                                             <input type="color" id="secondary_color" name="secondary_color" class="form-control form-control-color" value="{{ settings('secondary_color') ?? '#6c757d' }}">
                                             <input type="text" class="form-control" id="secondary_color_hex" value="{{ settings('secondary_color') ?? '#6c757d' }}" style="max-width: 100px;">
@@ -242,7 +242,7 @@
                             <div class="mb-3">
                                 <div class="form-check form-switch">
                                     <input type="checkbox" id="dark_mode_default" name="dark_mode_default" class="form-check-input" value="1" {{ settings('dark_mode_default') ? 'checked' : '' }}>
-                                    <label for="dark_mode_default" class="form-check-label">Modo escuro como padrao</label>
+                                    <label for="dark_mode_default" class="form-check-label">Modo escuro como padrão</label>
                                 </div>
                             </div>
                         </div>
@@ -255,7 +255,7 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="lgpd_privacy_page" class="form-label">URL da Pagina de Privacidade</label>
+                                <label for="lgpd_privacy_page" class="form-label">URL da Página de Privacidade</label>
                                 <input type="url" id="lgpd_privacy_page" name="lgpd_privacy_page" class="form-control" value="{{ settings('lgpd_privacy_page') }}" placeholder="https://...">
                             </div>
                         </div>
@@ -267,7 +267,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="mb-3">
-                                        <label for="recaptcha_version" class="form-label">Versao</label>
+                                        <label for="recaptcha_version" class="form-label">Versão</label>
                                         <select id="recaptcha_version" name="recaptcha_version" class="form-select">
                                             <option value="v2" @selected(settings('recaptcha_version', 'v2') === 'v2')>reCAPTCHA v2</option>
                                             <option value="v3" @selected(settings('recaptcha_version', 'v2') === 'v3')>reCAPTCHA v3</option>
@@ -276,7 +276,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="mb-3">
-                                        <label for="recaptcha_min_score" class="form-label">Score minimo v3</label>
+                                        <label for="recaptcha_min_score" class="form-label">Score mínimo v3</label>
                                         <input type="number" id="recaptcha_min_score" name="recaptcha_min_score" class="form-control" min="0.1" max="1" step="0.1" value="{{ settings('recaptcha_min_score', '0.5') }}">
                                     </div>
                                 </div>
@@ -300,7 +300,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="recaptcha_secret_key" class="form-label">Secret key</label>
-                                        <input type="password" id="recaptcha_secret_key" name="recaptcha_secret_key" class="form-control" value="" placeholder="{{ settings('recaptcha_secret_key') ? 'Chave ja configurada' : '' }}" autocomplete="new-password">
+                                        <input type="password" id="recaptcha_secret_key" name="recaptcha_secret_key" class="form-control" value="" placeholder="{{ settings('recaptcha_secret_key') ? 'Chave já configurada' : '' }}" autocomplete="new-password">
                                     </div>
                                 </div>
                             </div>
@@ -314,7 +314,7 @@
                                 <div class="col-md-6">
                                     <div class="form-check form-switch mb-3">
                                         <input type="checkbox" id="recaptcha_contact" name="recaptcha_contact" class="form-check-input" value="1" {{ settings('recaptcha_contact', true) ? 'checked' : '' }}>
-                                        <label for="recaptcha_contact" class="form-check-label">Proteger formulario de contato</label>
+                                        <label for="recaptcha_contact" class="form-check-label">Proteger formulário de contato</label>
                                     </div>
                                 </div>
                             </div>
@@ -322,22 +322,22 @@
 
                         <div class="tab-pane fade" id="scripts" role="tabpanel">
                             <div class="mb-3">
-                                <label for="header_scripts" class="form-label">Scripts do Cabecalho (&lt;/head&gt;)</label>
+                                <label for="header_scripts" class="form-label">Scripts do Cabeçalho (&lt;/head&gt;)</label>
                                 <textarea id="header_scripts" name="header_scripts" class="form-control font-monospace" rows="5" placeholder="Google Analytics, Facebook Pixel, etc.">{{ settings('header_scripts') }}</textarea>
                             </div>
                             <div class="mb-3">
-                                <label for="footer_scripts" class="form-label">Scripts do Rodape (&lt;/body&gt;)</label>
+                                <label for="footer_scripts" class="form-label">Scripts do Rodapé (&lt;/body&gt;)</label>
                                 <textarea id="footer_scripts" name="footer_scripts" class="form-control font-monospace" rows="5" placeholder="Chat widgets, tracking, etc.">{{ settings('footer_scripts') }}</textarea>
                             </div>
                             <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-1"></i>Estes scripts serao injetados em todas as paginas do site.
+                                <i class="fas fa-info-circle me-1"></i>Estes scripts serão injetados em todas as páginas do site.
                             </div>
                         </div>
                     </div>
 
                     <div class="text-end mt-3 border-top pt-3">
                         <button type="submit" class="btn btn-primary" id="btnSaveSettings">
-                            <i class="fas fa-save me-1"></i>Salvar Configuracoes
+                            <i class="fas fa-save me-1"></i>Salvar Configurações
                         </button>
                     </div>
                 </form>
@@ -405,9 +405,9 @@
                             window.applyInstantAdminBranding(savedSettings);
                         }
 
-                        toastr.success(res.message || 'Configuracoes salvas com sucesso!');
+                        toastr.success(res.message || 'Configurações salvas com sucesso!');
                     } else {
-                        toastr.error(res.message || 'Erro ao salvar configuracoes.');
+                        toastr.error(res.message || 'Erro ao salvar configurações.');
                     }
                 },
                 error: function(xhr) {
@@ -419,11 +419,11 @@
                             });
                         });
                     } else {
-                        toastr.error(xhr.responseJSON?.message || 'Erro ao salvar configuracoes.');
+                        toastr.error(xhr.responseJSON?.message || 'Erro ao salvar configurações.');
                     }
                 },
                 complete: function() {
-                    btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i>Salvar Configuracoes');
+                    btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i>Salvar Configurações');
                 }
             });
         });

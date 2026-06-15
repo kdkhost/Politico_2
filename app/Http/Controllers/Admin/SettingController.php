@@ -144,13 +144,13 @@ class SettingController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Configuracoes salvas com sucesso.',
+                'message' => 'Configurações salvas com sucesso.',
                 'data' => [
                     'settings' => $resolvedSettings,
                 ],
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao salvar configuracoes: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'message' => 'Erro ao salvar configurações: ' . $e->getMessage()], 500);
         }
     }
 
@@ -161,7 +161,7 @@ class SettingController extends Controller
 
             return response()->json(['status' => 'success', 'data' => $settings]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao buscar configuracoes por grupo.'], 500);
+            return response()->json(['status' => 'error', 'message' => 'Erro ao buscar configurações por grupo.'], 500);
         }
     }
 
@@ -209,7 +209,7 @@ class SettingController extends Controller
         $targetDirectory = storage_path('app/public/' . $relativeDirectory);
 
         if (!is_dir($targetDirectory) && !mkdir($targetDirectory, 0755, true) && !is_dir($targetDirectory)) {
-            throw new \RuntimeException('Nao foi possivel criar o diretorio de uploads das configuracoes.');
+            throw new \RuntimeException('Não foi possível criar o diretório de uploads das configurações.');
         }
 
         $this->deleteExistingSettingFile($key);
@@ -218,11 +218,11 @@ class SettingController extends Controller
         $sourcePath = $file->getRealPath();
 
         if (!$sourcePath || !is_file($sourcePath)) {
-            throw new \RuntimeException('Arquivo temporario de upload nao encontrado.');
+            throw new \RuntimeException('Arquivo temporário de upload não encontrado.');
         }
 
         if (!@copy($sourcePath, $targetPath)) {
-            throw new \RuntimeException('Nao foi possivel salvar o arquivo enviado.');
+            throw new \RuntimeException('Não foi possível salvar o arquivo enviado.');
         }
 
         @chmod($targetPath, 0644);
