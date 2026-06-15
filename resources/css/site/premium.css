@@ -10,11 +10,13 @@
 @layer base {
   body[data-site-theme="premium"] {
     font-family: var(--font-sans);
+    --premium-accent: color-mix(in srgb, var(--premium-secondary) 28%, #ef4444);
     background:
       radial-gradient(circle at top right, color-mix(in srgb, var(--premium-primary) 16%, transparent) 0%, transparent 28%),
       radial-gradient(circle at bottom left, color-mix(in srgb, var(--premium-secondary) 14%, transparent) 0%, transparent 24%),
       linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
     color: #0f172a;
+    text-rendering: optimizeLegibility;
   }
 
   body[data-site-theme="premium"] main {
@@ -22,10 +24,23 @@
     z-index: 1;
   }
 
+  body[data-site-theme="premium"]::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: linear-gradient(180deg, rgba(0,0,0,0.28), transparent 72%);
+    z-index: 0;
+  }
+
   body[data-site-theme="premium"] .page-header {
     position: relative;
     overflow: hidden;
-    padding-top: 10rem;
+    padding-top: 10.5rem;
     padding-bottom: 4rem;
     background:
       linear-gradient(135deg, color-mix(in srgb, var(--premium-primary) 90%, #020617) 0%, #0f172a 46%, color-mix(in srgb, var(--premium-secondary) 54%, #020617) 100%);
@@ -58,6 +73,14 @@
   body[data-site-theme="premium"] .section-title,
   body[data-site-theme="premium"] .premium-font-display {
     letter-spacing: -0.04em;
+  }
+
+  body[data-site-theme="premium"] a {
+    text-decoration: none;
+  }
+
+  body[data-site-theme="premium"] img {
+    image-rendering: auto;
   }
 
   body[data-site-theme="premium"] .blog-content,
