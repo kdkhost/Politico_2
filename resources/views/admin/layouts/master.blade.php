@@ -59,11 +59,10 @@
 
         <aside class="app-sidebar admin-sidebar shadow" data-bs-theme="dark">
             <div class="sidebar-brand">
-                <a href="{{ route('admin.dashboard') }}" class="brand-link admin-brand text-decoration-none">
+                <a href="{{ route('admin.dashboard') }}" class="brand-link admin-brand text-decoration-none" aria-label="{{ $adminSiteName }}">
                     <span class="brand-image admin-brand-mark">
-                        <img src="{{ $adminLogo }}" alt="{{ $adminSiteName }}">
+                        <img src="{{ $adminLogo }}" alt="{{ $adminSiteName }}" title="{{ $adminSiteName }}">
                     </span>
-                    <span class="brand-text fw-semibold">{{ $adminSiteName }}</span>
                 </a>
             </div>
 

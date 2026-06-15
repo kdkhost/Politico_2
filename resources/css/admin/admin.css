@@ -1695,12 +1695,13 @@ body.admin-premium .dropdown-menu::-webkit-scrollbar-thumb:hover {
 }
 
 .admin-sidebar .sidebar-brand {
-    min-height: 92px;
+    min-height: 108px;
     height: auto;
-    padding: 18px;
+    padding: 18px 22px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .admin-brand {
@@ -1708,15 +1709,17 @@ body.admin-premium .dropdown-menu::-webkit-scrollbar-thumb:hover {
     min-width: 0;
     display: flex !important;
     align-items: center;
-    gap: 12px;
+    justify-content: center;
+    gap: 0;
     color: #ffffff !important;
 }
 
 .admin-brand-mark {
-    width: 46px;
-    height: 46px;
-    min-width: 46px;
-    border-radius: 8px;
+    width: min(100%, 216px);
+    height: 64px;
+    min-width: 0;
+    padding: 8px 12px;
+    border-radius: 10px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1733,17 +1736,11 @@ body.admin-premium .dropdown-menu::-webkit-scrollbar-thumb:hover {
 }
 
 .admin-brand .brand-text {
-    color: #ffffff;
-    font-size: 1.02rem;
-    line-height: 1.2;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-transform: none;
+    display: none !important;
 }
 
 .admin-sidebar .sidebar-wrapper {
-    height: calc(100vh - 92px);
+    height: calc(100vh - 108px);
     padding: 14px 0 22px;
     overflow-x: hidden;
     overflow-y: auto;
@@ -2494,6 +2491,17 @@ body.admin-premium.admin-sidebar-collapsed .admin-sidebar .nav-treeview {
 body.admin-premium.admin-sidebar-collapsed .admin-sidebar .sidebar-brand {
     justify-content: center;
     padding-inline: 12px;
+}
+
+body.admin-premium.admin-sidebar-collapsed .admin-sidebar .sidebar-wrapper {
+    height: calc(100vh - 92px);
+}
+
+body.admin-premium.admin-sidebar-collapsed .admin-brand-mark {
+    width: 56px;
+    height: 56px;
+    padding: 6px;
+    border-radius: 12px;
 }
 
 body.admin-premium.admin-sidebar-collapsed .admin-sidebar .sidebar-menu .nav-link {
