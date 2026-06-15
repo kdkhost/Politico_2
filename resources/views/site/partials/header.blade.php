@@ -92,19 +92,19 @@
         @if(isset($menuItems) && $menuItems->count())
           @foreach($menuItems as $item)
             <li class="nav-item">
-              <a class="nav-link" href="{{ $item->url }}" target="{{ $item->target ?? '_self' }}">
+              <a class="nav-link {{ request()->fullUrlIs($item->url) ? 'active' : '' }}" href="{{ $item->url }}" target="{{ $item->target ?? '_self' }}">
                 @if($item->icone)<i class="{{ $item->icone }} me-1"></i>@endif
                 {{ $item->titulo }}
               </a>
             </li>
           @endforeach
         @else
-          <li class="nav-item"><a class="nav-link" href="{{ url('/') }}">Início</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('site.biografia') }}">Biografia</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('site.blog') }}">Blog</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('site.propostas') }}">Propostas</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('site.transparencia') }}">Transparência</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('site.contato') }}">Contato</a></li>
+          <li class="nav-item"><a class="nav-link {{ request()->routeIs('site.home') ? 'active' : '' }}" href="{{ url('/') }}">Início</a></li>
+          <li class="nav-item"><a class="nav-link {{ request()->routeIs('site.biografia') ? 'active' : '' }}" href="{{ route('site.biografia') }}">Biografia</a></li>
+          <li class="nav-item"><a class="nav-link {{ request()->routeIs('site.blog*') ? 'active' : '' }}" href="{{ route('site.blog') }}">Blog</a></li>
+          <li class="nav-item"><a class="nav-link {{ request()->routeIs('site.propostas') ? 'active' : '' }}" href="{{ route('site.propostas') }}">Propostas</a></li>
+          <li class="nav-item"><a class="nav-link {{ request()->routeIs('site.transparencia') ? 'active' : '' }}" href="{{ route('site.transparencia') }}">Transparência</a></li>
+          <li class="nav-item"><a class="nav-link {{ request()->routeIs('site.contato') ? 'active' : '' }}" href="{{ route('site.contato') }}">Contato</a></li>
         @endif
       </ul>
 

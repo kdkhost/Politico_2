@@ -17,6 +17,14 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-15 - corrige carregamento do tema premium no frontend
+
+- corrigido `resources/views/site/layouts/master.blade.php` para o frontend público usar `@vite` com os assets reais compilados do tema, removendo a dependência do CSS e JS legados em `public/css/site/site.css` e `public/js/site/site.js`
+- refeito `resources/views/site/partials/header.blade.php` para preservar a logo pública no tema premium, manter o menu ativo por rota e restaurar os textos públicos com acentuação correta
+- refeito `resources/views/site/partials/footer.blade.php` para restaurar textos públicos, links e contatos com saída limpa, sem BOM e sem caracteres corrompidos
+- refeito `resources/views/site/home/index.blade.php` para manter os dados originais da home pública, aplicar corretamente o layout premium e remover o texto corrompido das seções do frontend
+- validado o frontend ajustado com `php artisan view:clear` e `php artisan view:cache`
+
 ### 2026-06-15 - corrige codificação e remove mojibake dos arquivos recentes
 
 - regravado `resources/views/admin/configuracoes/index.blade.php` em texto limpo, sem BOM e sem caracteres corrompidos

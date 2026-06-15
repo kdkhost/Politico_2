@@ -375,7 +375,7 @@ Início
     <div class="d-flex justify-content-center gap-3 flex-wrap">
       <a href="{{ route('site.contato') }}" class="btn btn-green btn-lg rounded-pill px-5"><i class="fas fa-envelope me-2"></i>Enviar mensagem</a>
       @if(config('services.whatsapp'))
-        <a href="https://wa.me/{{ config('services.whatsapp') }}" target="_blank" class="btn btn-success btn-lg rounded-pill px-5"><i class="fab fa-whatsapp me-2"></i>Fale pelo WhatsApp</a>
+        <a href="https://wa.me/{{ limparMascara(config('services.whatsapp')) }}" target="_blank" rel="noopener" class="btn btn-success btn-lg rounded-pill px-5"><i class="fab fa-whatsapp me-2"></i>Fale pelo WhatsApp</a>
       @endif
     </div>
   </div>
@@ -393,9 +393,9 @@ Início
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function(){
-  document.querySelectorAll('.gallery-item[data-bs-toggle="modal"]').forEach(function(el){
-    el.addEventListener('click', function(){
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.gallery-item[data-bs-toggle="modal"]').forEach(function (el) {
+    el.addEventListener('click', function () {
       document.getElementById('galleryModalImage').src = this.dataset.image;
     });
   });

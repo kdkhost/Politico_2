@@ -67,7 +67,7 @@
     </div>
 
     <div class="footer-bottom text-center">
-      © {{ date('Y') }} {{ $siteName }} - Todos os direitos reservados
+      &copy; {{ date('Y') }} {{ $siteName }} - Todos os direitos reservados
     </div>
   </div>
 </footer>
@@ -91,7 +91,9 @@
           @if(config('seo.twitter_handle'))
             <a href="https://twitter.com/{{ config('seo.twitter_handle') }}" target="_blank" rel="noopener" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
           @endif
-          <a href="https://wa.me/{{ config('services.whatsapp') }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          @if(config('services.whatsapp'))
+            <a href="https://wa.me/{{ limparMascara(config('services.whatsapp')) }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          @endif
         </div>
       </div>
 
@@ -114,10 +116,10 @@
             <li><a href="mailto:{{ config('mail.from.address') }}"><i class="fas fa-envelope me-2"></i>{{ config('mail.from.address') }}</a></li>
           @endif
           @if(config('services.phone'))
-            <li><a href="tel:{{ config('services.phone') }}"><i class="fas fa-phone me-2"></i>{{ formatarTelefone(config('services.phone')) }}</a></li>
+            <li><a href="tel:{{ limparMascara(config('services.phone')) }}"><i class="fas fa-phone me-2"></i>{{ formatarTelefone(config('services.phone')) }}</a></li>
           @endif
           @if(config('services.whatsapp'))
-            <li><a href="https://wa.me/{{ config('services.whatsapp') }}" target="_blank"><i class="fab fa-whatsapp me-2"></i>WhatsApp</a></li>
+            <li><a href="https://wa.me/{{ limparMascara(config('services.whatsapp')) }}" target="_blank" rel="noopener"><i class="fab fa-whatsapp me-2"></i>WhatsApp</a></li>
           @endif
           @if(config('services.address'))
             <li><i class="fas fa-map-marker-alt me-2"></i>{{ config('services.address') }}</li>
