@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -53,7 +54,7 @@ class UserController extends Controller
 
             return response()->json($this->formatUserForJson($user));
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao carregar usuário.'], 500);
+            return response()->json(['status' => 'error', 'message' => 'Erro ao carregar usuario.'], 500);
         }
     }
 
@@ -109,7 +110,7 @@ class UserController extends Controller
                 'recordsFiltered' => $total,
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao listar usuários: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'message' => 'Erro ao listar usuarios: ' . $e->getMessage()], 500);
         }
     }
 
@@ -147,13 +148,27 @@ class UserController extends Controller
                 $user->update(['avatar' => $this->storeAvatar($request->file('avatar'))]);
             }
 
+            if (!$request->expectsJson() && !$request->ajax()) {
+                return redirect()
+                    ->route('admin.users.edit', $user->id)
+                    ->with('success', 'Usuário criado com sucesso.');
+            }
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Usuário criado com sucesso.',
                 'data' => $user,
                 'redirect' => route('admin.users.edit', $user->id),
             ]);
+        } catch (ValidationException $e) {
+            throw $e;
         } catch (\Throwable $e) {
+            if (!$request->expectsJson() && !$request->ajax()) {
+                return back()
+                    ->withInput()
+                    ->with('error', 'Erro ao criar usuário: ' . $e->getMessage());
+            }
+
             return response()->json(['status' => 'error', 'message' => 'Erro ao criar usuário: ' . $e->getMessage()], 500);
         }
     }
@@ -207,12 +222,26 @@ class UserController extends Controller
             $user->update($validated);
             $this->deleteReplacedAvatar($previousAvatar, $user->fresh()->avatar);
 
+            if (!$request->expectsJson() && !$request->ajax()) {
+                return redirect()
+                    ->route('admin.users.edit', $user->id)
+                    ->with('success', 'Usuário atualizado com sucesso.');
+            }
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Usuário atualizado com sucesso.',
                 'data' => $user->fresh()->load('profile'),
             ]);
+        } catch (ValidationException $e) {
+            throw $e;
         } catch (\Throwable $e) {
+            if (!$request->expectsJson() && !$request->ajax()) {
+                return back()
+                    ->withInput()
+                    ->with('error', 'Erro ao atualizar usuário: ' . $e->getMessage());
+            }
+
             return response()->json(['status' => 'error', 'message' => 'Erro ao atualizar usuário: ' . $e->getMessage()], 500);
         }
     }
