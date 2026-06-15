@@ -366,6 +366,10 @@ function enhanceUploadInput(input) {
         return;
     }
 
+    if (input.dataset.adminUploadEnhance === '0') {
+        return;
+    }
+
     if (input.classList.contains('d-none') && !input.dataset.profileAvatarUpload && input.dataset.adminUploadEnhance !== '1') {
         return;
     }

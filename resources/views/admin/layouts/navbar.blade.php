@@ -50,7 +50,7 @@
                     <button type="button" class="btn btn-sm btn-primary admin-profile-avatar-action" data-profile-avatar-trigger title="Trocar foto">
                         <i class="fas fa-camera"></i>
                     </button>
-                    <input type="file" class="d-none" id="quickProfileAvatar" accept="image/*" data-profile-avatar-upload="{{ route('admin.profile.avatar') }}" data-image-size="512x512" data-upload-label="Foto do perfil">
+                    <input type="file" class="d-none" id="quickProfileAvatar" accept="image/*" data-admin-upload-enhance="0" data-profile-avatar-upload="{{ route('admin.profile.avatar') }}" data-image-size="512x512" data-upload-label="Foto do perfil">
                 </div>
                 <p class="mt-2 mb-1">{{ auth()->user()->name ?? 'Usuario' }}<small>{{ auth()->user()->profile->nome ?? 'Membro' }}</small></p>
             </li>
