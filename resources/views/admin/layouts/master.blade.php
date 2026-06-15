@@ -161,6 +161,34 @@
             return true;
         };
 
+        window.stopAdminDataTableProcessing = window.stopAdminDataTableProcessing || function (settings) {
+            if (!settings || !window.jQuery || !$.fn.dataTable) {
+                return;
+            }
+
+            try {
+                var api = new $.fn.dataTable.Api(settings);
+                if (typeof api.processing === 'function') {
+                    api.processing(false);
+                }
+            } catch (error) {
+                // Ignore API timing issues while the table is still initializing.
+            }
+
+            try {
+                if (settings.oApi && typeof settings.oApi._fnProcessingDisplay === 'function') {
+                    settings.oApi._fnProcessingDisplay(settings, false);
+                }
+            } catch (error) {
+                // Ignore internal differences between DataTables builds.
+            }
+
+            var wrapper = settings.nTableWrapper || (settings.nTable && settings.nTable.closest && settings.nTable.closest('.dt-container, .dataTables_wrapper'));
+            if (wrapper) {
+                $(wrapper).find('.dt-processing, .dataTables_processing').hide();
+            }
+        };
+
         window.AdminDataTableLanguage = window.AdminDataTableLanguage || {
             emptyTable: 'Nenhum registro encontrado',
             info: 'Mostrando de _START_ até _END_ de _TOTAL_ registros',
@@ -239,6 +267,120 @@
             };
         }
 
+        window.normalizeAdminDataTableAjax = window.normalizeAdminDataTableAjax || function (ajaxOptions, tableId) {
+            if (!ajaxOptions) {
+                return ajaxOptions;
+            }
+
+            var normalized = typeof ajaxOptions === 'string'
+                ? { url: ajaxOptions }
+                : $.extend(true, {}, ajaxOptions);
+
+            var originalDataFilter = normalized.dataFilter;
+            var originalError = normalized.error;
+            var originalComplete = normalized.complete;
+
+            normalized.timeout = Number(normalized.timeout || 20000);
+            normalized.dataFilter = function (rawResponse, type) {
+                var payload = rawResponse;
+
+                if (typeof originalDataFilter === 'function') {
+                    payload = originalDataFilter.call(this, rawResponse, type);
+                }
+
+                if (typeof payload !== 'string' || payload.trim() === '') {
+                    return payload;
+                }
+
+                try {
+                    var parsed = JSON.parse(payload);
+                    if (!parsed || typeof parsed !== 'object') {
+                        return payload;
+                    }
+
+                    if (!Array.isArray(parsed.data)) {
+                        parsed.data = [];
+                    }
+
+                    var requestDraw = Number((this && (this.draw || this._draw)) || 0);
+                    parsed.draw = Number.isFinite(Number(parsed.draw)) ? Number(parsed.draw) : requestDraw;
+                    parsed.recordsTotal = Number.isFinite(Number(parsed.recordsTotal))
+                        ? Number(parsed.recordsTotal)
+                        : Number(parsed.total || parsed.data.length || 0);
+                    parsed.recordsFiltered = Number.isFinite(Number(parsed.recordsFiltered))
+                        ? Number(parsed.recordsFiltered)
+                        : Number(parsed.totalFiltered || parsed.total || parsed.data.length || 0);
+
+                    return JSON.stringify(parsed);
+                } catch (error) {
+                    return payload;
+                }
+            };
+
+            normalized.error = function (xhr, textStatus, errorThrown) {
+                var settings = this;
+                window.stopAdminDataTableProcessing(settings);
+
+                var detail = (xhr && xhr.responseJSON && xhr.responseJSON.message) || errorThrown || textStatus || 'Erro inesperado.';
+                var currentTableId = tableId || (settings && (settings.sTableId || (settings.nTable && settings.nTable.id))) || '';
+
+                if (typeof window.notifyAdminDataTableError === 'function') {
+                    window.notifyAdminDataTableError(currentTableId, detail, textStatus || (xhr && xhr.status) || 'ajax');
+                }
+
+                if (typeof originalError === 'function') {
+                    originalError.apply(this, arguments);
+                }
+            };
+
+            normalized.complete = function () {
+                window.stopAdminDataTableProcessing(this);
+
+                if (typeof originalComplete === 'function') {
+                    originalComplete.apply(this, arguments);
+                }
+            };
+
+            return normalized;
+        };
+
+        window.notifyAdminDataTableError = window.notifyAdminDataTableError || function (tableId, message, technicalNote) {
+            if (String(message || '').indexOf('i18n file loading error') !== -1) {
+                return;
+            }
+
+            window.AdminDataTableErrors = window.AdminDataTableErrors || {};
+
+            var key = (tableId || 'datatable') + ':' + (technicalNote || '0') + ':' + (message || '');
+            var now = Date.now();
+
+            if (window.AdminDataTableErrors[key] && now - window.AdminDataTableErrors[key] < 60000) {
+                return;
+            }
+
+            window.AdminDataTableErrors[key] = now;
+
+            var text = tableId
+                ? 'Não foi possível carregar a tabela ' + tableId + '. Tente atualizar a página.'
+                : 'Não foi possível carregar uma tabela desta página. Tente atualizar a página.';
+
+            if (window.Swal) {
+                window.Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'warning',
+                    title: 'Falha ao carregar tabela',
+                    text: text,
+                    timer: 6000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
+                return;
+            }
+
+            window.toastr?.warning(text, 'Falha ao carregar tabela');
+        };
+
         if ($.fn.dataTable) {
             $.fn.dataTable.ext.errMode = 'none';
             if (window.DataTable?.ext) {
@@ -267,6 +409,11 @@
                             delete args[0].language.url;
                             args[0].language = $.extend(true, {}, window.AdminDataTableLanguage, args[0].language);
                         }
+
+                        args[0].ajax = window.normalizeAdminDataTableAjax(
+                            args[0].ajax,
+                            args[0].tableId || args[0].sTableId || ''
+                        );
                     }
 
                     return originalDataTable.apply(this, args);
@@ -296,42 +443,9 @@
                 .off('error.dt.adminDataTables')
                 .on('error.dt.adminDataTables', function (event, settings, technicalNote, message) {
                     event.preventDefault();
-
-                    if (String(message || '').indexOf('i18n file loading error') !== -1) {
-                        return;
-                    }
-
-                    window.AdminDataTableErrors = window.AdminDataTableErrors || {};
-
+                    window.stopAdminDataTableProcessing(settings);
                     var tableId = (settings && (settings.sTableId || (settings.nTable && settings.nTable.id))) || '';
-                    var key = (tableId || 'datatable') + ':' + (technicalNote || '0') + ':' + (message || '');
-                    var now = Date.now();
-
-                    if (window.AdminDataTableErrors[key] && now - window.AdminDataTableErrors[key] < 60000) {
-                        return;
-                    }
-
-                    window.AdminDataTableErrors[key] = now;
-
-                    var text = tableId
-                        ? 'Não foi possível carregar a tabela ' + tableId + '. Tente atualizar a página.'
-                        : 'Não foi possível carregar uma tabela desta página. Tente atualizar a página.';
-
-                    if (window.Swal) {
-                        window.Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'warning',
-                            title: 'Falha ao carregar tabela',
-                            text: text,
-                            timer: 6000,
-                            timerProgressBar: true,
-                            showConfirmButton: false
-                        });
-                        return;
-                    }
-
-                    window.toastr?.warning(text, 'Falha ao carregar tabela');
+                    window.notifyAdminDataTableError(tableId, message, technicalNote);
                 });
         }
 

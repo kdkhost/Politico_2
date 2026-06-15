@@ -646,6 +646,8 @@ function normalizeDataTableOptions(options) {
         normalized.language = $.extend(true, {}, adminDataTableLanguage, normalized.language);
     }
 
+    normalized.ajax = normalizeDataTableAjax(normalized.ajax, normalized.tableId || normalized.sTableId || '');
+
     return normalized;
 }
 
@@ -683,6 +685,109 @@ function notifyDataTableError(tableId, message, technicalNote) {
     }
 
     window.toastr?.warning(text, 'Falha ao carregar tabela');
+}
+
+function stopDataTableProcessing(settings) {
+    if (!settings) {
+        return;
+    }
+
+    try {
+        const api = new $.fn.dataTable.Api(settings);
+        if (typeof api.processing === 'function') {
+            api.processing(false);
+        }
+    } catch (error) {
+        // Ignore DataTables API timing issues while the table is still booting.
+    }
+
+    try {
+        settings.oApi?._fnProcessingDisplay?.(settings, false);
+    } catch (error) {
+        // Ignore internal differences between DataTables builds.
+    }
+
+    const wrapper = settings.nTableWrapper || settings.nTable?.closest?.('.dt-container, .dataTables_wrapper');
+    if (wrapper) {
+        $(wrapper).find('.dt-processing, .dataTables_processing').hide();
+    }
+}
+
+function normalizeDataTableAjax(ajaxOptions, tableId = '') {
+    if (!ajaxOptions) {
+        return ajaxOptions;
+    }
+
+    const normalized = typeof ajaxOptions === 'string'
+        ? { url: ajaxOptions }
+        : $.extend(true, {}, ajaxOptions);
+
+    const originalDataFilter = normalized.dataFilter;
+    const originalError = normalized.error;
+    const originalComplete = normalized.complete;
+
+    normalized.timeout = Number(normalized.timeout || 20000);
+    normalized.dataFilter = function (rawResponse, type) {
+        let payload = rawResponse;
+
+        if (typeof originalDataFilter === 'function') {
+            payload = originalDataFilter.call(this, rawResponse, type);
+        }
+
+        if (typeof payload !== 'string' || payload.trim() === '') {
+            return payload;
+        }
+
+        try {
+            const parsed = JSON.parse(payload);
+            if (!parsed || typeof parsed !== 'object') {
+                return payload;
+            }
+
+            if (!Array.isArray(parsed.data)) {
+                parsed.data = [];
+            }
+
+            const requestDraw = Number(this?.draw ?? this?._draw ?? 0);
+            parsed.draw = Number.isFinite(Number(parsed.draw)) ? Number(parsed.draw) : requestDraw;
+            parsed.recordsTotal = Number.isFinite(Number(parsed.recordsTotal))
+                ? Number(parsed.recordsTotal)
+                : Number(parsed.total ?? parsed.data.length ?? 0);
+            parsed.recordsFiltered = Number.isFinite(Number(parsed.recordsFiltered))
+                ? Number(parsed.recordsFiltered)
+                : Number(parsed.totalFiltered ?? parsed.total ?? parsed.data.length ?? 0);
+
+            return JSON.stringify(parsed);
+        } catch (error) {
+            return payload;
+        }
+    };
+
+    normalized.error = function (xhr, textStatus, errorThrown) {
+        const settings = this;
+        stopDataTableProcessing(settings);
+
+        const detail = xhr?.responseJSON?.message || errorThrown || textStatus || 'Erro inesperado.';
+        notifyDataTableError(
+            tableId || settings?.sTableId || settings?.nTable?.id || '',
+            detail,
+            textStatus || xhr?.status || 'ajax',
+        );
+
+        if (typeof originalError === 'function') {
+            originalError.apply(this, arguments);
+        }
+    };
+
+    normalized.complete = function () {
+        stopDataTableProcessing(this);
+
+        if (typeof originalComplete === 'function') {
+            originalComplete.apply(this, arguments);
+        }
+    };
+
+    return normalized;
 }
 
 if ($.fn.DataTable?.ext?.pager) {
@@ -742,6 +847,7 @@ if ($.fn.dataTable) {
         .off('error.dt.adminDataTables')
         .on('error.dt.adminDataTables', function (event, settings, technicalNote, message) {
             event.preventDefault();
+            stopDataTableProcessing(settings);
             const tableId = settings?.sTableId || settings?.nTable?.id || '';
             notifyDataTableError(tableId, message, technicalNote);
         });
