@@ -278,6 +278,18 @@ class TransparenciaController extends Controller
     private function formatTransparencyRow(TransparencyItem $item): array
     {
         $published = $this->isPublishedStatus($item->status);
+        $user = auth()->user();
+        $canEdit = $user && ($user->is_super_admin || $user->hasPermission('transparencia.edit') || $user->hasPermission('transparencia.gerenciar'));
+        $canDelete = $user && ($user->is_super_admin || $user->hasPermission('transparencia.delete') || $user->hasPermission('transparencia.gerenciar'));
+        $actionButtons = [];
+
+        if ($canEdit) {
+            $actionButtons[] = '<button type="button" class="btn btn-primary btn-edit-transparencia" data-id="' . $item->id . '" title="Editar"><i class="fas fa-edit"></i></button>';
+        }
+
+        if ($canDelete) {
+            $actionButtons[] = '<button type="button" class="btn btn-danger btn-delete-transparencia" data-id="' . $item->id . '" title="Excluir"><i class="fas fa-trash"></i></button>';
+        }
 
         return [
             'id' => $item->id,
@@ -288,10 +300,9 @@ class TransparenciaController extends Controller
             'status' => $published
                 ? '<span class="badge bg-success">Publicado</span>'
                 : '<span class="badge bg-secondary">Rascunho</span>',
-            'action' => '<div class="btn-group btn-group-sm" role="group">'
-                . '<button type="button" class="btn btn-primary btn-edit-transparencia" data-id="' . $item->id . '" title="Editar"><i class="fas fa-edit"></i></button>'
-                . '<button type="button" class="btn btn-danger btn-delete-transparencia" data-id="' . $item->id . '" title="Excluir"><i class="fas fa-trash"></i></button>'
-                . '</div>',
+            'action' => $actionButtons !== []
+                ? '<div class="btn-group btn-group-sm" role="group">' . implode('', $actionButtons) . '</div>'
+                : '<span class="text-muted">Sem permissao</span>',
         ];
     }
 
