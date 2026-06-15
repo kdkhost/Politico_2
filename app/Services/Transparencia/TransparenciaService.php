@@ -146,9 +146,9 @@ class TransparenciaService
         return $result;
     }
 
-    public function getItemDetails(int $id): TransparencyItem
+    public function getItemDetails(int|string $id): TransparencyItem
     {
-        return TransparencyItem::with('creator:id,name')->findOrFail($id);
+        return TransparencyItem::with('creator:id,name')->findOrFail($this->normalizeItemId($id));
     }
 
     public function searchItems(string $query): LengthAwarePaginator
@@ -328,6 +328,21 @@ class TransparenciaService
     private function extractItemYear(TransparencyItem $item): int
     {
         return (int) optional($item->data_referencia ?? $item->data_publicacao ?? now())->format('Y');
+    }
+
+    private function normalizeItemId(int|string $id): int
+    {
+        if (is_int($id)) {
+            return $id;
+        }
+
+        $id = trim($id);
+
+        if ($id === '' || !ctype_digit($id)) {
+            abort(404);
+        }
+
+        return (int) $id;
     }
 
     /**
