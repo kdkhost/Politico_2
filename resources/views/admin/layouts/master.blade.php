@@ -1,3 +1,17 @@
+@php
+    $adminSiteName = settings('site_name') ?: config('app.name');
+    $adminLogo = settings('logo') ?: asset('img/logo.png');
+    $adminPrimaryColor = settings('primary_color') ?: '#002776';
+    $adminSecondaryColor = settings('secondary_color') ?: '#009c3b';
+
+    if (!is_string($adminPrimaryColor) || !preg_match('/^#[0-9a-fA-F]{6}$/', $adminPrimaryColor)) {
+        $adminPrimaryColor = '#002776';
+    }
+
+    if (!is_string($adminSecondaryColor) || !preg_match('/^#[0-9a-fA-F]{6}$/', $adminSecondaryColor)) {
+        $adminSecondaryColor = '#009c3b';
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="pt-BR" data-bs-theme="{{ settings('dark_mode') ? 'dark' : 'light' }}">
 <head>
@@ -5,7 +19,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    @php($adminSiteName = settings('site_name') ?: config('app.name'))
     <title>@yield('title', $adminSiteName) - Painel Administrativo</title>
 
     <link rel="icon" type="image/x-icon" href="{{ settings('favicon') ?? asset('favicon.ico') }}">
@@ -21,18 +34,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     @vite(['resources/css/admin/admin.css', 'resources/js/admin/admin.js'])
-    @php
-        $adminPrimaryColor = settings('primary_color') ?: '#002776';
-        $adminSecondaryColor = settings('secondary_color') ?: '#009c3b';
-
-        if (!is_string($adminPrimaryColor) || !preg_match('/^#[0-9a-fA-F]{6}$/', $adminPrimaryColor)) {
-            $adminPrimaryColor = '#002776';
-        }
-
-        if (!is_string($adminSecondaryColor) || !preg_match('/^#[0-9a-fA-F]{6}$/', $adminSecondaryColor)) {
-            $adminSecondaryColor = '#009c3b';
-        }
-    @endphp
     <style>
         :root {
             --admin-primary: {{ $adminPrimaryColor }};
@@ -57,7 +58,6 @@
         </nav>
 
         <aside class="app-sidebar admin-sidebar shadow" data-bs-theme="dark">
-            @php($adminLogo = settings('logo') ?: asset('img/logo.png'))
             <div class="sidebar-brand">
                 <a href="{{ route('admin.dashboard') }}" class="brand-link admin-brand text-decoration-none">
                     <span class="brand-image admin-brand-mark">
