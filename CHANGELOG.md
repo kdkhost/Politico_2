@@ -17,6 +17,14 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-15 - eleva o tema premium do frontend
+
+- redesenhado o header premium em `resources/views/site/partials/header.blade.php` com navegação central refinada, branding expandido e CTA mais forte
+- redesenhada a home premium em `resources/views/site/home/index.blade.php` com hero editorial, card de retrato institucional, notas flutuantes, estatísticas em destaque e cards de conteúdo mais sofisticados
+- redesenhado o footer premium em `resources/views/site/partials/footer.blade.php` com bloco de marca, áreas institucionais e conexões sociais mais consistentes
+- ampliado `resources/css/site/site.css` com a nova camada visual do tema premium e recompilado o frontend em `public/build/assets/site-BPAJpNzE.css`
+- validados os arquivos alterados sem BOM e recompiladas as views com `php artisan view:clear` e `php artisan view:cache`
+
 ### 2026-06-15 - corrige carregamento do tema premium no frontend
 
 - corrigido `resources/views/site/layouts/master.blade.php` para o frontend público usar `@vite` com os assets reais compilados do tema, removendo a dependência do CSS e JS legados em `public/css/site/site.css` e `public/js/site/site.js`

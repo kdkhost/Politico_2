@@ -1,4 +1,5 @@
 @php
+  $siteLogo = settings('logo') ?: config('app.logo') ?: asset('img/logo.png');
   $siteName = settings('site_name') ?: config('app.name');
   $siteTheme = settings('default_theme') ?: 'default';
   $siteSlogan = settings('site_slogan') ?: 'Gestão com Excelência';
@@ -11,57 +12,62 @@
 @if($siteTheme === 'premium')
 <footer class="site-footer site-footer-premium" role="contentinfo">
   <div class="container">
-    <div class="row g-4 mb-4">
-      <div class="col-lg-4 col-md-6">
-        <div class="premium-footer-brand d-flex align-items-center gap-2 mb-3">
-          <i class="fas fa-building"></i>
-          <span>{{ $siteName }}</span>
+    <div class="premium-footer-shell">
+      <div class="row g-4 align-items-start">
+        <div class="col-lg-4">
+          <div class="premium-footer-brand-block">
+            <div class="premium-footer-logo">
+              <img src="{{ $siteLogo }}" alt="{{ $siteName }}" title="{{ $siteName }}" loading="lazy">
+            </div>
+            <div class="premium-footer-brand">
+              <span>{{ $siteName }}</span>
+            </div>
+            <p class="premium-footer-copy">{{ $siteSlogan }}</p>
+          </div>
         </div>
-        <p class="premium-footer-copy">{{ $siteSlogan }}</p>
-      </div>
 
-      <div class="col-lg-2 col-md-6">
-        <h5>Links Rápidos</h5>
-        <ul class="list-unstyled footer-links">
-          <li><a href="{{ url('/') }}">Início</a></li>
-          <li><a href="{{ route('site.biografia') }}">Sobre</a></li>
-          <li><a href="{{ route('site.blog') }}">Blog</a></li>
-          <li><a href="{{ route('site.propostas') }}">Propostas</a></li>
-          <li><a href="{{ route('site.transparencia') }}">Transparência</a></li>
-          <li><a href="{{ route('site.contato') }}">Contato</a></li>
-        </ul>
-      </div>
+        <div class="col-lg-2 col-md-6">
+          <h5>Institucional</h5>
+          <ul class="list-unstyled footer-links">
+            <li><a href="{{ url('/') }}">Início</a></li>
+            <li><a href="{{ route('site.biografia') }}">Biografia</a></li>
+            <li><a href="{{ route('site.propostas') }}">Propostas</a></li>
+            <li><a href="{{ route('site.transparencia') }}">Transparência</a></li>
+          </ul>
+        </div>
 
-      <div class="col-lg-3 col-md-6">
-        <h5>Contato</h5>
-        <ul class="list-unstyled footer-links">
-          @if($contactEmail)
-            <li><i class="fas fa-envelope me-2"></i>{{ $contactEmail }}</li>
-          @endif
-          @if($contactPhone)
-            <li><i class="fas fa-phone me-2"></i>{{ formatarTelefone($contactPhone) }}</li>
-          @endif
-          @if($contactAddress)
-            <li><i class="fas fa-map-marker-alt me-2"></i>{{ $contactAddress }}</li>
-          @endif
-        </ul>
-      </div>
+        <div class="col-lg-3 col-md-6">
+          <h5>Contato</h5>
+          <ul class="list-unstyled footer-links">
+            @if($contactEmail)
+              <li><i class="fas fa-envelope me-2"></i>{{ $contactEmail }}</li>
+            @endif
+            @if($contactPhone)
+              <li><i class="fas fa-phone me-2"></i>{{ formatarTelefone($contactPhone) }}</li>
+            @endif
+            @if($contactAddress)
+              <li><i class="fas fa-map-marker-alt me-2"></i>{{ $contactAddress }}</li>
+            @endif
+          </ul>
+        </div>
 
-      <div class="col-lg-3 col-md-6">
-        <h5>Redes Sociais</h5>
-        <div class="social-links premium-social-links">
-          @if(config('seo.facebook_page'))
-            <a href="{{ config('seo.facebook_page') }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-          @endif
-          @if(config('services.instagram'))
-            <a href="{{ config('services.instagram') }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-          @endif
-          @if(config('services.youtube'))
-            <a href="{{ config('services.youtube') }}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-          @endif
-          @if($contactWhatsapp)
-            <a href="https://wa.me/{{ limparMascara($contactWhatsapp) }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-          @endif
+        <div class="col-lg-3 col-md-6">
+          <h5>Conexões</h5>
+          <p class="premium-footer-copy mb-3">Acompanhe os canais oficiais e receba atualizações em tempo real.</p>
+          <div class="social-links premium-social-links">
+            @if(config('seo.facebook_page'))
+              <a href="{{ config('seo.facebook_page') }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            @endif
+            @if(config('services.instagram'))
+              <a href="{{ config('services.instagram') }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            @endif
+            @if(config('services.youtube'))
+              <a href="{{ config('services.youtube') }}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            @endif
+            @if($contactWhatsapp)
+              <a href="https://wa.me/{{ limparMascara($contactWhatsapp) }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            @endif
+          </div>
         </div>
       </div>
     </div>

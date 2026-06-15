@@ -33,6 +33,10 @@
       <span class="premium-brand-mark">
         <img src="{{ $siteLogo }}" alt="{{ $siteName }}" title="{{ $siteName }}" loading="eager" width="220" height="64">
       </span>
+      <span class="premium-brand-meta d-none d-xl-flex">
+        <strong>{{ $siteName }}</strong>
+        <small>{{ $siteSlogan }}</small>
+      </span>
     </a>
 
     <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Abrir menu">
@@ -49,19 +53,21 @@
         </button>
       </div>
 
-      <ul class="navbar-nav mx-auto premium-nav-list">
-        @foreach($navItems as $item)
-          <li class="nav-item">
-            <a class="nav-link {{ $item['active'] ? 'active' : '' }}" href="{{ $item['url'] }}" target="{{ $item['target'] }}">
-              {{ $item['label'] }}
-            </a>
-          </li>
-        @endforeach
-      </ul>
+      <div class="premium-nav-panel mx-auto">
+        <ul class="navbar-nav premium-nav-list">
+          @foreach($navItems as $item)
+            <li class="nav-item">
+              <a class="nav-link {{ $item['active'] ? 'active' : '' }}" href="{{ $item['url'] }}" target="{{ $item['target'] }}">
+                {{ $item['label'] }}
+              </a>
+            </li>
+          @endforeach
+        </ul>
+      </div>
 
       <div class="premium-navbar-actions d-flex align-items-center gap-3">
         <a href="{{ route('site.contato') }}" class="btn premium-cta-btn">
-          <i class="fas fa-user-check me-2"></i>Participe
+          <i class="fas fa-user-check me-2"></i>Participar
         </a>
       </div>
     </div>

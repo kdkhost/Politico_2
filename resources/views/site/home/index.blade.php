@@ -11,47 +11,82 @@ Início
   $siteTheme = settings('default_theme') ?: 'default';
   $politicianName = $politician->nome ?? $politician->name ?? 'Nome do Gestor';
   $politicianPhoto = $politician->foto ?? $politician->avatar_url ?? asset('img/politician-placeholder.jpg');
+  $politicianRole = $politician->cargo ?? $politician->position ?? 'Liderança institucional';
 @endphp
 
 @if($siteTheme === 'premium')
 <div class="premium-home-shell" style="--premium-watermark-image: url('{{ $politicianPhoto }}');">
   <section class="premium-hero-section" itemscope itemtype="https://schema.org/Person">
     <div class="container">
-      <div class="premium-hero-content">
-        <div class="premium-badges">
-          <span>#Excelência</span>
-          <span>#Resultados</span>
+      <div class="premium-hero-grid">
+        <div class="premium-hero-content">
+          <div class="premium-badges">
+            <span>#Excelência</span>
+            <span>#Resultados</span>
+            <span>#Transparência</span>
+          </div>
+
+          <span class="premium-kicker">Gestão pública com identidade forte</span>
+
+          <h1 class="premium-hero-title" itemprop="name">
+            Construindo um novo
+            <span class="premium-title-accent">futuro para todos</span>
+          </h1>
+
+          <p class="premium-hero-subtitle" itemprop="description">
+            {{ $politician->slogan ?? 'Com planejamento estratégico, transparência e gestão eficiente, estamos transformando nossa cidade em referência nacional.' }}
+          </p>
+
+          <div class="premium-hero-actions">
+            <a href="{{ route('site.propostas') }}" class="btn premium-cta-btn">
+              <i class="fas fa-chalkboard-user me-2"></i>Conheça as propostas
+            </a>
+            <a href="{{ route('site.biografia') }}" class="btn premium-outline-btn">
+              <i class="fas fa-user-tie me-2"></i>Conheça a trajetória
+            </a>
+          </div>
+
+          <div class="premium-stats-grid">
+            <div class="premium-stat-card">
+              <div class="premium-stat-number">{{ $stats->projetos ?? 15 }}+</div>
+              <div class="premium-stat-label">Projetos concluídos</div>
+            </div>
+            <div class="premium-stat-card">
+              <div class="premium-stat-number">{{ $stats->obras ?? 50 }}k+</div>
+              <div class="premium-stat-label">Cidadãos atendidos</div>
+            </div>
+            <div class="premium-stat-card">
+              <div class="premium-stat-number">{{ $stats->anos ?? 98 }}%</div>
+              <div class="premium-stat-label">Índice de satisfação</div>
+            </div>
+          </div>
         </div>
 
-        <h1 class="premium-hero-title" itemprop="name">
-          Construindo um novo futuro para todos
-        </h1>
-
-        <p class="premium-hero-subtitle" itemprop="description">
-          {{ $politician->slogan ?? 'Com planejamento estratégico, transparência e gestão eficiente, estamos transformando nossa cidade em referência nacional.' }}
-        </p>
-
-        <div class="premium-hero-actions">
-          <a href="{{ route('site.propostas') }}" class="btn premium-cta-btn">
-            <i class="fas fa-chalkboard-user me-2"></i>Conheça as propostas
-          </a>
-          <a href="{{ route('site.biografia') }}" class="btn premium-outline-btn">
-            <i class="fas fa-play-circle me-2"></i>Ver plano de governo
-          </a>
-        </div>
-
-        <div class="premium-stats-grid">
-          <div>
-            <div class="premium-stat-number">{{ $stats->projetos ?? 15 }}+</div>
-            <div class="premium-stat-label">Projetos concluídos</div>
+        <div class="premium-hero-visual">
+          <div class="premium-portrait-card">
+            <span class="premium-portrait-badge">
+              <i class="fas fa-star me-2"></i>Destaque institucional
+            </span>
+            <div class="premium-portrait-media">
+              <img src="{{ $politicianPhoto }}" alt="{{ $politicianName }}" itemprop="image" loading="eager">
+            </div>
+            <div class="premium-portrait-panel">
+              <div>
+                <small>{{ $politicianRole }}</small>
+                <h3>{{ $politicianName }}</h3>
+              </div>
+              <span class="premium-portrait-chip">Presença pública ativa</span>
+            </div>
           </div>
-          <div>
-            <div class="premium-stat-number">{{ $stats->obras ?? 50 }}k+</div>
-            <div class="premium-stat-label">Cidadãos atendidos</div>
+
+          <div class="premium-floating-note premium-floating-note-top">
+            <strong>Agenda aberta</strong>
+            <span>Participação social e compromissos públicos.</span>
           </div>
-          <div>
-            <div class="premium-stat-number">{{ $stats->anos ?? 98 }}%</div>
-            <div class="premium-stat-label">Índice de satisfação</div>
+
+          <div class="premium-floating-note premium-floating-note-bottom">
+            <strong>Comunicação clara</strong>
+            <span>Informação pública com estética premium e leitura rápida.</span>
           </div>
         </div>
       </div>
@@ -61,15 +96,17 @@ Início
   <section class="section-padding premium-section-white">
     <div class="container">
       <div class="premium-section-heading text-center">
-        <h2 class="premium-section-title">Pilares da Gestão</h2>
+        <span class="premium-kicker">Diretrizes da atuação</span>
+        <h2 class="premium-section-title">Pilares da gestão</h2>
         <div class="premium-line mx-auto"></div>
-        <p>Quatro compromissos que norteiam nossa administração</p>
+        <p>Quatro compromissos que sustentam uma comunicação pública mais forte, organizada e confiável.</p>
       </div>
 
       <div class="row g-4">
         @foreach(($propostas ?? collect())->take(4) as $proposta)
           <div class="col-lg-3 col-md-6">
             <div class="premium-card premium-pillar-card text-center h-100">
+              <span class="premium-card-order">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
               <div class="premium-card-icon">
                 <i class="{{ $proposta->icone ?? 'fas fa-chart-line' }}"></i>
               </div>
@@ -86,9 +123,10 @@ Início
     <div class="container">
       <div class="row g-4 align-items-stretch">
         <div class="col-lg-7">
-          <h2 class="premium-section-title text-start">Próximos Eventos</h2>
+          <span class="premium-kicker">Participação e presença</span>
+          <h2 class="premium-section-title text-start">Próximos eventos</h2>
           <div class="premium-line"></div>
-          <p class="premium-section-copy">Acompanhe a agenda pública e participe.</p>
+          <p class="premium-section-copy">Acompanhe a agenda pública, os encontros institucionais e os compromissos abertos à população.</p>
 
           @php $firstEvent = $eventos->first(); @endphp
           <div class="premium-card premium-event-card">
@@ -118,9 +156,10 @@ Início
 
         <div class="col-lg-5">
           <div class="premium-card premium-contact-card h-100">
+            <span class="premium-contact-label">Canal direto</span>
             <i class="fas fa-envelope-open-text"></i>
             <h3>Quer falar conosco?</h3>
-            <p>Sua opinião é fundamental para construirmos uma cidade melhor.</p>
+            <p>Sua opinião é fundamental para construirmos uma cidade melhor com diálogo, clareza e retorno rápido.</p>
             <a href="{{ route('site.contato') }}" class="btn premium-cta-btn">Fale com o gestor</a>
           </div>
         </div>
@@ -132,7 +171,8 @@ Início
   <section class="section-padding premium-section-white">
     <div class="container">
       <div class="premium-section-heading text-center">
-        <h2 class="premium-section-title">Últimas Publicações</h2>
+        <span class="premium-kicker">Atualizações oficiais</span>
+        <h2 class="premium-section-title">Últimas publicações</h2>
         <div class="premium-line mx-auto"></div>
       </div>
       <div class="row g-4">
@@ -141,6 +181,9 @@ Início
             <article class="premium-card premium-post-card h-100">
               <img src="{{ $post->imagem_destaque ?: asset('img/blog-placeholder.jpg') }}" alt="{{ $post->titulo }}" class="premium-post-image" loading="lazy">
               <div class="premium-post-content">
+                @if($post->category)
+                  <span class="premium-post-tag">{{ $post->category->nome }}</span>
+                @endif
                 <h3>{{ $post->titulo }}</h3>
                 <p>{{ Str::limit($post->resumo, 110) }}</p>
                 <a href="{{ route('site.blog.show', $post->slug) }}" class="premium-post-link">Ler mais</a>
