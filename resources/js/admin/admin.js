@@ -278,8 +278,10 @@ function renderUploadPreview(wrapper, input) {
     const files = Array.from(input.files || []);
     const preview = wrapper.find('.admin-upload-preview');
     const meta = wrapper.find('.admin-upload-meta');
+    const dimensions = wrapper.find('.admin-upload-dimensions');
 
     preview.empty();
+    dimensions.text(input.dataset.imageSize ? `Tamanho recomendado: ${input.dataset.imageSize}` : '');
 
     if (!files.length) {
         const existingUrl = input.dataset.existingUrl;
@@ -466,7 +468,7 @@ function enhanceUploadInput(input) {
             <div class="admin-upload-ideal">Tamanho ideal: ${ideal}</div>
             <div class="admin-upload-preview"></div>
             <div class="admin-upload-meta">Nenhum arquivo selecionado.</div>
-            <div class="admin-upload-dimensions"></div>
+            <div class="admin-upload-dimensions">${input.dataset.imageSize ? `Tamanho recomendado: ${input.dataset.imageSize}` : ''}</div>
             <div class="admin-upload-progress d-none">
                 <div class="progress">
                     <div class="progress-bar progress-bar-striped progress-bar-animated admin-upload-progress-bar" role="progressbar" style="width:0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
