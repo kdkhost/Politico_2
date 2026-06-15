@@ -7,31 +7,33 @@
   $contactPhone = settings('contact_phone') ?: config('services.phone');
   $contactAddress = settings('contact_address') ?: config('services.address');
   $contactWhatsapp = settings('contact_whatsapp') ?: config('services.whatsapp');
+
+  $premiumFooterProps = [
+      'siteName' => $siteName,
+      'siteLogo' => $siteLogo,
+      'siteSlogan' => $siteSlogan,
+      'contactEmail' => $contactEmail,
+      'contactPhone' => $contactPhone ? formatarTelefone($contactPhone) : null,
+      'contactAddress' => $contactAddress,
+      'contactWhatsapp' => $contactWhatsapp ? limparMascara($contactWhatsapp) : null,
+      'urls' => [
+          'home' => url('/'),
+          'biografia' => route('site.biografia'),
+          'propostas' => route('site.propostas'),
+          'transparencia' => route('site.transparencia'),
+      ],
+      'social' => [
+          'facebook' => config('seo.facebook_page'),
+          'instagram' => config('services.instagram'),
+          'youtube' => config('services.youtube'),
+      ],
+  ];
 @endphp
 
 @if($siteTheme === 'premium')
 <div
   data-premium-component="footer"
-  data-props='@json([
-    "siteName" => $siteName,
-    "siteLogo" => $siteLogo,
-    "siteSlogan" => $siteSlogan,
-    "contactEmail" => $contactEmail,
-    "contactPhone" => $contactPhone ? formatarTelefone($contactPhone) : null,
-    "contactAddress" => $contactAddress,
-    "contactWhatsapp" => $contactWhatsapp ? limparMascara($contactWhatsapp) : null,
-    "urls" => [
-      "home" => url("/"),
-      "biografia" => route("site.biografia"),
-      "propostas" => route("site.propostas"),
-      "transparencia" => route("site.transparencia"),
-    ],
-    "social" => [
-      "facebook" => config("seo.facebook_page"),
-      "instagram" => config("services.instagram"),
-      "youtube" => config("services.youtube"),
-    ],
-  ])'
+  data-props='@json($premiumFooterProps)'
 ></div>
 @else
 <footer class="site-footer" role="contentinfo">

@@ -12,48 +12,50 @@ Início
   $politicianName = $politician->nome ?? $politician->name ?? 'Nome do Gestor';
   $politicianPhoto = $politician->foto ?? $politician->avatar_url ?? asset('img/politician-placeholder.jpg');
   $politicianRole = $politician->cargo ?? $politician->position ?? 'Liderança institucional';
+
+  $premiumHomeProps = [
+      'politicianName' => $politicianName,
+      'politicianPhoto' => $politicianPhoto,
+      'politicianRole' => $politicianRole,
+      'slogan' => $politician->slogan ?? 'Com planejamento estratégico, transparência e gestão eficiente, estamos transformando nossa cidade em referência nacional.',
+      'stats' => [
+          'projetos' => ($stats->projetos ?? 15) . '+',
+          'obras' => ($stats->obras ?? 50) . 'k+',
+          'anos' => ($stats->anos ?? 98) . '%',
+      ],
+      'propostas' => ($propostas ?? collect())->take(4)->map(fn ($proposta) => [
+          'id' => $proposta->id,
+          'titulo' => $proposta->titulo,
+          'resumo' => $proposta->resumo,
+          'icone' => $proposta->icone ?? 'fas fa-chart-line',
+      ])->values()->all(),
+      'noticias' => ($ultimasNoticias ?? collect())->take(3)->map(fn ($post) => [
+          'id' => $post->id,
+          'titulo' => $post->titulo,
+          'resumo' => \Illuminate\Support\Str::limit($post->resumo, 110),
+          'imagem' => $post->imagem_destaque ?: asset('img/blog-placeholder.jpg'),
+          'categoria' => $post->category?->nome,
+          'url' => route('site.blog.show', $post->slug),
+      ])->values()->all(),
+      'firstEvent' => $eventos->first() ? [
+          'titulo' => $eventos->first()->titulo,
+          'local' => $eventos->first()->local,
+          'day' => $eventos->first()->data_inicio->format('d'),
+          'month' => strtoupper($eventos->first()->data_inicio->translatedFormat('M')),
+          'time' => $eventos->first()->data_inicio->format('H\hi'),
+      ] : null,
+      'urls' => [
+          'propostas' => route('site.propostas'),
+          'biografia' => route('site.biografia'),
+          'contato' => route('site.contato'),
+      ],
+  ];
 @endphp
 
 @if($siteTheme === 'premium')
 <div
   data-premium-component="home"
-  data-props='@json([
-    "politicianName" => $politicianName,
-    "politicianPhoto" => $politicianPhoto,
-    "politicianRole" => $politicianRole,
-    "slogan" => $politician->slogan ?? "Com planejamento estratégico, transparência e gestão eficiente, estamos transformando nossa cidade em referência nacional.",
-    "stats" => [
-      "projetos" => ($stats->projetos ?? 15) . "+",
-      "obras" => ($stats->obras ?? 50) . "k+",
-      "anos" => ($stats->anos ?? 98) . "%",
-    ],
-    "propostas" => ($propostas ?? collect())->take(4)->map(fn ($proposta) => [
-      "id" => $proposta->id,
-      "titulo" => $proposta->titulo,
-      "resumo" => $proposta->resumo,
-      "icone" => $proposta->icone ?? "fas fa-chart-line",
-    ])->values(),
-    "noticias" => ($ultimasNoticias ?? collect())->take(3)->map(fn ($post) => [
-      "id" => $post->id,
-      "titulo" => $post->titulo,
-      "resumo" => \Illuminate\Support\Str::limit($post->resumo, 110),
-      "imagem" => $post->imagem_destaque ?: asset("img/blog-placeholder.jpg"),
-      "categoria" => $post->category?->nome,
-      "url" => route("site.blog.show", $post->slug),
-    ])->values(),
-    "firstEvent" => $eventos->first() ? [
-      "titulo" => $eventos->first()->titulo,
-      "local" => $eventos->first()->local,
-      "day" => $eventos->first()->data_inicio->format("d"),
-      "month" => strtoupper($eventos->first()->data_inicio->translatedFormat("M")),
-      "time" => $eventos->first()->data_inicio->format("H\\hi"),
-    ] : null,
-    "urls" => [
-      "propostas" => route("site.propostas"),
-      "biografia" => route("site.biografia"),
-      "contato" => route("site.contato"),
-    ],
-  ])'
+  data-props='@json($premiumHomeProps)'
 ></div>
 @else
 <section class="hero-section" itemscope itemtype="https://schema.org/Person">

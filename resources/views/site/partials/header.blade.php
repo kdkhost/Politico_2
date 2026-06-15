@@ -24,18 +24,20 @@
           ['label' => 'Contato', 'url' => route('site.contato'), 'icon' => null, 'target' => '_self', 'active' => request()->routeIs('site.contato')],
       ];
   }
+
+  $premiumHeaderProps = [
+      'siteName' => $siteName,
+      'siteLogo' => $siteLogo,
+      'siteSlogan' => $siteSlogan,
+      'navItems' => $navItems,
+      'contactUrl' => route('site.contato'),
+  ];
 @endphp
 
 @if($siteTheme === 'premium')
 <div
   data-premium-component="header"
-  data-props='@json([
-    "siteName" => $siteName,
-    "siteLogo" => $siteLogo,
-    "siteSlogan" => $siteSlogan,
-    "navItems" => $navItems,
-    "contactUrl" => route("site.contato"),
-  ])'
+  data-props='@json($premiumHeaderProps)'
 ></div>
 @else
 <nav class="navbar navbar-expand-lg navbar-site fixed-top" role="navigation" aria-label="Navegação principal">
