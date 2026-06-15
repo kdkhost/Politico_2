@@ -123,7 +123,7 @@ a:hover {
   height: 48px;
   border-radius: 14px;
   background: linear-gradient(135deg, rgba(0, 39, 118, 0.1), rgba(0, 156, 59, 0.12));
-  display: inline-flex;
+  display: none;
   align-items: center;
   justify-content: center;
   box-shadow: none;
@@ -2361,6 +2361,10 @@ body[data-site-theme="premium"] .form-select:focus {
 }
 
 @media (max-width: 991.98px) {
+  .navbar-site .navbar-toggler {
+    display: inline-flex;
+  }
+
   body[data-site-theme="premium"] .premium-home-shell::before {
     width: 100%;
     opacity: 0.025;
