@@ -26,7 +26,17 @@ final class DataTableRequest
     {
         $filters = $request->only($filterKeys);
 
-        $search = trim((string) ($request->input('search.value') ?? $request->input('search', '')));
+        $rawSearch = $request->input('search.value');
+
+        if ($rawSearch === null) {
+            $rawSearch = $request->input('search', '');
+        }
+
+        if (is_array($rawSearch)) {
+            $rawSearch = $rawSearch['value'] ?? '';
+        }
+
+        $search = trim((string) $rawSearch);
         if ($search !== '') {
             $filters['search'] = mb_substr($search, 0, 120);
         }
