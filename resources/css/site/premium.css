@@ -10,13 +10,20 @@
 @layer base {
   body[data-site-theme="premium"] {
     font-family: var(--font-sans);
-    --premium-accent: color-mix(in srgb, var(--premium-secondary) 28%, #ef4444);
+    --premium-accent: color-mix(in srgb, var(--premium-primary) 58%, var(--premium-secondary));
+    --premium-surface: color-mix(in srgb, var(--premium-primary) 34%, #020617);
+    --premium-surface-strong: color-mix(in srgb, var(--premium-primary) 52%, #020617);
+    --premium-line: color-mix(in srgb, var(--premium-secondary) 34%, rgba(255,255,255,0.18));
     background:
       radial-gradient(circle at top right, color-mix(in srgb, var(--premium-primary) 16%, transparent) 0%, transparent 28%),
       radial-gradient(circle at bottom left, color-mix(in srgb, var(--premium-secondary) 14%, transparent) 0%, transparent 24%),
       linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
     color: #0f172a;
     text-rendering: optimizeLegibility;
+  }
+
+  body[data-site-theme="premium"].premium-drawer-open {
+    overflow: hidden;
   }
 
   body[data-site-theme="premium"] main {
@@ -40,10 +47,10 @@
   body[data-site-theme="premium"] .page-header {
     position: relative;
     overflow: hidden;
-    padding-top: 10.5rem;
+    padding-top: 8.5rem;
     padding-bottom: 4rem;
     background:
-      linear-gradient(135deg, color-mix(in srgb, var(--premium-primary) 90%, #020617) 0%, #0f172a 46%, color-mix(in srgb, var(--premium-secondary) 54%, #020617) 100%);
+      linear-gradient(135deg, color-mix(in srgb, var(--premium-primary) 90%, #020617) 0%, var(--premium-surface-strong) 46%, color-mix(in srgb, var(--premium-secondary) 54%, #020617) 100%);
   }
 
   body[data-site-theme="premium"] .page-header::before {
@@ -73,6 +80,24 @@
   body[data-site-theme="premium"] .section-title,
   body[data-site-theme="premium"] .premium-font-display {
     letter-spacing: -0.04em;
+  }
+
+  body[data-site-theme="premium"] .premium-site-drawer-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--premium-secondary) 54%, #ffffff) transparent;
+  }
+
+  body[data-site-theme="premium"] .premium-site-drawer-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  body[data-site-theme="premium"] .premium-site-drawer-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  body[data-site-theme="premium"] .premium-site-drawer-scroll::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--premium-accent), var(--premium-secondary));
   }
 
   body[data-site-theme="premium"] a {
