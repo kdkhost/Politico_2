@@ -36,20 +36,20 @@ class ProfileController extends Controller
     public function list(Request $request)
     {
         try {
+            if (!$request->ajax() && !$request->expectsJson()) {
+                return redirect()->route('admin.permissions.profiles');
+            }
+
             $perfis = $this->perfilService->listAll();
             $total = $perfis->total();
 
-            if ($request->ajax()) {
-                return response()->json([
-                    'status' => 'success',
-                    'data' => $perfis->items(),
-                    'draw' => (int) $request->draw,
-                    'recordsTotal' => $total,
-                    'recordsFiltered' => $total,
-                ]);
-            }
-
-            return view('admin.perfis.list', compact('perfis'));
+            return response()->json([
+                'status' => 'success',
+                'data' => $perfis->items(),
+                'draw' => (int) $request->draw,
+                'recordsTotal' => $total,
+                'recordsFiltered' => $total,
+            ]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao listar perfis: ' . $e->getMessage()], 500);
         }

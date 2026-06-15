@@ -1,4 +1,4 @@
 @php
-    header('Location: ' . route('admin.media.index'), true, 302);
+    header('Location: ' . route('admin.midia.index'), true, 302);
     exit;
 @endphp

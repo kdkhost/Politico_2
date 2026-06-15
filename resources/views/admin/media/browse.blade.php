@@ -4,7 +4,7 @@
 @section('page_title', 'Navegador de Mídia')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('admin.media.index') }}">Mídia</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.midia.index') }}">Mídia</a></li>
     <li class="breadcrumb-item active">Navegador</li>
 @endsection
 

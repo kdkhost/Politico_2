@@ -3,7 +3,7 @@
 @section('title', 'Detalhes da Mídia - ' . config('app.name'))
 @section('page_title', 'Detalhes da Mídia')
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.media.index') }}">Mídia</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.midia.index') }}">Mídia</a></li>
     <li class="breadcrumb-item active">Detalhes</li>
 @endsection
 
@@ -29,7 +29,7 @@
             <div class="card-header">
                 <h3 class="card-title">{{ $media->nome ?? $media->filename ?? 'Arquivo' }}</h3>
                 <div class="card-tools">
-                    <a href="{{ route('admin.media.index') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Voltar</a>
+                    <a href="{{ route('admin.midia.index') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left me-1"></i>Voltar</a>
                 </div>
             </div>
             <div class="card-body">

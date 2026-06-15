@@ -4,7 +4,7 @@
 @section('page_title', 'Detalhes da Mídia')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('admin.media.index') }}">Mídia</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.midia.index') }}">Mídia</a></li>
     <li class="breadcrumb-item active">Detalhes</li>
 @endsection
 
@@ -65,7 +65,7 @@
                 </table>
             </div>
             <div class="card-footer d-flex gap-2">
-                <a href="{{ route('admin.media.index') }}" class="btn btn-secondary">
+                <a href="{{ route('admin.midia.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left me-1"></i>Voltar
                 </a>
                 <a href="{{ $media->url }}" target="_blank" rel="noopener" class="btn btn-primary">
