@@ -268,14 +268,14 @@ class TransparenciaController extends Controller
             'type' => $item->tipo,
             'year' => $item->data_publicacao?->format('Y'),
             'description' => $item->descricao,
-            'status' => $item->status === 'publicado',
+            'status' => $this->isPublishedStatus($item->status),
             'created_at' => $item->created_at,
         ];
     }
 
     private function formatTransparencyRow(TransparencyItem $item): array
     {
-        $published = $item->status === 'publicado';
+        $published = $this->isPublishedStatus($item->status);
 
         return [
             'id' => $item->id,
@@ -318,5 +318,10 @@ class TransparenciaController extends Controller
     private function normalizeAttachments(mixed $files): array
     {
         return is_array($files) ? array_values($files) : [];
+    }
+
+    private function isPublishedStatus(?string $status): bool
+    {
+        return in_array(strtolower(trim((string) $status)), ['publicado', 'active', 'ativo'], true);
     }
 }
