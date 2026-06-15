@@ -114,6 +114,8 @@ class ContatoController extends Controller
             $settings = $this->smtpService->getSettings();
 
             if ($settings && $settings->is_configured) {
+                $this->smtpService->applyDynamicConfig($settings);
+
                 Mail::send('emails.contact', ['contact' => $contact], function ($message) use ($contact, $settings): void {
                     $message->to($settings->mail_from_address)
                         ->subject('Novo contato: ' . $contact->assunto)

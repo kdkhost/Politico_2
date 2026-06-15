@@ -66,6 +66,16 @@ class LicenseBoxExternalAPI
             ], JSON_UNESCAPED_UNICODE);
         }
 
+        if ($method === 'GET' && $data) {
+            $url = sprintf('%s?%s', $url, http_build_query($data));
+        }
+
+        $headers = $this->buildApiHeaders();
+
+        if (!function_exists('curl_init')) {
+            return $this->callApiWithStream($method, $url, $data, $headers);
+        }
+
         $curl = curl_init();
 
         switch ($method) {
@@ -81,28 +91,9 @@ class LicenseBoxExternalAPI
                     curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
                 }
                 break;
-            default:
-                if ($data) {
-                    $url = sprintf('%s?%s', $url, http_build_query($data));
-                }
         }
 
-        $this_server_name = getenv('SERVER_NAME') ?: ($_SERVER['SERVER_NAME'] ?? (getenv('HTTP_HOST') ?: ($_SERVER['HTTP_HOST'] ?? '')));
-        $this_http_or_https = (
-            (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ||
-            (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
-        ) ? 'https://' : 'http://';
-        $this_url = $this_http_or_https . $this_server_name . ($_SERVER['REQUEST_URI'] ?? '');
-        $this_ip = getenv('SERVER_ADDR') ?: (($_SERVER['SERVER_ADDR'] ?? null) ?: ($this->getIpFromThirdParty() ?: gethostbyname(gethostname())));
-
-        curl_setopt($curl, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json',
-            'LB-API-KEY: ' . $this->api_key,
-            'LB-URL: ' . $this_url,
-            'LB-IP: ' . $this_ip,
-            'LB-LANG: ' . $this->api_language,
-        ]);
-
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 30);
@@ -112,10 +103,7 @@ class LicenseBoxExternalAPI
 
         if (!$result && !$this->debug) {
             curl_close($curl);
-            return json_encode([
-                'status' => false,
-                'message' => 'O servidor não está disponível no momento. Tente novamente.',
-            ], JSON_UNESCAPED_UNICODE);
+            return $this->unavailableResponse();
         }
 
         $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
@@ -137,6 +125,79 @@ class LicenseBoxExternalAPI
 
         curl_close($curl);
         return $this->stripUtf8Bom((string) $result);
+    }
+
+    private function buildApiHeaders(): array
+    {
+        $this_server_name = getenv('SERVER_NAME') ?: ($_SERVER['SERVER_NAME'] ?? (getenv('HTTP_HOST') ?: ($_SERVER['HTTP_HOST'] ?? '')));
+        $this_http_or_https = (
+            (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ||
+            (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+        ) ? 'https://' : 'http://';
+        $this_url = $this_http_or_https . $this_server_name . ($_SERVER['REQUEST_URI'] ?? '');
+        $this_ip = getenv('SERVER_ADDR') ?: (($_SERVER['SERVER_ADDR'] ?? null) ?: ($this->getIpFromThirdParty() ?: gethostbyname(gethostname())));
+
+        return [
+            'Content-Type: application/json',
+            'LB-API-KEY: ' . $this->api_key,
+            'LB-URL: ' . $this_url,
+            'LB-IP: ' . $this_ip,
+            'LB-LANG: ' . $this->api_language,
+        ];
+    }
+
+    private function callApiWithStream(string $method, string $url, $data, array $headers): string
+    {
+        if (!ini_get('allow_url_fopen')) {
+            Log::warning('Licenca: cURL indisponivel e allow_url_fopen desabilitado.');
+
+            return $this->unavailableResponse();
+        }
+
+        $contextOptions = [
+            'http' => [
+                'method' => $method,
+                'header' => implode("\r\n", $headers),
+                'ignore_errors' => true,
+                'timeout' => 30,
+            ],
+        ];
+
+        if (in_array($method, ['POST', 'PUT'], true) && $data) {
+            $contextOptions['http']['content'] = $data;
+        }
+
+        $context = stream_context_create($contextOptions);
+        $result = @file_get_contents($url, false, $context);
+        $httpStatus = 0;
+
+        foreach (($http_response_header ?? []) as $header) {
+            if (preg_match('/^HTTP\/\S+\s+(\d+)/', (string) $header, $match) === 1) {
+                $httpStatus = (int) $match[1];
+                break;
+            }
+        }
+
+        if ($result === false || $result === '') {
+            return $this->unavailableResponse();
+        }
+
+        if ($httpStatus !== 200) {
+            return json_encode([
+                'status' => false,
+                'message' => 'O servidor retornou uma resposta inválida. Entre em contato com o suporte.',
+            ], JSON_UNESCAPED_UNICODE);
+        }
+
+        return $this->stripUtf8Bom((string) $result);
+    }
+
+    private function unavailableResponse(): string
+    {
+        return json_encode([
+            'status' => false,
+            'message' => 'O servidor não está disponível no momento. Tente novamente.',
+        ], JSON_UNESCAPED_UNICODE);
     }
 
     public function checkConnection(): array
@@ -310,6 +371,10 @@ class LicenseBoxExternalAPI
 
     private function getIpFromThirdParty(): string
     {
+        if (!function_exists('curl_init')) {
+            return trim((string) @file_get_contents('http://ipecho.net/plain'));
+        }
+
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, 'http://ipecho.net/plain');
         curl_setopt($curl, CURLOPT_HEADER, 0);
@@ -323,6 +388,10 @@ class LicenseBoxExternalAPI
 
     private function getRemoteFilesize(string $url): string
     {
+        if (!function_exists('curl_init')) {
+            return '';
+        }
+
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_HEADER, true);
         curl_setopt($curl, CURLOPT_URL, $url);

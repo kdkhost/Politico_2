@@ -23,7 +23,7 @@ Route::middleware(['force.json', 'throttle:60,1'])->group(function () {
         $service = app(App\Services\Agenda\AgendaService::class);
         $start = $request->get('start', now()->startOfMonth()->toDateString());
         $end = $request->get('end', now()->endOfMonth()->toDateString());
-        $eventos = $service->getEventsByDateRange($start, $end);
+        $eventos = collect($service->getEventsByDateRange($start, $end));
 
         return response()->json([
             'status' => 'success',

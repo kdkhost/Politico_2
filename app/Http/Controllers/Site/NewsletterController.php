@@ -15,6 +15,7 @@ namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
 use App\Models\NewsletterSubscriber;
+use App\Services\SMTP\SmtpService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -120,11 +121,14 @@ class NewsletterController extends Controller
 
     protected function sendConfirmationEmail(NewsletterSubscriber $subscriber): void
     {
-        $settings = app(\App\Services\SMTP\SmtpService::class)->getSettings();
+        $smtpService = app(SmtpService::class);
+        $settings = $smtpService->getSettings();
 
         if (!$settings || !$settings->is_configured) {
             return;
         }
+
+        $smtpService->applyDynamicConfig($settings);
 
         $confirmUrl = route('site.newsletter.confirm', $subscriber->token);
         $cancelUrl = route('site.newsletter.cancel', $subscriber->token);

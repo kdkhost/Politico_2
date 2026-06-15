@@ -30,7 +30,7 @@ class SmtpService
         $settings = SmtpSetting::where('active', true)->first();
 
         if (($data['mail_password'] ?? '') === '' && $settings?->getRawOriginal('mail_password')) {
-            $data['mail_password'] = $settings->getRawOriginal('mail_password');
+            unset($data['mail_password']);
         }
 
         if ($settings) {
@@ -155,6 +155,19 @@ class SmtpService
             'password_configured' => !empty($settings->mail_password),
             'message' => $settings->is_configured ? 'SMTP configurado e operacional.' : 'SMTP configurado, mas não testado.',
         ];
+    }
+
+    public function applyDynamicConfig(SmtpSetting|array|null $settings = null): bool
+    {
+        $config = $settings ?? $this->getSettings();
+
+        if (!$config) {
+            return false;
+        }
+
+        $this->applyConfig($config);
+
+        return true;
     }
 
     protected function applyConfig(SmtpSetting|array $settings): void

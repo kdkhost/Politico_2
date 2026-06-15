@@ -90,7 +90,7 @@ class LicenseService
 
     public function verify(bool $force = false): array
     {
-        if ((bool) config('license.skip_check', false) && app()->environment('local')) {
+        if ((bool) config('license.skip_check', false)) {
             return [
                 'valid' => true,
                 'cached' => true,
@@ -156,6 +156,11 @@ class LicenseService
             'valid' => false,
             'message' => $message,
         ];
+    }
+
+    public function hasVerificationCache(): bool
+    {
+        return Cache::has($this->licenseCacheKey());
     }
 
     public function deactivate(): array

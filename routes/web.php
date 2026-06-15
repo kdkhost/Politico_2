@@ -155,7 +155,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/{id}/bloquear', [App\Http\Controllers\Admin\UserController::class, 'block'])->whereNumber('id')->middleware('permission:users.edit')->name('block');
             Route::post('/{id}/desbloquear', [App\Http\Controllers\Admin\UserController::class, 'unblock'])->whereNumber('id')->middleware('permission:users.edit')->name('unblock');
             Route::post('/{id}/alternar-status', [App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->whereNumber('id')->middleware('permission:users.edit')->name('toggle-status');
-            Route::post('/{id}/login-as', [App\Http\Controllers\Admin\UserController::class, 'loginAs'])->whereNumber('id')->middleware('permission:users.impersonar')->name('login-as');
+            Route::post('/{id}/login-as', [App\Http\Controllers\Admin\UserController::class, 'loginAs'])->whereNumber('id')->middleware('permission:usuarios.impersonar')->name('login-as');
         });
 
         // Permissions

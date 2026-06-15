@@ -206,7 +206,7 @@ class FinanceiroController extends Controller
                     ['ID', 'Tipo', 'Descrição', 'Valor', 'Vencimento', 'Pagamento', 'Forma', 'Status', 'Categoria'],
                     $this->buildExportQuery($filters)
                         ->orderBy('id')
-                        ->cursor()
+                        ->lazyById(500)
                         ->map(fn (FinancialTransaction $transaction): array => [
                             $transaction->id,
                             ucfirst((string) $transaction->tipo),

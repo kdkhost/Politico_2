@@ -35,7 +35,12 @@ class UploadService
         $extensao = $file->getClientOriginalExtension();
         $mimeType = $file->getMimeType();
         $tamanho = $file->getSize();
-        $hash = $this->generateUniqueMediaHash(md5_file($file->getRealPath()) ?: Str::random(32));
+        $hash = $this->calculateFileHash($file);
+        $duplicate = $this->findDuplicateByHash($hash);
+
+        if ($duplicate) {
+            throw new \RuntimeException('Arquivo duplicado. Já existe uma mídia cadastrada com este conteúdo.');
+        }
 
         $pasta = $this->organizeByDate($pasta);
         $nomeSanitizado = $this->sanitizeFilename(pathinfo($nomeOriginal, PATHINFO_FILENAME));
@@ -114,7 +119,13 @@ class UploadService
         $this->validateFile($file);
 
         $media = Media::findOrFail($mediaId);
-        $hash = $this->generateUniqueMediaHash(md5_file($file->getRealPath()) ?: Str::random(32), $mediaId);
+        $hash = $this->calculateFileHash($file);
+        $duplicate = $this->findDuplicateByHash($hash, $mediaId);
+
+        if ($duplicate) {
+            throw new \RuntimeException('Arquivo duplicado. Já existe outra mídia cadastrada com este conteúdo.');
+        }
+
         $this->deletePublicFile($media->caminho);
         $this->deletePublicFile('thumbnails/' . $media->caminho);
 
@@ -300,24 +311,13 @@ class UploadService
 
     public function organizeByDate(string $pasta): string
     {
-        $pasta = trim($pasta, '/');
-        $pasta = str_replace('\\', '/', $pasta);
-        $pasta = str_replace(['../', '..\\', './', '.\\'], '', $pasta);
-        $pasta = preg_replace('#/+#', '/', $pasta) ?? $pasta;
-        $pasta = trim($pasta, '/.');
-        $pasta = preg_replace('/[^A-Za-z0-9_\/-]/', '', $pasta) ?? '';
-        $pasta = preg_replace('#/+#', '/', $pasta) ?? $pasta;
-
-        if ($pasta === '') {
-            $pasta = 'uploads';
-        }
-
-        return $pasta . '/' . now()->format('Y/m');
+        return $this->sanitizeDirectory($pasta) . '/' . now()->format('Y/m');
     }
 
     protected function storePublicFile(UploadedFile $file, string $directory, string $filename): string
     {
-        $directory = trim(str_replace('\\', '/', $directory), '/');
+        $directory = $this->sanitizeDirectory($directory);
+        $filename = basename(str_replace('\\', '/', $filename));
         $relativePath = ($directory !== '' ? $directory . '/' : '') . $filename;
         $absolutePath = $this->publicStoragePath($relativePath);
         $targetDirectory = dirname($absolutePath);
@@ -325,6 +325,8 @@ class UploadService
         if (!is_dir($targetDirectory) && !mkdir($targetDirectory, 0755, true) && !is_dir($targetDirectory)) {
             throw new \RuntimeException('Falha ao criar diretorio de upload.');
         }
+
+        $this->ensurePathInsidePublicStorage($targetDirectory);
 
         $sourcePath = $file->getRealPath();
         if (!$sourcePath || !is_file($sourcePath)) {
@@ -346,7 +348,12 @@ class UploadService
             return;
         }
 
-        $absolutePath = $this->publicStoragePath($relativePath);
+        try {
+            $absolutePath = $this->publicStoragePath($relativePath);
+        } catch (\Throwable) {
+            return;
+        }
+
         if (is_file($absolutePath)) {
             @unlink($absolutePath);
         }
@@ -393,28 +400,73 @@ class UploadService
         return ltrim($reference, '/');
     }
 
-    protected function generateUniqueMediaHash(string $baseHash, ?int $ignoreId = null): string
+    protected function calculateFileHash(UploadedFile $file): string
     {
-        $candidate = $baseHash;
+        $path = $file->getRealPath();
 
-        while ($this->mediaHashExists($candidate, $ignoreId)) {
-            $candidate = $baseHash . '-' . Str::lower(Str::random(6));
+        if (!$path || !is_file($path)) {
+            throw new \RuntimeException('Arquivo temporario de upload nao encontrado.');
         }
 
-        return $candidate;
+        return hash_file('sha256', $path) ?: md5_file($path) ?: Str::random(64);
     }
 
-    protected function mediaHashExists(string $hash, ?int $ignoreId = null): bool
+    protected function findDuplicateByHash(string $hash, ?int $ignoreId = null): ?Media
     {
         return Media::withTrashed()
             ->when($ignoreId !== null, fn ($query) => $query->where('id', '!=', $ignoreId))
             ->where('hash_arquivo', $hash)
-            ->exists();
+            ->first();
     }
 
     protected function publicStoragePath(string $relativePath): string
     {
-        return storage_path('app/public/' . ltrim(str_replace('\\', '/', $relativePath), '/'));
+        $relativePath = ltrim(str_replace('\\', '/', $relativePath), '/');
+        $relativePath = preg_replace('#/+#', '/', $relativePath) ?? '';
+
+        if ($relativePath === '' || str_contains($relativePath, '../') || str_contains($relativePath, '/..') || str_starts_with($relativePath, '..')) {
+            throw new \RuntimeException('Caminho de arquivo invalido.');
+        }
+
+        $absolutePath = storage_path('app/public/' . $relativePath);
+        $this->ensurePathInsidePublicStorage(dirname($absolutePath));
+
+        return $absolutePath;
+    }
+
+    protected function sanitizeDirectory(string $directory): string
+    {
+        $directory = str_replace('\\', '/', $directory);
+        $directory = str_replace("\0", '', $directory);
+        $segments = [];
+
+        foreach (explode('/', $directory) as $segment) {
+            $segment = trim($segment);
+
+            if ($segment === '' || $segment === '.' || $segment === '..') {
+                continue;
+            }
+
+            $segment = preg_replace('/[^A-Za-z0-9_-]/', '', $segment) ?? '';
+
+            if ($segment !== '') {
+                $segments[] = $segment;
+            }
+        }
+
+        return $segments === [] ? 'uploads' : implode('/', $segments);
+    }
+
+    protected function ensurePathInsidePublicStorage(string $path): void
+    {
+        $basePath = realpath(storage_path('app/public')) ?: storage_path('app/public');
+        $realPath = realpath($path) ?: $path;
+        $basePath = rtrim(str_replace('\\', '/', $basePath), '/');
+        $realPath = rtrim(str_replace('\\', '/', $realPath), '/');
+
+        if ($realPath !== $basePath && !str_starts_with($realPath, $basePath . '/')) {
+            throw new \RuntimeException('Caminho de upload fora da pasta publica permitida.');
+        }
     }
 
     protected function publicUrl(string $relativePath): string

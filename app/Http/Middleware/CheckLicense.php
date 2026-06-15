@@ -40,11 +40,11 @@ class CheckLicense
 
     public function handle(Request $request, Closure $next): Response
     {
-        if ($this->shouldSkip($request) || ((bool) config('license.skip_check', false) && app()->environment('local'))) {
+        if ($this->shouldSkip($request) || (bool) config('license.skip_check', false)) {
             return $next($request);
         }
 
-        $verification = $this->licenseService->verify();
+        $verification = $this->licenseService->verify(!$this->licenseService->hasVerificationCache());
 
         if (!($verification['valid'] ?? false)) {
             Log::warning('Licença inválida ou não verificada.', [
