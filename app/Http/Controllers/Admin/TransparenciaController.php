@@ -101,6 +101,7 @@ class TransparenciaController extends Controller
                 'redirect' => route('admin.transparencia.edit', $item->id),
             ]);
         } catch (\Throwable $e) {
+            report($e);
             return response()->json(['status' => 'error', 'message' => 'Erro ao criar item: ' . $e->getMessage()], 500);
         }
     }
@@ -158,6 +159,7 @@ class TransparenciaController extends Controller
                 'data' => $item,
             ]);
         } catch (\Throwable $e) {
+            report($e);
             return response()->json(['status' => 'error', 'message' => 'Erro ao atualizar item: ' . $e->getMessage()], 500);
         }
     }

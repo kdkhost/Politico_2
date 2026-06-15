@@ -22,6 +22,25 @@ use Illuminate\Support\Str;
 class UploadService
 {
     private const UNSAFE_EXTENSIONS = ['svg'];
+    private const GENERIC_MIME_TYPES = ['', 'application/octet-stream', 'binary/octet-stream'];
+    private const MIME_ALIASES = [
+        'csv' => ['text/csv', 'text/plain', 'application/csv', 'application/vnd.ms-excel', 'application/octet-stream'],
+        'txt' => ['text/plain', 'application/octet-stream'],
+        'pdf' => ['application/pdf', 'application/x-pdf', 'application/acrobat', 'application/octet-stream'],
+        'doc' => ['application/msword', 'application/vnd.ms-office', 'application/octet-stream'],
+        'docx' => ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip', 'application/octet-stream'],
+        'xls' => ['application/vnd.ms-excel', 'application/msexcel', 'application/x-msexcel', 'application/octet-stream'],
+        'xlsx' => ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip', 'application/octet-stream'],
+        'zip' => ['application/zip', 'application/x-zip-compressed', 'multipart/x-zip', 'application/octet-stream'],
+        'rar' => ['application/x-rar-compressed', 'application/vnd.rar', 'application/octet-stream'],
+        'jpg' => ['image/jpeg', 'image/pjpeg', 'application/octet-stream'],
+        'jpeg' => ['image/jpeg', 'image/pjpeg', 'application/octet-stream'],
+        'png' => ['image/png', 'image/x-png', 'application/octet-stream'],
+        'gif' => ['image/gif', 'application/octet-stream'],
+        'webp' => ['image/webp', 'application/octet-stream'],
+        'mp4' => ['video/mp4', 'application/octet-stream'],
+        'mp3' => ['audio/mpeg', 'audio/mp3', 'application/octet-stream'],
+    ];
 
     public function __construct(
         protected MidiaService $midiaService,
@@ -39,7 +58,7 @@ class UploadService
         $duplicate = $this->findDuplicateByHash($hash);
 
         if ($duplicate) {
-            throw new \RuntimeException('Arquivo duplicado. Já existe uma mídia cadastrada com este conteúdo.');
+            throw new \RuntimeException('Arquivo duplicado. Ja existe uma midia cadastrada com este conteudo.');
         }
 
         $pasta = $this->organizeByDate($pasta);
@@ -123,7 +142,7 @@ class UploadService
         $duplicate = $this->findDuplicateByHash($hash, $mediaId);
 
         if ($duplicate) {
-            throw new \RuntimeException('Arquivo duplicado. Já existe outra mídia cadastrada com este conteúdo.');
+            throw new \RuntimeException('Arquivo duplicado. Ja existe outra midia cadastrada com este conteudo.');
         }
 
         $this->deletePublicFile($media->caminho);
@@ -173,28 +192,46 @@ class UploadService
         $effectiveMax = min($configMax, $serverMax);
 
         if ($file->getSize() > $effectiveMax) {
-            throw new \RuntimeException('O arquivo excede o tamanho máximo permitido de ' . $this->formatBytes($effectiveMax) . '.');
+            throw new \RuntimeException('O arquivo excede o tamanho maximo permitido de ' . $this->formatBytes($effectiveMax) . '.');
         }
 
         $extension = strtolower($file->getClientOriginalExtension());
         $allowedExtensions = config('sistema.allowed_extensions', []);
 
         if (in_array($extension, self::UNSAFE_EXTENSIONS, true)) {
-            throw new \RuntimeException("Extensão .{$extension} não permitida por segurança.");
+            throw new \RuntimeException("Extensao .{$extension} nao permitida por seguranca.");
         }
 
         if (!empty($allowedExtensions) && !in_array($extension, $allowedExtensions, true)) {
-            throw new \RuntimeException("Extensão .{$extension} não permitida.");
+            throw new \RuntimeException("Extensao .{$extension} nao permitida.");
         }
 
-        $mime = $file->getMimeType();
+        $mime = strtolower((string) $file->getMimeType());
         $allowedMimes = config('sistema.allowed_mimes', []);
 
-        if (!empty($allowedMimes) && !in_array($mime, $allowedMimes, true)) {
-            throw new \RuntimeException("Tipo de arquivo {$mime} não permitido.");
+        if (!$this->isAllowedMimeForExtension($extension, $mime, $allowedMimes, $allowedExtensions)) {
+            throw new \RuntimeException("Tipo de arquivo {$mime} nao permitido para a extensao .{$extension}.");
         }
 
         return true;
+    }
+
+    protected function isAllowedMimeForExtension(string $extension, string $mime, array $allowedMimes, array $allowedExtensions): bool
+    {
+        $normalizedAllowedMimes = array_map(
+            static fn ($value): string => strtolower((string) $value),
+            $allowedMimes
+        );
+
+        if (in_array($extension, $allowedExtensions, true) && in_array($mime, self::GENERIC_MIME_TYPES, true)) {
+            return true;
+        }
+
+        if (in_array($mime, $normalizedAllowedMimes, true)) {
+            return true;
+        }
+
+        return in_array($mime, self::MIME_ALIASES[$extension] ?? [], true);
     }
 
     public function deleteReference(?string $reference, ?int $mediaId = null): void
