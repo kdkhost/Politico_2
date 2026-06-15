@@ -17,6 +17,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TransparencyItem;
 use App\Services\SEO\SeoService;
 use App\Services\Transparencia\TransparenciaService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TransparenciaController extends Controller
@@ -36,33 +37,75 @@ class TransparenciaController extends Controller
             'status' => 'publicado',
         ]);
 
+        if (!$request->filled('search') && $request->filled('q')) {
+            $filters['search'] = (string) $request->input('q');
+        }
+
+        if ($request->filled('periodo')) {
+            try {
+                $period = Carbon::createFromFormat('Y-m', (string) $request->input('periodo'));
+                $filters['date_from'] = $period->copy()->startOfMonth()->toDateString();
+                $filters['date_to'] = $period->copy()->endOfMonth()->toDateString();
+            } catch (\Throwable) {
+                // Ignora periodo invalido e mantem os filtros padrao.
+            }
+        }
+
         $items = $this->transparenciaService->listItems($filters);
+        $currentYear = (int) now()->year;
+        $summary = $this->transparenciaService->getSummary($currentYear);
+        $summaryByType = collect($summary['by_type'] ?? [])->keyBy('tipo');
+
+        $monthlyReceitas = $this->transparenciaService->getMonthlyPublishedTotals($currentYear, 'receita');
+        $monthlyDespesas = $this->transparenciaService->getMonthlyPublishedTotals($currentYear, 'despesa');
+        $chartLabels = collect(range(1, 12))
+            ->map(fn (int $month): string => Carbon::create()->month($month)->locale('pt_BR')->translatedFormat('F'))
+            ->map(fn (string $label): string => ucfirst($label))
+            ->values()
+            ->all();
 
         $tipos = TransparencyItem::select('tipo')
-            ->where('status', 'publicado')
+            ->whereIn('status', ['publicado', 'active'])
             ->distinct()
             ->orderBy('tipo')
             ->pluck('tipo');
 
         $categorias = TransparencyItem::select('categoria')
-            ->where('status', 'publicado')
+            ->whereIn('status', ['publicado', 'active'])
             ->whereNotNull('categoria')
             ->distinct()
             ->orderBy('categoria')
             ->pluck('categoria');
 
-        $summary = $this->transparenciaService->getSummary();
-
         $meta = $this->seoService->generateMetaTags(null, 'page');
         $meta['title'] = 'Transparência - ' . config('app.name');
         $meta['description'] = 'Portal da transparência com informações sobre receitas, despesas, licitações e contratos.';
 
+        $totalReceitas = (float) data_get($summaryByType->get('receita'), 'valor_total', 0);
+        $totalDespesas = (float) data_get($summaryByType->get('despesa'), 'valor_total', 0);
+        $totalLicitacoes = (int) data_get($summaryByType->get('licitacao'), 'publicados', 0);
+        $totalContratos = (int) data_get($summaryByType->get('contrato'), 'publicados', 0);
+        $chartReceitasLabels = $chartLabels;
+        $chartReceitasData = array_values($monthlyReceitas);
+        $chartDespesasLabels = $chartLabels;
+        $chartDespesasData = array_values($monthlyDespesas);
+        $itens = $items;
+
         return view('site.transparencia.index', compact(
             'items',
+            'itens',
             'tipos',
             'categorias',
             'summary',
             'meta',
+            'totalReceitas',
+            'totalDespesas',
+            'totalLicitacoes',
+            'totalContratos',
+            'chartReceitasLabels',
+            'chartReceitasData',
+            'chartDespesasLabels',
+            'chartDespesasData',
         ));
     }
 
@@ -70,7 +113,7 @@ class TransparenciaController extends Controller
     {
         $item = $this->transparenciaService->getItemDetails($id);
 
-        if ($item->status !== 'publicado') {
+        if (!in_array($item->status, ['publicado', 'active'], true)) {
             abort(404);
         }
 

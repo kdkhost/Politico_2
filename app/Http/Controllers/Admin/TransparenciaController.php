@@ -221,6 +221,13 @@ class TransparenciaController extends Controller
             $normalized['data_publicacao'] = "{$year}-01-01";
         }
 
+        if (!$request->filled('data_referencia')) {
+            $referenceDate = $normalized['data_publicacao'] ?? $request->input('data_publicacao');
+            if (!empty($referenceDate)) {
+                $normalized['data_referencia'] = $referenceDate;
+            }
+        }
+
         if (!$request->filled('status') || in_array((string) $request->input('status'), ['0', '1'], true)) {
             $normalized['status'] = $request->boolean('status') ? 'publicado' : 'rascunho';
         }

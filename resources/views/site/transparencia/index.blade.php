@@ -121,7 +121,7 @@
             </tr>
           </thead>
           <tbody>
-            @forelse($itens ?? [] as $item)
+            @forelse($items ?? [] as $item)
               <tr>
                 <td class="small">{{ formatarData($item->data_referencia) }}</td>
                 <td>{{ Str::limit($item->titulo, 50) }}</td>
@@ -137,9 +137,9 @@
         </table>
       </div>
 
-      @if(isset($itens))
+      @if(isset($items))
         <div class="mt-3">
-          {{ $itens->links('pagination::bootstrap-5') }}
+          {{ $items->links('pagination::bootstrap-5') }}
         </div>
       @endif
     </div>

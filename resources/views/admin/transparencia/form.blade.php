@@ -35,11 +35,13 @@
                                 <label for="transparencia_type" class="form-label">Tipo <span class="text-danger">*</span></label>
                                 <select id="transparencia_type" name="type" class="form-select" required>
                                     <option value="">Selecione</option>
+                                    <option value="receita">Receita</option>
+                                    <option value="despesa">Despesa</option>
+                                    <option value="contrato">Contrato</option>
+                                    <option value="licitacao">Licitação</option>
                                     <option value="documento">Documento</option>
                                     <option value="planilha">Planilha</option>
                                     <option value="relatorio">Relatório</option>
-                                    <option value="contrato">Contrato</option>
-                                    <option value="licitacao">Licitação</option>
                                     <option value="convenio">Convênio</option>
                                     <option value="outro">Outro</option>
                                 </select>

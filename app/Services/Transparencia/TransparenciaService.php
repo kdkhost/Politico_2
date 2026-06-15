@@ -22,6 +22,19 @@ use Illuminate\Support\Str;
 
 class TransparenciaService
 {
+    private const PUBLISHED_STATUSES = ['publicado', 'active'];
+
+    private const TYPE_ALIASES = [
+        'receita' => ['receita', 'receitas'],
+        'receitas' => ['receita', 'receitas'],
+        'despesa' => ['despesa', 'despesas'],
+        'despesas' => ['despesa', 'despesas'],
+        'licitacao' => ['licitacao', 'licitacoes'],
+        'licitacoes' => ['licitacao', 'licitacoes'],
+        'contrato' => ['contrato', 'contratos'],
+        'contratos' => ['contrato', 'contratos'],
+    ];
+
     private const SORTABLE_FIELDS = [
         'id',
         'tipo',
@@ -42,7 +55,12 @@ class TransparenciaService
         $query = TransparencyItem::with('creator:id,name');
 
         if (!empty($filters['tipo'])) {
-            $query->where('tipo', $filters['tipo']);
+            $typeValues = $this->resolveTypeValues((string) $filters['tipo']);
+            if (count($typeValues) === 1) {
+                $query->where('tipo', $typeValues[0]);
+            } else {
+                $query->whereIn('tipo', $typeValues);
+            }
         }
 
         if (!empty($filters['categoria'])) {
@@ -50,7 +68,7 @@ class TransparenciaService
         }
 
         if (!empty($filters['status'])) {
-            $query->where('status', $filters['status']);
+            $query->whereIn('status', $this->resolveStatusValues($filters['status']));
         }
 
         if (!empty($filters['search'])) {
@@ -146,7 +164,7 @@ class TransparenciaService
     public function getByType(string $type): LengthAwarePaginator
     {
         return TransparencyItem::with('creator:id,name')
-            ->where('tipo', $type)
+            ->whereIn('tipo', $this->resolveTypeValues($type))
             ->orderByDesc('data_publicacao')
             ->paginate(config('transparencia.per_page', 20));
     }
@@ -155,7 +173,7 @@ class TransparenciaService
     {
         return TransparencyItem::whereDate('data_publicacao', '>=', $start)
             ->whereDate('data_publicacao', '<=', $end)
-            ->where('status', 'publicado')
+            ->whereIn('status', self::PUBLISHED_STATUSES)
             ->orderBy('data_publicacao')
             ->get()
             ->toArray();
@@ -168,36 +186,63 @@ class TransparenciaService
         $cacheKey = "transparencia_summary_{$year}";
 
         return Cache::remember($cacheKey, config('transparencia.cache_minutes', 60) * 60, function () use ($year) {
-            $totais = TransparencyItem::selectRaw(
-                "tipo,
-                COUNT(*) as total,
-                SUM(CASE WHEN status = 'publicado' THEN 1 ELSE 0 END) as publicados,
-                COALESCE(SUM(valor), 0) as valor_total"
-            )
-                ->whereYear('data_referencia', $year)
-                ->groupBy('tipo')
-                ->get()
-                ->toArray();
+            $items = TransparencyItem::query()
+                ->whereYear(DB::raw('COALESCE(data_referencia, data_publicacao)'), $year)
+                ->get();
 
-            $byCategory = TransparencyItem::selectRaw(
-                "categoria,
-                COUNT(*) as total,
-                COALESCE(SUM(valor), 0) as valor_total"
-            )
-                ->whereYear('data_referencia', $year)
-                ->groupBy('categoria')
-                ->orderByDesc('total')
-                ->get()
-                ->toArray();
+            $totais = $items
+                ->groupBy(fn (TransparencyItem $item) => $this->normalizeTypeKey((string) $item->tipo))
+                ->map(function ($group, string $type): array {
+                    return [
+                        'tipo' => $type,
+                        'total' => $group->count(),
+                        'publicados' => $group->whereIn('status', self::PUBLISHED_STATUSES)->count(),
+                        'valor_total' => (float) $group->sum('valor'),
+                    ];
+                })
+                ->values()
+                ->all();
+
+            $byCategory = $items
+                ->groupBy(fn (TransparencyItem $item) => (string) ($item->categoria ?: 'Sem categoria'))
+                ->map(function ($group, string $category): array {
+                    return [
+                        'categoria' => $category,
+                        'total' => $group->count(),
+                        'valor_total' => (float) $group->sum('valor'),
+                    ];
+                })
+                ->sortByDesc('total')
+                ->values()
+                ->all();
 
             return [
                 'year' => $year,
-                'total_items' => TransparencyItem::whereYear('data_referencia', $year)->count(),
-                'total_valor' => TransparencyItem::whereYear('data_referencia', $year)->sum('valor'),
+                'total_items' => $items->count(),
+                'total_valor' => (float) $items->sum('valor'),
                 'by_type' => $totais,
                 'by_category' => $byCategory,
             ];
         });
+    }
+
+    public function getMonthlyPublishedTotals(int $year, string $type): array
+    {
+        $rows = TransparencyItem::query()
+            ->selectRaw('MONTH(COALESCE(data_referencia, data_publicacao)) as month_number, COALESCE(SUM(valor), 0) as total')
+            ->whereYear(DB::raw('COALESCE(data_referencia, data_publicacao)'), $year)
+            ->whereIn('status', self::PUBLISHED_STATUSES)
+            ->whereIn('tipo', $this->resolveTypeValues($type))
+            ->groupBy(DB::raw('MONTH(COALESCE(data_referencia, data_publicacao))'))
+            ->orderBy(DB::raw('MONTH(COALESCE(data_referencia, data_publicacao))'))
+            ->get();
+
+        return collect(range(1, 12))
+            ->mapWithKeys(function (int $month) use ($rows): array {
+                $row = $rows->firstWhere('month_number', $month);
+                return [$month => (float) ($row->total ?? 0)];
+            })
+            ->all();
     }
 
     /**
@@ -247,5 +292,33 @@ class TransparenciaService
         }
 
         throw new \InvalidArgumentException("Formato de exportação '{$type}' não suportado.");
+    }
+
+    private function resolveTypeValues(string $type): array
+    {
+        $normalized = Str::lower(trim($type));
+
+        return self::TYPE_ALIASES[$normalized] ?? [$normalized];
+    }
+
+    private function normalizeTypeKey(string $type): string
+    {
+        $normalized = Str::lower(trim($type));
+
+        return self::TYPE_ALIASES[$normalized][0] ?? $normalized;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function resolveStatusValues(mixed $status): array
+    {
+        $normalized = Str::lower(trim((string) $status));
+
+        return match ($normalized) {
+            'publicado', 'published', 'ativo', 'active', '1' => self::PUBLISHED_STATUSES,
+            'rascunho', 'draft', '0' => ['rascunho', 'draft', 'inactive'],
+            default => [$normalized],
+        };
     }
 }
