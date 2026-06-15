@@ -1390,7 +1390,7 @@ function initializeAdminNavbarDropdowns() {
         return;
     }
 
-    const toggles = document.querySelectorAll('#adminNotificationToggle, #adminUserMenuToggle');
+    const toggles = Array.from(document.querySelectorAll('#adminNotificationToggle, #adminUserMenuToggle'));
 
     toggles.forEach(function (toggleElement) {
         bootstrap.Dropdown.getOrCreateInstance(toggleElement, {
@@ -1401,6 +1401,30 @@ function initializeAdminNavbarDropdowns() {
                     strategy: 'fixed',
                 };
             },
+        });
+
+        if (toggleElement.dataset.adminDropdownBound === '1') {
+            return;
+        }
+
+        toggleElement.dataset.adminDropdownBound = '1';
+        toggleElement.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const instance = bootstrap.Dropdown.getOrCreateInstance(toggleElement, {
+                autoClose: 'outside',
+            });
+
+            toggles.forEach(function (otherToggle) {
+                if (otherToggle === toggleElement) {
+                    return;
+                }
+
+                bootstrap.Dropdown.getInstance(otherToggle)?.hide();
+            });
+
+            instance.toggle();
         });
     });
 
@@ -1421,6 +1445,16 @@ function initializeAdminNavbarDropdowns() {
         toggles.forEach(function (toggleElement) {
             const instance = bootstrap.Dropdown.getInstance(toggleElement);
             instance?.hide();
+        });
+    });
+
+    document.addEventListener('click', function (event) {
+        if (event.target.closest('#adminNotificationToggle, #adminUserMenuToggle, .notifications-dropdown-menu, .admin-user-menu')) {
+            return;
+        }
+
+        toggles.forEach(function (toggleElement) {
+            bootstrap.Dropdown.getInstance(toggleElement)?.hide();
         });
     });
 }
