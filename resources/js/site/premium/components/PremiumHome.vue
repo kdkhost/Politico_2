@@ -139,16 +139,16 @@ const props = defineProps({
         </div>
 
         <aside class="overflow-hidden rounded-md bg-slate-950 text-white shadow-[0_28px_80px_rgba(15,23,42,0.22)]">
-          <div class="h-full p-8 sm:p-10">
-            <span class="inline-flex rounded-full border border-white/12 bg-white/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-white/80">Canal direto</span>
-            <div class="mt-6 flex h-16 w-16 items-center justify-center rounded-md bg-white/10 text-2xl text-white">
+          <div class="h-full p-6 sm:p-7">
+            <span class="inline-flex rounded-full border border-white/12 bg-white/10 px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.22em] text-white/80">Canal direto</span>
+            <div class="mt-5 flex h-14 w-14 items-center justify-center rounded-md bg-white/10 text-xl text-white">
               <i class="fas fa-envelope-open-text"></i>
             </div>
-            <h3 class="premium-font-display mt-6 text-3xl font-black tracking-tight">Participe e acompanhe</h3>
+            <h3 class="premium-font-display mt-5 text-2xl font-black tracking-tight sm:text-[1.75rem]">Participe e acompanhe</h3>
             <p class="mt-4 text-sm leading-8 text-slate-300">Uma área de contato mais firme visualmente, sem ruído e com chamada mais forte para ação.</p>
             <a
               :href="urls.contato"
-              class="mt-8 inline-flex w-full items-center justify-center rounded-full px-6 py-4 text-sm font-black text-white transition hover:-translate-y-0.5"
+              class="mt-6 inline-flex w-full items-center justify-center rounded-full px-5 py-3 text-sm font-black text-white transition hover:-translate-y-0.5 sm:w-auto"
               style="background: var(--premium-accent);"
             >
               Fale com o gestor

@@ -41,14 +41,14 @@ onBeforeUnmount(() => {
 
 <template>
   <header class="fixed inset-x-0 top-0 z-50 border-b border-white/8 bg-slate-950/88 backdrop-blur-xl">
-    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5 sm:px-6 lg:px-8">
       <a href="/" class="flex min-w-0 items-center gap-3" :aria-label="siteName">
-        <span class="flex h-14 w-36 shrink-0 items-center justify-center overflow-hidden rounded-md px-2 sm:h-16 sm:w-44">
-          <img :src="siteLogo" :alt="siteName" :title="siteName" class="max-h-10 w-full object-contain sm:max-h-12">
+        <span class="flex h-12 w-32 shrink-0 items-center justify-center overflow-hidden rounded-md px-2 sm:h-14 sm:w-40">
+          <img :src="siteLogo" :alt="siteName" :title="siteName" class="max-h-8 w-full object-contain sm:max-h-10">
         </span>
       </a>
 
-      <div class="hidden items-center gap-8 lg:flex">
+      <div class="hidden items-center gap-6 lg:flex">
         <nav aria-label="Navegação principal">
           <ul class="flex items-center gap-1">
             <li v-for="item in displayNavItems" :key="`${item.label}-${item.url}`">
@@ -56,7 +56,7 @@ onBeforeUnmount(() => {
                 :href="item.url"
                 :target="item.target || '_self'"
                 :class="[
-                  'inline-flex items-center px-4 py-2 text-sm font-semibold transition',
+                  'inline-flex items-center px-4 py-1.5 text-sm font-semibold transition',
                   item.active
                     ? 'text-white'
                     : 'text-slate-300 hover:text-white'
@@ -73,7 +73,7 @@ onBeforeUnmount(() => {
 
         <a
           :href="contactUrl"
-          class="inline-flex min-w-[198px] items-center justify-center whitespace-nowrap rounded-full px-6 py-3 text-sm font-black text-white shadow-[0_18px_44px_rgba(0,0,0,0.24)] transition hover:-translate-y-0.5"
+          class="inline-flex min-w-[178px] items-center justify-center whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-black text-white shadow-[0_18px_44px_rgba(0,0,0,0.24)] transition hover:-translate-y-0.5"
           style="background: var(--premium-accent);"
         >
           <i class="fas fa-user-check me-2"></i>
@@ -83,7 +83,7 @@ onBeforeUnmount(() => {
 
       <button
         type="button"
-        class="inline-flex h-11 w-11 items-center justify-center rounded-md border border-white/10 bg-white/5 text-lg text-white lg:hidden"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-md border border-white/10 bg-white/5 text-base text-white lg:hidden"
         :aria-label="mobileOpen ? 'Fechar menu' : 'Abrir menu'"
         :aria-expanded="mobileOpen"
         @click="mobileOpen = !mobileOpen"
