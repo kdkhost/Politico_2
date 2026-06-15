@@ -1695,9 +1695,9 @@ body.admin-premium .dropdown-menu::-webkit-scrollbar-thumb:hover {
 }
 
 .admin-sidebar .sidebar-brand {
-    min-height: 92px;
+    min-height: 88px;
     height: auto;
-    padding: 18px;
+    padding: 14px 16px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     align-items: center;
@@ -1708,14 +1708,16 @@ body.admin-premium .dropdown-menu::-webkit-scrollbar-thumb:hover {
     min-width: 0;
     display: flex !important;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     color: #ffffff !important;
 }
 
 .admin-brand-mark {
-    width: 46px;
-    height: 46px;
-    min-width: 46px;
+    width: 56px !important;
+    height: 56px !important;
+    min-width: 56px !important;
+    max-width: 56px !important;
+    flex: 0 0 56px !important;
     border-radius: 8px;
     display: inline-flex;
     align-items: center;
@@ -1726,20 +1728,27 @@ body.admin-premium .dropdown-menu::-webkit-scrollbar-thumb:hover {
 }
 
 .admin-brand-mark img {
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
     object-fit: contain;
+    object-position: center;
     display: block;
 }
 
 .admin-brand .brand-text {
     color: #ffffff;
-    font-size: 1.02rem;
-    line-height: 1.2;
-    white-space: nowrap;
+    font-size: 0.98rem;
+    line-height: 1.15;
+    white-space: normal;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: unset;
     text-transform: none;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
 }
 
 .admin-sidebar .sidebar-wrapper {
@@ -2493,7 +2502,7 @@ body.admin-premium.admin-sidebar-collapsed .admin-sidebar .nav-treeview {
 
 body.admin-premium.admin-sidebar-collapsed .admin-sidebar .sidebar-brand {
     justify-content: center;
-    padding-inline: 12px;
+    padding-inline: 10px;
 }
 
 body.admin-premium.admin-sidebar-collapsed .admin-sidebar .sidebar-menu .nav-link {
