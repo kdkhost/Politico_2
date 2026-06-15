@@ -284,7 +284,7 @@ function renderUploadPreview(wrapper, input) {
     if (!files.length) {
         const existingUrl = input.dataset.existingUrl;
         if (existingUrl) {
-            preview.html(`<img src="${existingUrl}" alt="Preview atual" class="admin-upload-preview-media">`);
+            preview.append(buildExistingPreviewElement(input, existingUrl));
             meta.text('Arquivo atual carregado.');
         } else {
             meta.text('Nenhum arquivo selecionado.');
@@ -296,27 +296,107 @@ function renderUploadPreview(wrapper, input) {
 
     files.slice(0, 6).forEach((file) => {
         const fileUrl = URL.createObjectURL(file);
-        let element;
-
-        if (file.type.startsWith('image/')) {
-            element = $(`<img src="${fileUrl}" alt="${file.name}" class="admin-upload-preview-media">`);
-            getImageInfo(file).then((info) => {
-                if (info) {
-                    wrapper.find('.admin-upload-dimensions').text(`${info.width}x${info.height}px`);
-                    URL.revokeObjectURL(info.url);
-                }
-            });
-        } else if (file.type.startsWith('video/')) {
-            element = $(`<video src="${fileUrl}" class="admin-upload-preview-media" controls></video>`);
-        } else if (file.type.startsWith('audio/')) {
-            element = $(`<audio src="${fileUrl}" class="w-100" controls></audio>`);
-        } else {
-            element = $(`<div class="admin-upload-file-icon"><i class="fas fa-file"></i><span>${file.name}</span></div>`);
-        }
+        const element = buildFilePreviewElement(file, fileUrl, wrapper);
 
         preview.append(element);
     });
 }
+
+function getPreviewKind(input, url, mimeType) {
+    const accept = String(input?.accept || '').toLowerCase();
+    const source = String(url || '').toLowerCase();
+    const mime = String(mimeType || '').toLowerCase();
+
+    if (mime.startsWith('image/') || accept.includes('image/') || /\.(png|jpe?g|webp|gif|bmp|ico)$/i.test(source)) {
+        return 'image';
+    }
+
+    if (mime.startsWith('video/') || accept.includes('video/') || /\.(mp4|webm|ogg|mov|m4v)$/i.test(source)) {
+        return 'video';
+    }
+
+    if (mime.startsWith('audio/') || accept.includes('audio/') || /\.(mp3|wav|ogg|m4a|aac|flac)$/i.test(source)) {
+        return 'audio';
+    }
+
+    return 'file';
+}
+
+function buildExistingPreviewElement(input, existingUrl) {
+    const kind = getPreviewKind(input, existingUrl, '');
+
+    if (kind === 'image') {
+        return $(`<img src="${existingUrl}" alt="Preview atual" class="admin-upload-preview-media">`);
+    }
+
+    if (kind === 'video') {
+        return $(`<video src="${existingUrl}" class="admin-upload-preview-media" controls preload="metadata"></video>`);
+    }
+
+    if (kind === 'audio') {
+        return $(`<audio src="${existingUrl}" class="w-100" controls preload="metadata"></audio>`);
+    }
+
+    const fileName = existingUrl.split('/').pop() || 'Arquivo atual';
+
+    return $(`<a href="${existingUrl}" target="_blank" rel="noopener" class="admin-upload-file-icon"><i class="fas fa-file"></i><span>${fileName}</span></a>`);
+}
+
+function buildFilePreviewElement(file, fileUrl, wrapper) {
+    const kind = getPreviewKind(null, file.name, file.type);
+
+    if (kind === 'image') {
+        const element = $(`<img src="${fileUrl}" alt="${file.name}" class="admin-upload-preview-media">`);
+        getImageInfo(file).then((info) => {
+            if (info) {
+                wrapper.find('.admin-upload-dimensions').text(`${info.width}x${info.height}px`);
+                URL.revokeObjectURL(info.url);
+            }
+        });
+        return element;
+    }
+
+    if (kind === 'video') {
+        return $(`<video src="${fileUrl}" class="admin-upload-preview-media" controls preload="metadata"></video>`);
+    }
+
+    if (kind === 'audio') {
+        return $(`<audio src="${fileUrl}" class="w-100" controls preload="metadata"></audio>`);
+    }
+
+    return $(`<div class="admin-upload-file-icon"><i class="fas fa-file"></i><span>${file.name}</span></div>`);
+}
+
+window.renderAdminUploadPreview = renderUploadPreview;
+
+window.applyInstantAdminBranding = function (settings) {
+    if (!settings || typeof settings !== 'object') {
+        return;
+    }
+
+    const body = document.body;
+    const compactLogo = settings.admin_logo_compact || body.dataset.adminLogoCompact || '';
+    const fullLogo = settings.admin_logo || compactLogo || body.dataset.adminLogo || '';
+    const hasFullLogo = !!settings.admin_logo;
+
+    if (compactLogo) {
+        body.dataset.adminLogoCompact = compactLogo;
+        $('[data-admin-brand-compact]').attr('src', compactLogo);
+    }
+
+    if (fullLogo) {
+        body.dataset.adminLogo = fullLogo;
+        $('[data-admin-brand-full]').attr('src', fullLogo);
+    }
+
+    body.dataset.adminHasLogo = hasFullLogo ? '1' : '0';
+    $('[data-admin-brand-full-wrapper]').toggleClass('d-none', !hasFullLogo);
+    $('[data-admin-brand-fallback]').toggleClass('d-none', hasFullLogo);
+
+    if (settings.favicon) {
+        $('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]').attr('href', settings.favicon);
+    }
+};
 
 async function maybeAdjustImage(input, wrapper) {
     const files = Array.from(input.files || []);

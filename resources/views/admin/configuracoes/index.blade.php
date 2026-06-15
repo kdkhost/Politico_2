@@ -1,10 +1,10 @@
 @extends('admin.layouts.master')
 
-@section('title', 'Configurações - ' . config('app.name'))
-@section('page_title', 'Configurações do Sistema')
+@section('title', 'ConfiguraÃ§Ãµes - ' . config('app.name'))
+@section('page_title', 'ConfiguraÃ§Ãµes do Sistema')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item active">Configurações</li>
+    <li class="breadcrumb-item active">ConfiguraÃ§Ãµes</li>
 @endsection
 
 @section('content')
@@ -134,7 +134,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="contact_address" class="form-label">Endereço</label>
+                                        <label for="contact_address" class="form-label">EndereÃ§o</label>
                                         <input type="text" id="contact_address" name="contact_address" class="form-control" value="{{ settings('contact_address') }}">
                                     </div>
                                 </div>
@@ -191,18 +191,18 @@
 
                         <div class="tab-pane fade" id="seo" role="tabpanel">
                             <div class="mb-3">
-                                <label for="seo_title" class="form-label">Título Global (SEO)</label>
-                                <input type="text" id="seo_title" name="seo_title" class="form-control" value="{{ settings('seo_title') }}" placeholder="Título padrão para páginas">
+                                <label for="seo_title" class="form-label">TÃ­tulo Global (SEO)</label>
+                                <input type="text" id="seo_title" name="seo_title" class="form-control" value="{{ settings('seo_title') }}" placeholder="TÃ­tulo padrÃ£o para pÃ¡ginas">
                             </div>
                             <div class="mb-3">
-                                <label for="seo_description" class="form-label">Meta Descrição Global</label>
-                                <textarea id="seo_description" name="seo_description" class="form-control" rows="3" maxlength="160" placeholder="Descrição padrão para mecanismos de busca">{{ settings('seo_description') }}</textarea>
-                                <div class="form-text">Máximo de 160 caracteres. Atual: <span id="seoDescCount">{{ strlen(settings('seo_description') ?? '') }}</span></div>
+                                <label for="seo_description" class="form-label">Meta DescriÃ§Ã£o Global</label>
+                                <textarea id="seo_description" name="seo_description" class="form-control" rows="3" maxlength="160" placeholder="DescriÃ§Ã£o padrÃ£o para mecanismos de busca">{{ settings('seo_description') }}</textarea>
+                                <div class="form-text">MÃ¡ximo de 160 caracteres. Atual: <span id="seoDescCount">{{ strlen(settings('seo_description') ?? '') }}</span></div>
                             </div>
                             <div class="mb-3">
                                 <label for="seo_keywords" class="form-label">Palavras-chave Globais</label>
                                 <input type="text" id="seo_keywords" name="seo_keywords" class="form-control" value="{{ settings('seo_keywords') }}" placeholder="palavra1, palavra2, palavra3">
-                                <div class="form-text">Separadas por vírgula.</div>
+                                <div class="form-text">Separadas por vÃ­rgula.</div>
                             </div>
                         </div>
 
@@ -212,17 +212,17 @@
                                     <div class="mb-3">
                                         <label for="default_theme" class="form-label">Tema do Frontend</label>
                                         <select id="default_theme" name="default_theme" class="form-select">
-                                            <option value="default" @selected(settings('default_theme', 'default') === 'default')>Padrão do sistema</option>
+                                            <option value="default" @selected(settings('default_theme', 'default') === 'default')>PadrÃ£o do sistema</option>
                                             <option value="premium" @selected(settings('default_theme') === 'premium')>Premium institucional</option>
                                         </select>
-                                        <div class="form-text">As cores deste tema seguem a paleta primária e secundária definida abaixo.</div>
+                                        <div class="form-text">As cores deste tema seguem a paleta primÃ¡ria e secundÃ¡ria definida abaixo.</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="primary_color" class="form-label">Cor Primária</label>
+                                        <label for="primary_color" class="form-label">Cor PrimÃ¡ria</label>
                                         <div class="input-group">
                                             <input type="color" id="primary_color" name="primary_color" class="form-control form-control-color" value="{{ settings('primary_color') ?? '#0d6efd' }}">
                                             <input type="text" class="form-control" id="primary_color_hex" value="{{ settings('primary_color') ?? '#0d6efd' }}" style="max-width: 100px;">
@@ -231,7 +231,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="secondary_color" class="form-label">Cor Secundária</label>
+                                        <label for="secondary_color" class="form-label">Cor SecundÃ¡ria</label>
                                         <div class="input-group">
                                             <input type="color" id="secondary_color" name="secondary_color" class="form-control form-control-color" value="{{ settings('secondary_color') ?? '#6c757d' }}">
                                             <input type="text" class="form-control" id="secondary_color_hex" value="{{ settings('secondary_color') ?? '#6c757d' }}" style="max-width: 100px;">
@@ -242,7 +242,7 @@
                             <div class="mb-3">
                                 <div class="form-check form-switch">
                                     <input type="checkbox" id="dark_mode_default" name="dark_mode_default" class="form-check-input" value="1" {{ settings('dark_mode_default') ? 'checked' : '' }}>
-                                    <label for="dark_mode_default" class="form-check-label">Modo escuro como padrão</label>
+                                    <label for="dark_mode_default" class="form-check-label">Modo escuro como padrÃ£o</label>
                                 </div>
                             </div>
                         </div>
@@ -255,7 +255,7 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="lgpd_privacy_page" class="form-label">URL da Página de Privacidade</label>
+                                <label for="lgpd_privacy_page" class="form-label">URL da PÃ¡gina de Privacidade</label>
                                 <input type="url" id="lgpd_privacy_page" name="lgpd_privacy_page" class="form-control" value="{{ settings('lgpd_privacy_page') }}" placeholder="https://...">
                             </div>
                         </div>
@@ -322,22 +322,22 @@
 
                         <div class="tab-pane fade" id="scripts" role="tabpanel">
                             <div class="mb-3">
-                                <label for="header_scripts" class="form-label">Scripts do Cabeçalho (&lt;/head&gt;)</label>
+                                <label for="header_scripts" class="form-label">Scripts do CabeÃ§alho (&lt;/head&gt;)</label>
                                 <textarea id="header_scripts" name="header_scripts" class="form-control font-monospace" rows="5" placeholder="Google Analytics, Facebook Pixel, etc.">{{ settings('header_scripts') }}</textarea>
                             </div>
                             <div class="mb-3">
-                                <label for="footer_scripts" class="form-label">Scripts do Rodapé (&lt;/body&gt;)</label>
+                                <label for="footer_scripts" class="form-label">Scripts do RodapÃ© (&lt;/body&gt;)</label>
                                 <textarea id="footer_scripts" name="footer_scripts" class="form-control font-monospace" rows="5" placeholder="Chat widgets, tracking, etc.">{{ settings('footer_scripts') }}</textarea>
                             </div>
                             <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-1"></i>Estes scripts serão injetados em todas as páginas do site.
+                                <i class="fas fa-info-circle me-1"></i>Estes scripts serÃ£o injetados em todas as pÃ¡ginas do site.
                             </div>
                         </div>
                     </div>
 
                     <div class="text-end mt-3 border-top pt-3">
                         <button type="submit" class="btn btn-primary" id="btnSaveSettings">
-                            <i class="fas fa-save me-1"></i>Salvar Configurações
+                            <i class="fas fa-save me-1"></i>Salvar ConfiguraÃ§Ãµes
                         </button>
                     </div>
                 </form>
@@ -346,7 +346,7 @@
     </div>
 </div>
 
-@push('scripts')
+@push(''scripts'')
 <script>
     $(function() {
         $('#seo_description').on('input', function() {
@@ -379,9 +379,35 @@
                 contentType: false,
                 success: function(res) {
                     if (res.status === 'success') {
-                        toastr.success(res.message || 'Configurações salvas com sucesso!');
+                        var savedSettings = res.data?.settings || {};
+
+                        $.each(savedSettings, function(key, value) {
+                            if (typeof value !== 'string' || value === '') {
+                                return;
+                            }
+
+                            var input = $('#settingsForm').find('[name="' + key + '"]');
+                            if (!input.length || input.attr('type') !== 'file') {
+                                return;
+                            }
+
+                            input.attr('data-existing-url', value);
+                            input[0].dataset.existingUrl = value;
+                            input.val('');
+
+                            var wrapper = input.closest('.admin-upload-enhanced');
+                            if (wrapper.length && typeof window.renderAdminUploadPreview === 'function') {
+                                window.renderAdminUploadPreview(wrapper, input[0]);
+                            }
+                        });
+
+                        if (typeof window.applyInstantAdminBranding === 'function') {
+                            window.applyInstantAdminBranding(savedSettings);
+                        }
+
+                        toastr.success(res.message || 'Configuracoes salvas com sucesso!');
                     } else {
-                        toastr.error(res.message || 'Erro ao salvar configurações.');
+                        toastr.error(res.message || 'Erro ao salvar configuracoes.');
                     }
                 },
                 error: function(xhr) {
@@ -393,11 +419,11 @@
                             });
                         });
                     } else {
-                        toastr.error(xhr.responseJSON?.message || 'Erro ao salvar configurações.');
+                        toastr.error(xhr.responseJSON?.message || 'Erro ao salvar configuracoes.');
                     }
                 },
                 complete: function() {
-                    btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i>Salvar Configurações');
+                    btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i>Salvar Configuracoes');
                 }
             });
         });

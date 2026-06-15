@@ -47,7 +47,7 @@
     </style>
     @stack('styles')
 </head>
-<body class="layout-fixed fixed-header admin-premium {{ settings('dark_mode') ? 'dark-mode' : '' }}" data-bs-theme="{{ settings('dark_mode') ? 'dark' : 'light' }}">
+<body class="layout-fixed fixed-header admin-premium {{ settings('dark_mode') ? 'dark-mode' : '' }}" data-bs-theme="{{ settings('dark_mode') ? 'dark' : 'light' }}" data-admin-logo="{{ $adminLogo }}" data-admin-logo-compact="{{ $adminLogoCompact }}" data-admin-has-logo="{{ $hasAdminLogo ? '1' : '0' }}">
     <div class="preloader flex-column justify-content-center align-items-center">
         <i class="fas fa-spinner fa-spin text-primary" style="font-size: 3rem;"></i>
     </div>
@@ -63,17 +63,16 @@
             <div class="sidebar-brand">
                 <a href="{{ route('admin.dashboard') }}" class="brand-link admin-brand text-decoration-none" aria-label="{{ $adminSiteName }}">
                     <span class="brand-image admin-brand-mark">
-                        <img src="{{ $adminLogoCompact }}" alt="{{ $adminSiteName }}" title="{{ $adminSiteName }}">
+                        <img src="{{ $adminLogoCompact }}" alt="{{ $adminSiteName }}" title="{{ $adminSiteName }}" data-admin-brand-compact>
                     </span>
                     <span class="brand-text admin-brand-text">
-                        @if($hasAdminLogo)
-                            <span class="admin-brand-full">
-                                <img src="{{ $adminLogo }}" alt="{{ $adminSiteName }}" title="{{ $adminSiteName }}">
-                            </span>
-                        @else
+                        <span class="admin-brand-full{{ $hasAdminLogo ? '' : ' d-none' }}" data-admin-brand-full-wrapper>
+                            <img src="{{ $adminLogo }}" alt="{{ $adminSiteName }}" title="{{ $adminSiteName }}" data-admin-brand-full>
+                        </span>
+                        <span class="admin-brand-fallback{{ $hasAdminLogo ? ' d-none' : '' }}" data-admin-brand-fallback>
                             <span class="admin-brand-name">{{ $adminSiteName }}</span>
                             <span class="admin-brand-subtitle">Painel Administrativo</span>
-                        @endif
+                        </span>
                     </span>
                 </a>
             </div>

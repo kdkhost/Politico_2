@@ -17,6 +17,13 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-15 - aplica atualizacao instantanea de midia no painel
+
+- corrigido `resources/js/admin/admin.js` para o preview dos uploads existentes respeitar imagem, video, audio e documento, sem cair sempre em imagem ao recarregar widgets
+- adicionada atualizacao imediata do branding administrativo e do favicon apos salvar configuracoes, sem depender de refresh manual da pagina
+- ajustado `app/Http/Controllers/Admin/SettingController.php` para retornar no JSON os valores efetivamente salvos, permitindo que o frontend atualize previews e links em tempo real
+- corrigido `resources/views/admin/configuracoes/index.blade.php` para limpar o input de arquivo apos o save, reidratar `data-existing-url` com a URL final salva e redesenhar o preview imediatamente
+
 ### 2026-06-15 - ajusta exibicao da marca no sidebar recolhido
 
 - corrigido `resources/css/admin/admin.css` para o icone compacto da marca do painel aparecer somente quando o sidebar estiver recolhido

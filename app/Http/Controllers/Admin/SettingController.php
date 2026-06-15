@@ -28,6 +28,7 @@ class SettingController extends Controller
     {
         $settings = $this->configuracaoService->getAll();
         $groups = collect($settings)->groupBy('grupo');
+
         return view('admin.configuracoes.index', compact('settings', 'groups'));
     }
 
@@ -136,12 +137,20 @@ class SettingController extends Controller
 
             $this->configuracaoService->updateSettings($settingsData);
 
+            $resolvedSettings = [];
+            foreach ($settingsData as $key => $value) {
+                $resolvedSettings[$key] = is_array($value) ? ($value['valor'] ?? null) : $value;
+            }
+
             return response()->json([
                 'status' => 'success',
-                'message' => 'Configurações salvas com sucesso.',
+                'message' => 'Configuracoes salvas com sucesso.',
+                'data' => [
+                    'settings' => $resolvedSettings,
+                ],
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao salvar configurações: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'message' => 'Erro ao salvar configuracoes: ' . $e->getMessage()], 500);
         }
     }
 
@@ -152,7 +161,7 @@ class SettingController extends Controller
 
             return response()->json(['status' => 'success', 'data' => $settings]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao buscar configurações por grupo.'], 500);
+            return response()->json(['status' => 'error', 'message' => 'Erro ao buscar configuracoes por grupo.'], 500);
         }
     }
 
