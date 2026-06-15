@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @php
         $adminSiteName = settings('site_name') ?: config('app.name');
-        $adminLogo = settings('logo') ?: config('app.logo') ?: asset('img/logo.png');
+        $adminLogo = settings('admin_logo') ?: settings('admin_logo_compact') ?: config('app.logo') ?: asset('img/logo.png');
         $adminFavicon = settings('favicon') ?: asset('favicon.ico');
     @endphp
     <title>Login - {{ $adminSiteName }}</title>

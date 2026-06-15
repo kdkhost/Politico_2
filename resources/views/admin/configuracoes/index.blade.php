@@ -86,6 +86,26 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
+                                        <label for="admin_logo" class="form-label">Logo do Painel</label>
+                                        <input type="file" id="admin_logo" name="admin_logo" class="form-control" accept="image/*" data-image-size="320x96" data-upload-label="Logo do painel administrativo" data-existing-url="{{ settings('admin_logo') }}">
+                                        @if(settings('admin_logo'))
+                                            <div class="mt-2"><img src="{{ settings('admin_logo') }}" alt="Logo do painel" style="max-height: 60px;"></div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="admin_logo_compact" class="form-label">Icone Compacto do Painel</label>
+                                        <input type="file" id="admin_logo_compact" name="admin_logo_compact" class="form-control" accept="image/*" data-image-size="512x512" data-upload-label="Icone compacto do painel" data-existing-url="{{ settings('admin_logo_compact') }}">
+                                        @if(settings('admin_logo_compact'))
+                                            <div class="mt-2"><img src="{{ settings('admin_logo_compact') }}" alt="Icone do painel" style="max-height: 60px;"></div>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
                                         <label for="favicon" class="form-label">Favicon</label>
                                         <input type="file" id="favicon" name="favicon" class="form-control" accept="image/x-icon,image/png" data-image-size="512x512" data-upload-label="Favicon" data-existing-url="{{ settings('favicon') }}">
                                         @if(settings('favicon'))

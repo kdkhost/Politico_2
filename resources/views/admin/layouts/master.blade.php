@@ -1,6 +1,8 @@
 @php
     $adminSiteName = settings('site_name') ?: config('app.name');
-    $adminLogo = settings('logo') ?: asset('img/logo.png');
+    $adminLogoCompact = settings('admin_logo_compact') ?: asset('img/logo.png');
+    $adminLogo = settings('admin_logo') ?: $adminLogoCompact;
+    $hasAdminLogo = filled(settings('admin_logo'));
     $adminPrimaryColor = settings('primary_color') ?: '#002776';
     $adminSecondaryColor = settings('secondary_color') ?: '#009c3b';
 
@@ -61,7 +63,17 @@
             <div class="sidebar-brand">
                 <a href="{{ route('admin.dashboard') }}" class="brand-link admin-brand text-decoration-none" aria-label="{{ $adminSiteName }}">
                     <span class="brand-image admin-brand-mark">
-                        <img src="{{ $adminLogo }}" alt="{{ $adminSiteName }}" title="{{ $adminSiteName }}">
+                        <img src="{{ $adminLogoCompact }}" alt="{{ $adminSiteName }}" title="{{ $adminSiteName }}">
+                    </span>
+                    <span class="brand-text admin-brand-text">
+                        @if($hasAdminLogo)
+                            <span class="admin-brand-full">
+                                <img src="{{ $adminLogo }}" alt="{{ $adminSiteName }}" title="{{ $adminSiteName }}">
+                            </span>
+                        @else
+                            <span class="admin-brand-name">{{ $adminSiteName }}</span>
+                            <span class="admin-brand-subtitle">Painel Administrativo</span>
+                        @endif
                     </span>
                 </a>
             </div>

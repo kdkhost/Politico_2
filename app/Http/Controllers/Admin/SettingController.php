@@ -60,7 +60,7 @@ class SettingController extends Controller
             } else {
                 $excluded = ['_token', '_method'];
                 $groupMap = [
-                    'site_name' => 'geral', 'site_slogan' => 'geral', 'logo' => 'geral', 'favicon' => 'geral',
+                    'site_name' => 'geral', 'site_slogan' => 'geral', 'logo' => 'geral', 'admin_logo' => 'geral', 'admin_logo_compact' => 'geral', 'favicon' => 'geral',
                     'contact_email' => 'contato', 'contact_phone' => 'contato', 'contact_address' => 'contato', 'contact_whatsapp' => 'contato',
                     'social_facebook' => 'social', 'social_instagram' => 'social', 'social_twitter' => 'social', 'social_youtube' => 'social', 'social_linkedin' => 'social',
                     'seo_title' => 'seo', 'seo_description' => 'seo', 'seo_keywords' => 'seo',
@@ -72,7 +72,7 @@ class SettingController extends Controller
                     'header_scripts' => 'scripts', 'footer_scripts' => 'scripts',
                 ];
                 $typeMap = [
-                    'logo' => 'file', 'favicon' => 'file',
+                    'logo' => 'file', 'admin_logo' => 'file', 'admin_logo_compact' => 'file', 'favicon' => 'file',
                     'dark_mode' => 'boolean', 'dark_mode_default' => 'boolean', 'cookie_banner_enabled' => 'boolean',
                     'recaptcha_enabled' => 'boolean', 'recaptcha_admin_login' => 'boolean', 'recaptcha_contact' => 'boolean',
                     'recaptcha_min_score' => 'float',

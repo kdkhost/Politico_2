@@ -17,6 +17,16 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-15 - separa a logo do painel da logo publica
+
+- corrigido `resources/views/admin/layouts/master.blade.php` para o painel administrativo deixar de depender da configuracao publica `logo` e passar a usar `admin_logo` e `admin_logo_compact`, com fallback estavel para `public/img/logo.png`
+- refeito o bloco de marca do sidebar em `resources/css/admin/admin.css` para exibir icone compacto + identificacao do painel no modo expandido e somente o icone no modo recolhido, eliminando o comportamento quebrado causado por imagem publica inadequada
+- ajustada a tela `resources/views/admin/auth/login.blade.php` para o login administrativo usar a identidade visual do painel em vez da logo publica do site
+- ampliado `app/Http/Controllers/Admin/SettingController.php` para aceitar e salvar os novos campos `admin_logo` e `admin_logo_compact`
+- atualizada `resources/views/admin/configuracoes/index.blade.php` com uploads dedicados para `Logo do Painel` e `Icone Compacto do Painel`, preservando `logo` como marca do frontend publico
+- recompilado o bundle Vite do admin em `public/build` para publicar a nova estrutura visual do brand do painel
+- validacoes locais executadas: `php -l app/Http/Controllers/Admin/SettingController.php`, `php artisan view:cache`, `npm run build`, `git diff --check` e verificacao de ausencia de BOM nos arquivos alterados
+
 ### 2026-06-15 - corrige dropdowns do navbar administrativo
 
 - refeito o markup de `resources/views/admin/layouts/navbar.blade.php` para usar `button` real nos toggles do sino e do menu do usuario, removendo dependencia de `href="#"` para abrir dropdown
