@@ -346,7 +346,7 @@
     </div>
 </div>
 
-@push(''scripts'')
+@push('scripts')
 <script>
     $(function() {
         $('#seo_description').on('input', function() {
