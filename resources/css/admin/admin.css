@@ -1728,8 +1728,8 @@ body.admin-premium.dark-mode .admin-user-toggle:hover {
     min-width: 0;
     display: flex !important;
     align-items: center;
-    justify-content: flex-start;
-    gap: 12px;
+    justify-content: center;
+    gap: 0;
     color: #ffffff !important;
 }
 
@@ -1741,7 +1741,7 @@ body.admin-premium.dark-mode .admin-user-toggle:hover {
     min-width: 0;
     padding: 4px;
     border-radius: 16px;
-    display: inline-flex;
+    display: none;
     align-items: center;
     justify-content: center;
     overflow: hidden;
@@ -1768,6 +1768,8 @@ body.admin-premium.dark-mode .admin-user-toggle:hover {
     justify-content: center;
     gap: 4px;
     overflow: hidden;
+    align-items: center;
+    text-align: center;
 }
 
 .admin-brand-full {
@@ -2571,6 +2573,7 @@ body.admin-premium.admin-sidebar-collapsed .admin-sidebar .sidebar-wrapper {
 }
 
 body.admin-premium.admin-sidebar-collapsed .admin-brand-mark {
+    display: inline-flex;
     width: 56px;
     min-width: 56px;
     max-width: 56px;

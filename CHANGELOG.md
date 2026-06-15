@@ -17,6 +17,12 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-15 - ajusta exibicao da marca no sidebar recolhido
+
+- corrigido `resources/css/admin/admin.css` para o icone compacto da marca do painel aparecer somente quando o sidebar estiver recolhido
+- no sidebar expandido a area da marca passa a mostrar apenas a identificacao principal, sem duplicar icone ao lado
+- reforcado o modo recolhido para renderizar o icone centralizado com `object-fit: contain`, evitando cortes visuais na logo compacta
+
 ### 2026-06-15 - separa a logo do painel da logo publica
 
 - corrigido `resources/views/admin/layouts/master.blade.php` para o painel administrativo deixar de depender da configuracao publica `logo` e passar a usar `admin_logo` e `admin_logo_compact`, com fallback estavel para `public/img/logo.png`
