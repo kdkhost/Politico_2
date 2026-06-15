@@ -75,8 +75,8 @@ onBeforeUnmount(() => {
                 :class="[
                   'inline-flex items-center px-4 py-1.5 text-sm font-semibold transition',
                   item.active
-                    ? 'text-white'
-                    : 'text-slate-300 hover:text-white'
+                    ? 'premium-nav-link-active'
+                    : 'premium-nav-link'
                 ]"
               >
                 <span class="relative">
@@ -158,14 +158,14 @@ onBeforeUnmount(() => {
       <nav aria-label="Navegacao principal" class="premium-site-drawer-scroll flex-1 overflow-y-auto px-4 py-4">
         <ul class="space-y-2">
           <li v-for="item in displayNavItems" :key="`drawer-${item.label}-${item.url}`">
-            <a
-              :href="item.url"
-              :target="item.target || '_self'"
-              :class="[
-                'flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold transition',
-                item.active
+              <a
+                :href="item.url"
+                :target="item.target || '_self'"
+                :class="[
+                  'flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold transition',
+                  item.active
                   ? 'bg-white text-slate-950 shadow-[0_18px_40px_rgba(255,255,255,0.12)]'
-                  : 'text-slate-200 hover:bg-white/8 hover:text-white'
+                  : 'premium-drawer-link hover:bg-white/8'
               ]"
               @click="closeMenu"
             >

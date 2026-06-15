@@ -31,14 +31,14 @@ defineProps({
 
         <div>
           <h4 class="text-sm font-black uppercase tracking-[0.24em]" :style="{ color: 'var(--premium-accent)' }">Institucional</h4>
-          <ul class="mt-5 space-y-3 text-sm font-medium text-slate-200">
-            <li><a class="transition hover:text-white" :href="urls.home">Início</a></li>
-            <li><a class="transition hover:text-white" :href="urls.biografia">Biografia</a></li>
-            <li><a class="transition hover:text-white" :href="urls.agenda">Agenda</a></li>
-            <li><a class="transition hover:text-white" :href="urls.blog">Blog</a></li>
-            <li><a class="transition hover:text-white" :href="urls.propostas">Propostas</a></li>
-            <li><a class="transition hover:text-white" :href="urls.transparencia">Transparência</a></li>
-            <li><a class="transition hover:text-white" :href="urls.contato">Contato</a></li>
+          <ul class="mt-5 space-y-3 text-sm font-medium">
+            <li><a class="premium-footer-link transition" :href="urls.home">Inicio</a></li>
+            <li><a class="premium-footer-link transition" :href="urls.biografia">Biografia</a></li>
+            <li><a class="premium-footer-link transition" :href="urls.agenda">Agenda</a></li>
+            <li><a class="premium-footer-link transition" :href="urls.blog">Blog</a></li>
+            <li><a class="premium-footer-link transition" :href="urls.propostas">Propostas</a></li>
+            <li><a class="premium-footer-link transition" :href="urls.transparencia">Transparencia</a></li>
+            <li><a class="premium-footer-link transition" :href="urls.contato">Contato</a></li>
           </ul>
         </div>
 
@@ -70,7 +70,7 @@ defineProps({
             &copy; {{ new Date().getFullYear() }} {{ siteName }} - Todos os direitos reservados
           </div>
           <div class="text-left md:text-right">
-            Desenvolvido por <span class="text-white">KDK Host</span> <span class="mx-2 text-slate-600">|</span> Versão {{ appVersion }}
+            Desenvolvido por <span class="text-white">KDK Host</span> <span class="mx-2 text-slate-600">|</span> Versao {{ appVersion }}
           </div>
         </div>
       </div>

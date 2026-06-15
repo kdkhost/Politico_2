@@ -36,6 +36,29 @@
     $siteSecondaryColor = settings('secondary_color') ?: '#009c3b';
     $siteTheme = settings('default_theme') ?: 'default';
     $siteName = settings('site_name') ?: config('app.name');
+
+    $resolveContrastColor = static function (string $hex, string $dark = '#0f172a', string $light = '#f8fafc'): string {
+        $normalized = ltrim(trim($hex), '#');
+        if (strlen($normalized) === 3) {
+            $normalized = preg_replace('/(.)/', '$1$1', $normalized);
+        }
+
+        if (!preg_match('/^[0-9a-fA-F]{6}$/', $normalized)) {
+            return $light;
+        }
+
+        $r = hexdec(substr($normalized, 0, 2));
+        $g = hexdec(substr($normalized, 2, 2));
+        $b = hexdec(substr($normalized, 4, 2));
+
+        $luminance = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+
+        return $luminance >= 150 ? $dark : $light;
+    };
+
+    $sitePrimaryContrast = $resolveContrastColor($sitePrimaryColor);
+    $siteSecondaryContrast = $resolveContrastColor($siteSecondaryColor);
+    $premiumDarkSurfaceContrast = $resolveContrastColor('#020617');
   @endphp
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,6 +85,12 @@
       --yellow-dark: color-mix(in srgb, {{ $siteSecondaryColor }} 20%, #ca8a04);
       --premium-primary: {{ $sitePrimaryColor }};
       --premium-secondary: {{ $siteSecondaryColor }};
+      --premium-on-primary: {{ $sitePrimaryContrast }};
+      --premium-on-primary-soft: color-mix(in srgb, {{ $sitePrimaryContrast }} 76%, transparent);
+      --premium-on-secondary: {{ $siteSecondaryContrast }};
+      --premium-on-secondary-soft: color-mix(in srgb, {{ $siteSecondaryContrast }} 78%, transparent);
+      --premium-on-dark: {{ $premiumDarkSurfaceContrast }};
+      --premium-on-dark-soft: color-mix(in srgb, {{ $premiumDarkSurfaceContrast }} 78%, transparent);
       --site-theme-name: '{{ $siteTheme }}';
     }
   </style>
