@@ -1642,6 +1642,16 @@ button.admin-user-toggle {
     background: #eef4fb;
 }
 
+[data-bs-theme="dark"] .admin-icon-button:hover,
+[data-bs-theme="dark"] .admin-top-link:hover,
+[data-bs-theme="dark"] .admin-user-toggle:hover,
+body.admin-premium.dark-mode .admin-icon-button:hover,
+body.admin-premium.dark-mode .admin-top-link:hover,
+body.admin-premium.dark-mode .admin-user-toggle:hover {
+    color: #f8fafc !important;
+    background: rgba(13, 165, 192, 0.16);
+}
+
 .admin-topbar .navbar-badge {
     position: absolute;
     top: 3px;

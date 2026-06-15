@@ -23,6 +23,7 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 - adicionada inicializacao explicita de `bootstrap.Dropdown` em `resources/js/admin/admin.js` para `#adminNotificationToggle` e `#adminUserMenuToggle`, com fechamento automatico entre menus e `autoClose: outside`
 - reforcado o fallback de clique em `resources/js/admin/admin.js` para forcar `toggle()`/`hide()` dos dropdowns do navbar mesmo quando o auto-bind do Bootstrap nao responder como esperado
 - desativado o enhancer global de upload para `#quickProfileAvatar`, impedindo que o menu do usuario receba o card gigante de arrastar e soltar dentro do dropdown
+- ajustado o hover dos botoes do topo no tema dark em `resources/css/admin/admin.css`, removendo o fundo branco e substituindo por destaque escuro coerente com a paleta do painel
 - reforcado o CSS em `resources/css/admin/admin.css` para os toggles do topo nao herdarem borda/fundo nativos de `button` e para o dropdown abrir acima do restante do shell
 - recompilado o bundle Vite do admin em `public/build`, garantindo que a correcao chegue ao painel publicado e nao fique apenas no source
 - validacoes locais executadas: `php artisan view:cache`, `npm run build` e verificacao de ausencia de BOM nos arquivos alterados
