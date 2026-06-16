@@ -82,13 +82,15 @@
     </div>
 </div>
 
-@include('admin.financeiro.form')
+@include('admin.financeiro.form', ['categories' => $categories])
 
 @push('scripts')
 <script>
     var table;
-    $(function() {
+
+    $(function () {
         loadSummaries();
+
         table = $('#financeiroTable').DataTable({
             processing: true,
             serverSide: true,
@@ -113,15 +115,17 @@
             pageLength: 25
         });
 
-        $(document).on('click', '.btn-edit-transaction', function() {
+        $(document).on('click', '.btn-edit-transaction', function () {
             var id = $(this).data('id');
-            $.get('{{ route("admin.financeiro.show", ":id") }}'.replace(':id', id), function(data) {
+
+            $.get('{{ route("admin.financeiro.show", ":id") }}'.replace(':id', id), function (data) {
                 $('#transaction_id').val(data.id);
                 $('#transaction_description').val(data.description);
                 $('#transaction_type').val(data.type);
                 $('#transaction_category_id').val(data.category_id);
                 $('#transaction_amount').val(data.amount);
-                $('#transaction_date').val(data.date.substring(0, 10));
+                $('#transaction_due_date').val(data.date ? data.date.substring(0, 10) : '');
+                $('#transaction_payment_date').val(data.payment_date ? data.payment_date.substring(0, 10) : '');
                 $('#transaction_payment_method').val(data.payment_method);
                 $('#transaction_status').val(data.status);
                 $('#transaction_notes').val(data.notes);
@@ -130,21 +134,26 @@
             });
         });
 
-        $(document).on('click', '.btn-delete-transaction', function() {
+        $(document).on('click', '.btn-delete-transaction', function () {
             var id = $(this).data('id');
             confirmDelete('{{ route("admin.financeiro.destroy", ":id") }}'.replace(':id', id), 'A transação será excluída.');
         });
     });
 
     function loadSummaries() {
-        $.get('{{ route("admin.financeiro.summary") }}', function(data) {
+        $.get('{{ route("admin.financeiro.summary") }}', function (data) {
             $('#totalRevenue').text(data.revenue_formatted || 'R$ 0,00');
             $('#totalExpense').text(data.expense_formatted || 'R$ 0,00');
             $('#totalTransactions').text(data.count || 0);
             $('#currentBalance').text(data.balance_formatted || 'R$ 0,00');
+
             var el = $('#currentBalance').closest('.small-box');
-            if (data.balance >= 0) { el.removeClass('bg-danger').addClass('bg-success'); }
-            else { el.removeClass('bg-success').addClass('bg-danger'); }
+
+            if (data.balance >= 0) {
+                el.removeClass('bg-danger').addClass('bg-success');
+            } else {
+                el.removeClass('bg-success').addClass('bg-danger');
+            }
         });
     }
 </script>

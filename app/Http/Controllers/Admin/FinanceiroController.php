@@ -345,6 +345,7 @@ class FinanceiroController extends Controller
             'descricao' => 'description',
             'valor' => 'amount',
             'data_vencimento' => 'date',
+            'data_pagamento' => 'payment_date',
             'forma_pagamento' => 'payment_method',
             'observacoes' => 'notes',
         ];
@@ -383,6 +384,7 @@ class FinanceiroController extends Controller
             'category_id' => $transaction->categoria_id,
             'amount' => (string) $transaction->valor,
             'date' => $transaction->data_vencimento?->toDateString(),
+            'payment_date' => $transaction->data_pagamento?->toDateString(),
             'payment_method' => $transaction->forma_pagamento,
             'status' => $transaction->status,
             'notes' => $transaction->observacoes,

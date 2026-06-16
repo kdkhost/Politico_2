@@ -17,6 +17,13 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-16 - padroniza o create e edit do financeiro
+
+- corrigido `resources/views/admin/financeiro/form.blade.php` para unificar o formulario do financeiro em um unico partial, funcionando tanto em modal quanto em pagina completa
+- substituidas as telas `resources/views/admin/financeiro/create.blade.php` e `resources/views/admin/financeiro/edit.blade.php` por inclusoes padronizadas do mesmo formulario standalone
+- ajustado `resources/views/admin/financeiro/index.blade.php` para preencher corretamente vencimento e data de pagamento ao editar uma transacao pelo modal
+- atualizado `app/Http/Controllers/Admin/FinanceiroController.php` para aceitar alias `payment_date` e retornar `payment_date` no JSON de edicao
+
 ### 2026-06-16 - corrige create e edit da transparencia vazios
 
 - corrigido `resources/views/admin/transparencia/form.blade.php` para suportar modo modal no indice e modo formulario visivel nas rotas `/criar` e `/editar`
