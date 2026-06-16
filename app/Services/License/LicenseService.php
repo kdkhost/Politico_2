@@ -90,7 +90,7 @@ class LicenseService
 
     public function verify(bool $force = false): array
     {
-        if ((bool) config('license.skip_check', false)) {
+        if ((bool) config('license.skip_check', false) && app()->environment('local')) {
             return [
                 'valid' => true,
                 'cached' => true,

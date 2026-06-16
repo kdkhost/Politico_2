@@ -55,7 +55,7 @@ class SeoController extends Controller
             if ($url) {
                 try {
                     if (!$this->isAllowedAnalysisUrl($url)) {
-                        return response()->json(['status' => 'error', 'message' => 'Informe uma URL http/https pública e pertencente ao próprio site.'], 422);
+                        return response()->json(['status' => 'error', 'message' => 'Informe uma URL http/https publica e acessivel pela internet. Enderecos locais, privados e internos nao sao permitidos.'], 422);
                     }
 
                     $response = Http::timeout(5)
@@ -65,7 +65,7 @@ class SeoController extends Controller
                     $result = $this->seoService->getPageScore($url, $html);
                     $result['analyzed_url'] = $url;
                 } catch (\Throwable $e) {
-                    return response()->json(['status' => 'error', 'message' => 'Não foi possível acessar a URL: ' . $e->getMessage()], 400);
+                    return response()->json(['status' => 'error', 'message' => 'Nao foi possivel acessar a URL: ' . $e->getMessage()], 400);
                 }
             } else {
                 $result = $this->seoService->analyzeSeo($content ?? '', $title ?? '');
@@ -82,7 +82,7 @@ class SeoController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => $result,
-                'message' => "Pontuação SEO: {$result['score']}/100",
+                'message' => "Pontuacao SEO: {$result['score']}/100",
             ]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao analisar SEO: ' . $e->getMessage()], 500);
@@ -140,7 +140,7 @@ class SeoController extends Controller
                 ],
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao gerar prévia social: ' . $e->getMessage()], 500);
+            return response()->json(['status' => 'error', 'message' => 'Erro ao gerar previa social: ' . $e->getMessage()], 500);
         }
     }
 
@@ -148,13 +148,8 @@ class SeoController extends Controller
     {
         $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
         $host = (string) parse_url($url, PHP_URL_HOST);
-        $appHost = (string) parse_url(config('app.url'), PHP_URL_HOST);
 
-        if (!in_array($scheme, ['http', 'https'], true) || $host === '' || $appHost === '') {
-            return false;
-        }
-
-        if (!Str::is($appHost, $host)) {
+        if (!in_array($scheme, ['http', 'https'], true) || $host === '') {
             return false;
         }
 

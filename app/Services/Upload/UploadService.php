@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace App\Services\Upload;
 
+use App\Exceptions\DuplicateMediaException;
 use App\Models\Media;
 use App\Services\Midia\MidiaService;
 use Illuminate\Http\UploadedFile;
@@ -58,7 +59,7 @@ class UploadService
         $duplicate = $this->findDuplicateByHash($hash);
 
         if ($duplicate) {
-            throw new \RuntimeException('Arquivo duplicado. Ja existe uma midia cadastrada com este conteudo.');
+            throw new DuplicateMediaException($duplicate);
         }
 
         $pasta = $this->organizeByDate($pasta);
@@ -116,6 +117,17 @@ class UploadService
         foreach ($files as $file) {
             try {
                 $results[] = $this->upload($file, $pasta);
+            } catch (DuplicateMediaException $e) {
+                $results[] = [
+                    'duplicate' => true,
+                    'message' => $e->getMessage(),
+                    'file' => $file->getClientOriginalName(),
+                    'data' => [
+                        'id' => $e->media()->id,
+                        'url' => $e->media()->url,
+                        'nome_original' => $e->media()->nome_original,
+                    ],
+                ];
             } catch (\Throwable $e) {
                 Log::warning('Falha no upload de arquivo: ' . $e->getMessage());
                 $results[] = ['error' => $e->getMessage(), 'file' => $file->getClientOriginalName()];
@@ -142,7 +154,7 @@ class UploadService
         $duplicate = $this->findDuplicateByHash($hash, $mediaId);
 
         if ($duplicate) {
-            throw new \RuntimeException('Arquivo duplicado. Ja existe outra midia cadastrada com este conteudo.');
+            throw new DuplicateMediaException($duplicate, 'Arquivo duplicado. Ja existe outra midia cadastrada com este conteudo.');
         }
 
         $this->deletePublicFile($media->caminho);

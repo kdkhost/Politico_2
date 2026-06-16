@@ -15,6 +15,7 @@ declare(strict_types=1);
  */
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 Route::middleware(['force.json', 'throttle:60,1'])->group(function () {
 
@@ -45,23 +46,50 @@ Route::middleware(['force.json', 'throttle:60,1'])->group(function () {
     // Newsletter — inscrição pública
     Route::middleware('throttle:3,1')->post('newsletter', function (Illuminate\Http\Request $request) {
         $validated = $request->validate([
-            'email' => 'required|email|unique:newsletter_subscribers,email',
+            'email' => 'required|email|max:255',
             'nome' => 'nullable|string|max:255',
         ]);
 
         try {
-            $subscriber = App\Models\NewsletterSubscriber::create([
-                'email' => $validated['email'],
-                'nome' => $validated['nome'] ?? null,
-                'token' => \Illuminate\Support\Str::random(32),
-                'active' => false,
-                'subscribed_at' => now(),
-                'confirmation_expires_at' => now()->addHours(24),
-            ]);
+            $email = strtolower((string) $validated['email']);
+            $subscriber = App\Models\NewsletterSubscriber::where('email', $email)->first();
+            $token = Str::random(64);
+
+            if ($subscriber) {
+                if ($subscriber->active) {
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Este e-mail ja esta inscrito em nossa newsletter.',
+                        'data' => [
+                            'id' => $subscriber->id,
+                            'already_active' => true,
+                        ],
+                    ]);
+                }
+
+                $subscriber->update([
+                    'nome' => $validated['nome'] ?? $subscriber->nome,
+                    'token' => $token,
+                    'active' => false,
+                    'subscribed_at' => null,
+                    'confirmation_expires_at' => now()->addHours(24),
+                    'unsubscribed_at' => null,
+                ]);
+            } else {
+                $subscriber = App\Models\NewsletterSubscriber::create([
+                    'email' => $email,
+                    'nome' => $validated['nome'] ?? null,
+                    'token' => $token,
+                    'active' => false,
+                    'subscribed_at' => null,
+                    'confirmation_expires_at' => now()->addHours(24),
+                    'unsubscribed_at' => null,
+                ]);
+            }
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Inscri\u00e7\u00e3o realizada com sucesso! Confirme seu e-mail.',
+                'message' => 'Inscricao registrada com sucesso. Confirme seu e-mail.',
                 'data' => ['id' => $subscriber->id],
             ]);
         } catch (\Throwable $e) {

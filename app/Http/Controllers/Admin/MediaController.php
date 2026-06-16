@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\DuplicateMediaException;
 use App\Http\Controllers\Controller;
 use App\Models\Media;
 use App\Services\Midia\MidiaService;
@@ -82,6 +83,14 @@ class MediaController extends Controller
                 'success' => true,
                 'message' => 'Arquivo enviado com sucesso.',
                 'data' => $this->formatMedia($media),
+            ]);
+        } catch (DuplicateMediaException $e) {
+            return response()->json([
+                'status' => 'success',
+                'success' => true,
+                'message' => $e->getMessage(),
+                'duplicate' => true,
+                'data' => $this->formatMedia($e->media()),
             ]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao enviar arquivo: ' . $e->getMessage()], 500);
@@ -286,6 +295,14 @@ class MediaController extends Controller
                 'success' => true,
                 'message' => 'Arquivo substituido com sucesso.',
                 'data' => $this->formatMedia($media),
+            ]);
+        } catch (DuplicateMediaException $e) {
+            return response()->json([
+                'status' => 'success',
+                'success' => true,
+                'message' => $e->getMessage(),
+                'duplicate' => true,
+                'data' => $this->formatMedia($e->media()),
             ]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao substituir arquivo: ' . $e->getMessage()], 500);

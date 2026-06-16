@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\DuplicateMediaException;
 use App\Http\Controllers\Controller;
 use App\Models\TransparencyItem;
 use App\Services\Transparencia\TransparenciaService;
@@ -96,9 +97,25 @@ class TransparenciaController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Item de transparência criado com sucesso.',
+                'message' => 'Item de transparencia criado com sucesso.',
                 'data' => $item,
                 'redirect' => route('admin.transparencia.edit', $item->id),
+            ]);
+        } catch (DuplicateMediaException $e) {
+            return response()->json([
+                'status' => 'success',
+                'success' => true,
+                'message' => $e->getMessage(),
+                'duplicate' => true,
+                'data' => [
+                    'media' => [
+                        'id' => $e->media()->id,
+                        'url' => $e->media()->url,
+                        'nome_original' => $e->media()->nome_original,
+                        'mime_type' => $e->media()->mime_type,
+                        'tamanho' => $e->media()->tamanho,
+                    ],
+                ],
             ]);
         } catch (\Throwable $e) {
             report($e);
@@ -158,6 +175,22 @@ class TransparenciaController extends Controller
                 'message' => 'Item atualizado com sucesso.',
                 'data' => $item,
             ]);
+        } catch (DuplicateMediaException $e) {
+            return response()->json([
+                'status' => 'success',
+                'success' => true,
+                'message' => $e->getMessage(),
+                'duplicate' => true,
+                'data' => [
+                    'media' => [
+                        'id' => $e->media()->id,
+                        'url' => $e->media()->url,
+                        'nome_original' => $e->media()->nome_original,
+                        'mime_type' => $e->media()->mime_type,
+                        'tamanho' => $e->media()->tamanho,
+                    ],
+                ],
+            ]);
         } catch (\Throwable $e) {
             report($e);
             return response()->json(['status' => 'error', 'message' => 'Erro ao atualizar item: ' . $e->getMessage()], 500);
@@ -171,7 +204,7 @@ class TransparenciaController extends Controller
             $this->deleteAttachmentList($item->arquivos);
             $this->transparenciaService->deleteItem($id);
 
-            return response()->json(['status' => 'success', 'message' => 'Item excluído com sucesso.', 'reload' => true]);
+            return response()->json(['status' => 'success', 'message' => 'Item excluido com sucesso.', 'reload' => true]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao excluir item.'], 500);
         }

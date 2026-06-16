@@ -83,7 +83,6 @@ class InstaladorService
             storage_path('logs') => 'storage/logs',
             base_path('bootstrap/cache') => 'bootstrap/cache',
             public_path('uploads') => 'public/uploads',
-            public_path('storage') => 'public/storage',
         ];
 
         $permissions = [];
@@ -111,6 +110,8 @@ class InstaladorService
                 },
             ];
         }
+
+        $permissions['public/storage'] = $this->checkPublicStorageLinkStatus();
 
         return $permissions;
     }
@@ -663,7 +664,7 @@ class InstaladorService
             mkdir($target, 0755, true);
         }
 
-        if (is_link($link) || is_dir($link)) {
+        if (is_link($link) && $this->isValidPublicStorageLink($link, $target)) {
             return;
         }
 
@@ -674,8 +675,49 @@ class InstaladorService
         } catch (\Throwable) {
         }
 
-        if (!is_link($link) && !is_dir($link)) {
-            mkdir($link, 0755, true);
+    }
+
+    protected function checkPublicStorageLinkStatus(): array
+    {
+        $target = storage_path('app/public');
+        $link = public_path('storage');
+        $exists = is_link($link) || is_dir($link) || is_file($link);
+        $isValidSymlink = is_link($link) && $this->isValidPublicStorageLink($link, $target);
+
+        $message = 'OK';
+
+        if (!$exists) {
+            $message = 'Link public/storage nao encontrado. No cPanel, crie um link simbolico public/storage apontando para storage/app/public.';
+        } elseif (!$isValidSymlink) {
+            $message = 'public/storage precisa ser um link simbolico valido para storage/app/public. Em cPanel, use o Terminal ou Gerenciador de Arquivos para recriar esse link.';
         }
+
+        return [
+            'path' => $link,
+            'exists' => $exists,
+            'writable' => is_writable($target),
+            'status' => $isValidSymlink,
+            'message' => $message,
+            'details' => [
+                'expected_target' => $target,
+                'current_target' => is_link($link) ? (readlink($link) ?: null) : null,
+            ],
+        ];
+    }
+
+    protected function isValidPublicStorageLink(string $link, string $target): bool
+    {
+        if (!is_link($link)) {
+            return false;
+        }
+
+        $expected = realpath($target);
+        $current = realpath($link);
+
+        if ($expected === false || $current === false) {
+            return false;
+        }
+
+        return rtrim(str_replace('\\', '/', $expected), '/') === rtrim(str_replace('\\', '/', $current), '/');
     }
 }

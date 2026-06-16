@@ -27,7 +27,6 @@ class WafMiddleware
         'storage',
         'build',
         'assets',
-        'vendor',
     ];
 
     private const SAFE_PATHS = [
@@ -224,7 +223,17 @@ class WafMiddleware
                 'url' => $request->fullUrl(),
                 'method' => $request->method(),
                 'user_agent' => $request->userAgent() ?? '',
-                'request_data' => $request->except(['_token', 'password', 'password_confirmation']),
+                'request_data' => $request->except([
+                    '_token',
+                    'password',
+                    'password_confirmation',
+                    'license_key',
+                    'api_key',
+                    'mail_password',
+                    'token',
+                    'recaptcha_token',
+                    'g-recaptcha-response',
+                ]),
             ]);
         } catch (\Throwable $e) {
             Log::error('Erro ao registrar log do WAF: ' . $e->getMessage());

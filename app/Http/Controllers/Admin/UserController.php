@@ -311,32 +311,49 @@ class UserController extends Controller
     public function loginAs(int $id)
     {
         try {
-            if (!Auth::user()?->is_super_admin) {
-                return response()->json(['status' => 'error', 'message' => 'Apenas super administradores podem impersonar usuários.'], 403);
+            $currentUser = Auth::user();
+
+            if (!$currentUser?->is_super_admin) {
+                return response()->json(['status' => 'error', 'message' => 'Apenas super administradores podem impersonar usuarios.'], 403);
             }
 
             $user = User::findOrFail($id);
 
             if ($user->id === Auth::id()) {
-                return response()->json(['status' => 'error', 'message' => 'Você já está autenticado como este usuário.'], 422);
+                return response()->json(['status' => 'error', 'message' => 'Voce ja esta autenticado como este usuario.'], 422);
+            }
+
+            if ($user->is_super_admin && !$this->canImpersonateSuperAdmin($currentUser)) {
+                return response()->json(['status' => 'error', 'message' => 'Nao e permitido impersonar outro super administrador sem permissao explicita.'], 403);
             }
 
             session()->put('impersonated_by', Auth::id());
             Auth::login($user);
 
-            Log::info('Impersonação iniciada.', [
+            Log::info('Impersonacao iniciada.', [
                 'admin_id' => session('impersonated_by'),
                 'target_user_id' => $user->id,
             ]);
 
             return response()->json([
                 'status' => 'success',
-                'message' => "Você agora está logado como {$user->name}.",
+                'message' => "Voce agora esta logado como {$user->name}.",
                 'redirect' => route('admin.dashboard'),
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao impersonar usuário.'], 500);
+            return response()->json(['status' => 'error', 'message' => 'Erro ao impersonar usuario.'], 500);
         }
+    }
+
+    private function canImpersonateSuperAdmin(User $user): bool
+    {
+        foreach (['users.impersonar.super_admin', 'usuarios.impersonar.super_admin'] as $permission) {
+            if (method_exists($user, 'hasPermission') && $user->hasPermission($permission)) {
+                return true;
+            }
+        }
+
+        return (bool) config('auth.allow_super_admin_impersonation', false);
     }
 
     public function stopImpersonation()
