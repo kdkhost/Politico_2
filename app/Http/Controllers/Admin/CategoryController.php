@@ -15,6 +15,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -42,26 +43,61 @@ class CategoryController extends Controller
     public function list(Request $request)
     {
         try {
+            $filters = DataTableRequest::filters($request, [
+                'nome' => 'nome',
+                'slug' => 'slug',
+                'parent.nome' => 'parent_id',
+                'parent_name' => 'parent_id',
+                'posts_count' => 'posts_count',
+                'active' => 'active',
+            ], ['active']);
+
             $query = Category::with('parent')->withCount('posts');
 
-            if ($request->filled('search')) {
-                $search = $request->search;
-                $query->where(function ($q) use ($search) {
+            if (!empty($filters['search'])) {
+                $search = $filters['search'];
+                $query->where(function ($q) use ($search): void {
                     $q->where('nome', 'like', "%{$search}%")
                         ->orWhere('descricao', 'like', "%{$search}%");
                 });
             }
 
-            $sortField = in_array((string) $request->sort_by, self::SORTABLE_FIELDS, true)
-                ? (string) $request->sort_by
+            if (array_key_exists('active', $filters) && $filters['active'] !== null && $filters['active'] !== '') {
+                $query->where('active', filter_var($filters['active'], FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE) ?? (bool) $filters['active']);
+            }
+
+            $sortField = in_array((string) ($filters['sort_by'] ?? ''), self::SORTABLE_FIELDS, true)
+                ? (string) $filters['sort_by']
                 : 'nome';
-            $sortOrder = strtolower((string) $request->sort_order) === 'desc' ? 'desc' : 'asc';
+            $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'asc')) === 'desc' ? 'desc' : 'asc';
             $query->orderBy($sortField, $sortOrder);
-            $categories = $query->paginate(config('sistema.pagination_per_page', 15));
+
+            $categories = $query->paginate(
+                min(max((int) ($filters['per_page'] ?? config('sistema.pagination_per_page', 15)), 1), 100),
+                ['*'],
+                'page',
+                max((int) ($filters['page'] ?? 1), 1)
+            );
 
             return response()->json([
                 'status' => 'success',
-                'data' => $categories->items(),
+                'success' => true,
+                'data' => collect($categories->items())->map(function (Category $category): array {
+                    return [
+                        'id' => $category->id,
+                        'nome' => e($category->nome),
+                        'slug' => e($category->slug),
+                        'descricao' => $category->descricao,
+                        'parent' => $category->parent ? [
+                            'id' => $category->parent->id,
+                            'nome' => e($category->parent->nome),
+                        ] : null,
+                        'posts_count' => (int) $category->posts_count,
+                        'active' => (bool) $category->active,
+                        'icone' => $category->icone,
+                        'cor' => $category->cor,
+                    ];
+                })->all(),
                 'draw' => (int) $request->draw,
                 'recordsTotal' => $categories->total(),
                 'recordsFiltered' => $categories->total(),

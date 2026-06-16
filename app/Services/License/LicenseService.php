@@ -116,10 +116,7 @@ class LicenseService
         }
 
         if (!$this->hasApiKey()) {
-            return [
-                'valid' => false,
-                'message' => 'Chave da API de licenciamento não configurada.',
-            ];
+            return $this->verifyOfflineGrace('Chave da API de licenciamento não configurada.');
         }
 
         $response = $this->api->verifyLicense(false);

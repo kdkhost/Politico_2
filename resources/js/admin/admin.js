@@ -752,9 +752,12 @@ function notifyDataTableError(tableId, message, technicalNote) {
 
     window.AdminDataTableErrors[key] = now;
 
-    const text = tableId
-        ? `Não foi possível carregar a tabela ${tableId}. Tente atualizar a página.`
-        : 'Não foi possível carregar uma tabela desta página. Tente atualizar a página.';
+    const normalizedMessage = String(message || '').trim();
+    const text = normalizedMessage !== ''
+        ? normalizedMessage
+        : (tableId
+            ? `Não foi possível carregar a tabela ${tableId}. Tente atualizar a página.`
+            : 'Não foi possível carregar uma tabela desta página. Tente atualizar a página.');
 
     if (window.Swal) {
         window.Swal.fire({

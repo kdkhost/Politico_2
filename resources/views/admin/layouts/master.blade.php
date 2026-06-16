@@ -371,9 +371,12 @@
 
             window.AdminDataTableErrors[key] = now;
 
-            var text = tableId
-                ? 'Não foi possível carregar a tabela ' + tableId + '. Tente atualizar a página.'
-                : 'Não foi possível carregar uma tabela desta página. Tente atualizar a página.';
+            var normalizedMessage = String(message || '').trim();
+            var text = normalizedMessage !== ''
+                ? normalizedMessage
+                : (tableId
+                    ? 'Não foi possível carregar a tabela ' + tableId + '. Tente atualizar a página.'
+                    : 'Não foi possível carregar uma tabela desta página. Tente atualizar a página.');
 
             if (window.Swal) {
                 window.Swal.fire({
