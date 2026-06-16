@@ -17,6 +17,12 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-15 - corrige edicao de itens no gerenciador de menus
+
+- corrigido `resources/views/admin/menus/index.blade.php` para os botoes de editar e excluir dos itens deixarem de ser capturados pelo `Nestable` como arraste, com `type="button"`, `dd-nodrag` e bloqueio explicito de propagacao no clique
+- ajustado `resources/views/admin/menus/index.blade.php` para manter os controles de acao acima do `dd-handle`, evitando que a area de drag inutilize os botoes do item
+- corrigido `resources/views/admin/menus/edit.blade.php` para consumir corretamente o JSON retornado por `admin.menus.item.show`, abrir o modal via `bootstrap.Modal` e tratar editar/excluir item com clique isolado
+
 ### 2026-06-15 - recria o tema premium em React
 
 - adicionado `react`, `react-dom` e `@vitejs/plugin-react` ao pipeline Vite do frontend

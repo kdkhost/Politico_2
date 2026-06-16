@@ -67,8 +67,8 @@
                                     <br><small class="text-muted">{{ $item->url ?? $item->route ?? '#' }}</small>
                                 </div>
                                 <div class="btn-group btn-group-sm">
-                                    <button class="btn btn-info btn-edit-item" data-id="{{ $item->id }}"><i class="fas fa-edit"></i></button>
-                                    <button class="btn btn-danger btn-delete-item" data-id="{{ $item->id }}"><i class="fas fa-trash"></i></button>
+                                    <button type="button" class="btn btn-info btn-edit-item" data-id="{{ $item->id }}"><i class="fas fa-edit"></i></button>
+                                    <button type="button" class="btn btn-danger btn-delete-item" data-id="{{ $item->id }}"><i class="fas fa-trash"></i></button>
                                 </div>
                             </div>
                             @if(($item->children ?? [])->count() > 0)
@@ -79,8 +79,8 @@
                                             <small>{{ $child->titulo }}</small>
                                         </div>
                                         <div class="btn-group btn-group-sm">
-                                            <button class="btn btn-info btn-sm btn-edit-item" data-id="{{ $child->id }}"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-danger btn-sm btn-delete-item" data-id="{{ $child->id }}"><i class="fas fa-trash"></i></button>
+                                            <button type="button" class="btn btn-info btn-sm btn-edit-item" data-id="{{ $child->id }}"><i class="fas fa-edit"></i></button>
+                                            <button type="button" class="btn btn-danger btn-sm btn-delete-item" data-id="{{ $child->id }}"><i class="fas fa-trash"></i></button>
                                         </div>
                                     </div>
                                 @endforeach
@@ -155,6 +155,9 @@
 @push('scripts')
 <script>
     $(function() {
+        const menuItemModalEl = document.getElementById('menuItemModal');
+        const menuItemModal = menuItemModalEl ? bootstrap.Modal.getOrCreateInstance(menuItemModalEl) : null;
+
         $('#editMenuForm').on('submit', function(e) {
             e.preventDefault();
             var btn = $(this).find('button[type="submit"]');
@@ -204,7 +207,7 @@
                 success: function(res) {
                     if (res.status === 'success') {
                         toastr.success('Item salvo!');
-                        $('#menuItemModal').modal('hide');
+                        menuItemModal?.hide();
                         if (res.reload) location.reload();
                     } else {
                         toastr.error(res.message || 'Erro.');
@@ -214,18 +217,21 @@
             });
         });
 
-        $(document).on('click', '.btn-edit-item', function() {
+        $(document).on('click', '.btn-edit-item', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             var id = $(this).data('id');
             $.get('{{ route("admin.menus.item.show", ":id") }}'.replace(':id', id), function(data) {
-                $('#item_id').val(data.id);
-                $('#item_titulo').val(data.titulo);
-                $('#item_url').val(data.url);
-                $('#item_icone').val(data.icone);
-                $('#item_target').val(data.target ?? '_self');
-                $('#item_parent_id').val(data.parent_id ?? '');
+                var item = data.data || data;
+                $('#item_id').val(item.id);
+                $('#item_titulo').val(item.titulo || '');
+                $('#item_url').val(item.url || '');
+                $('#item_icone').val(item.icone || '');
+                $('#item_target').val(item.target || '_self');
+                $('#item_parent_id').val(item.parent_id || '');
                 $('#menuItemModalLabel').text('Editar Item');
-                $('#btnDeleteItem').removeClass('d-none').data('id', data.id);
-                $('#menuItemModal').modal('show');
+                $('#btnDeleteItem').removeClass('d-none').data('id', item.id);
+                menuItemModal?.show();
             });
         });
 
@@ -247,7 +253,7 @@
                         success: function(res) {
                             if (res.status === 'success') {
                                 toastr.success('Item excluído!');
-                                $('#menuItemModal').modal('hide');
+                                menuItemModal?.hide();
                                 if (res.reload) location.reload();
                             } else {
                                 toastr.error(res.message || 'Erro.');
@@ -259,7 +265,9 @@
             });
         });
 
-        $(document).on('click', '.btn-delete-item', function() {
+        $(document).on('click', '.btn-delete-item', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             var id = $(this).data('id');
             Swal.fire({
                 title: 'Excluir item?',

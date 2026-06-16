@@ -28,8 +28,8 @@
                                 <br><small class="text-muted">{{ $menu->localizacao ?? 'Sem localização' }} | {{ $menu->items_count ?? 0 }} itens</small>
                             </div>
                             <div class="btn-group btn-group-sm">
-                                <button class="btn btn-info btn-edit-menu" data-id="{{ $menu->id }}"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-danger btn-delete-menu" data-id="{{ $menu->id }}"><i class="fas fa-trash"></i></button>
+                                <button type="button" class="btn btn-info btn-edit-menu" data-id="{{ $menu->id }}"><i class="fas fa-edit"></i></button>
+                                <button type="button" class="btn btn-danger btn-delete-menu" data-id="{{ $menu->id }}"><i class="fas fa-trash"></i></button>
                             </div>
                         </div>
                     @empty
@@ -60,9 +60,9 @@
                                 <li class="dd-item dd-item-{{ $item->id }}" data-id="{{ $item->id }}">
                                     <div class="dd-handle d-flex justify-content-between align-items-center">
                                         <span><i class="{{ $item->icone ?? 'fas fa-link' }} me-1"></i>{{ $item->titulo }}</span>
-                                        <div class="btn-group btn-group-sm">
-                                            <button class="btn btn-light btn-sm btn-edit-item" data-id="{{ $item->id }}"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-danger btn-sm btn-delete-item" data-id="{{ $item->id }}"><i class="fas fa-times"></i></button>
+                                        <div class="btn-group btn-group-sm dd-nodrag">
+                                            <button type="button" class="btn btn-light btn-sm btn-edit-item dd-nodrag" data-id="{{ $item->id }}"><i class="fas fa-edit"></i></button>
+                                            <button type="button" class="btn btn-danger btn-sm btn-delete-item dd-nodrag" data-id="{{ $item->id }}"><i class="fas fa-times"></i></button>
                                         </div>
                                     </div>
                                     @if($item->children->count() > 0)
@@ -71,9 +71,9 @@
                                                 <li class="dd-item dd-item-{{ $child->id }}" data-id="{{ $child->id }}">
                                                     <div class="dd-handle d-flex justify-content-between align-items-center">
                                                         <span><i class="{{ $child->icone ?? 'fas fa-link' }} me-1"></i>{{ $child->titulo }}</span>
-                                                        <div class="btn-group btn-group-sm">
-                                                            <button class="btn btn-light btn-sm btn-edit-item" data-id="{{ $child->id }}"><i class="fas fa-edit"></i></button>
-                                                            <button class="btn btn-danger btn-sm btn-delete-item" data-id="{{ $child->id }}"><i class="fas fa-times"></i></button>
+                                                        <div class="btn-group btn-group-sm dd-nodrag">
+                                                            <button type="button" class="btn btn-light btn-sm btn-edit-item dd-nodrag" data-id="{{ $child->id }}"><i class="fas fa-edit"></i></button>
+                                                            <button type="button" class="btn btn-danger btn-sm btn-delete-item dd-nodrag" data-id="{{ $child->id }}"><i class="fas fa-times"></i></button>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -221,6 +221,12 @@
     .dd-handle { background: #f8f9fa; border: 1px solid #dee2e6; padding: 8px 15px; margin-bottom: 3px; cursor: move; }
     .dd-handle:hover { background: #e9ecef; }
     .dd-item > button { height: 30px; }
+    .dd-nodrag { cursor: pointer !important; }
+    .dd-handle .btn-group,
+    .dd-handle .btn {
+        position: relative;
+        z-index: 2;
+    }
 </style>
 @endpush
 
@@ -312,7 +318,9 @@
             });
         });
 
-        $(document).on('click', '.btn-edit-item', function() {
+        $(document).on('click', '.btn-edit-item', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             var id = $(this).data('id');
             $.get('{{ route("admin.menus.item.show", ":id") }}'.replace(':id', id), function(data) {
                 var item = data.data || data;
@@ -331,6 +339,7 @@
         });
 
         $(document).on('click', '.btn-delete-item', function(e) {
+            e.preventDefault();
             e.stopPropagation();
             var id = $(this).data('id');
             confirmDelete('{{ route("admin.menus.item.destroy", ":id") }}'.replace(':id', id), 'O item será excluído.');
