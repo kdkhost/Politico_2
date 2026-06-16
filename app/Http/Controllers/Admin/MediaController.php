@@ -256,13 +256,14 @@ class MediaController extends Controller
             ]);
 
             $basePath = storage_path('app/public/uploads');
-            $folderPath = $validated['pasta_pai']
-                ? $basePath . '/' . $validated['pasta_pai'] . '/' . $validated['nome']
+            $parentPath = $this->normalizeFolderPath($validated['pasta_pai'] ?? null);
+            $folderPath = $parentPath !== ''
+                ? $basePath . '/' . $parentPath . '/' . $validated['nome']
                 : $basePath . '/' . $validated['nome'];
-            $realBase = realpath($basePath) ?: $basePath;
-            $realPath = realpath(dirname($folderPath)) ?: dirname($folderPath);
+            $realBase = str_replace('\\', '/', realpath($basePath) ?: $basePath);
+            $realParent = str_replace('\\', '/', realpath(dirname($folderPath)) ?: dirname($folderPath));
 
-            if (!str_starts_with($realPath, $realBase)) {
+            if (!str_starts_with($realParent, $realBase)) {
                 return response()->json(['status' => 'error', 'success' => false, 'message' => 'Path traversal detectado.'], 403);
             }
 
@@ -274,7 +275,7 @@ class MediaController extends Controller
                 'status' => 'success',
                 'success' => true,
                 'message' => 'Pasta criada com sucesso.',
-                'data' => ['path' => $validated['nome']],
+                'data' => ['path' => ltrim(trim($parentPath . '/' . $validated['nome'], '/'), '/')],
             ]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'success' => false, 'message' => 'Erro ao criar pasta: ' . $e->getMessage()], 500);
@@ -350,6 +351,29 @@ class MediaController extends Controller
         }
 
         return $filters;
+    }
+
+    private function normalizeFolderPath(?string $path): string
+    {
+        $path = trim((string) $path);
+        $path = str_replace(['..\\', '../', '.\\', './', '\\'], ['', '', '', '', '/'], $path);
+        $path = preg_replace('#/+#', '/', $path) ?? '';
+        $path = preg_replace('/[^A-Za-z0-9_\\-\\/]/', '', $path) ?? '';
+        $path = trim($path, '/');
+
+        if ($path === '') {
+            return '';
+        }
+
+        $segments = array_filter(explode('/', $path), static fn (string $segment): bool => $segment !== '');
+
+        foreach ($segments as $segment) {
+            if (!preg_match('/^[A-Za-z0-9_-]+$/', $segment)) {
+                throw new \RuntimeException('Pasta pai invalida.');
+            }
+        }
+
+        return implode('/', $segments);
     }
 
     protected function formatMediaCollection(array $items): array

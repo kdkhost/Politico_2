@@ -69,7 +69,7 @@ final class DataTableRequest
     {
         $requested = (string) $request->input('sort_by', '');
         if ($requested !== '') {
-            return $columnMap[$requested] ?? $requested;
+            return $columnMap[$requested] ?? null;
         }
 
         $columnIndex = $request->input('order.0.column');
@@ -82,7 +82,7 @@ final class DataTableRequest
             return null;
         }
 
-        return $columnMap[$name] ?? $name;
+        return $columnMap[$name] ?? null;
     }
 
     private static function sortOrder(Request $request): string

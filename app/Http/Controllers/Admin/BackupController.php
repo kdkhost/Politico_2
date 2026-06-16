@@ -115,7 +115,7 @@ class BackupController extends Controller
     {
         try {
             $backup = Backup::findOrFail($id);
-            $path = storage_path("app/{$backup->path}");
+            $path = $this->secureBackupPath($backup);
 
             if (!file_exists($path)) {
                 return response()->json(['status' => 'error', 'success' => false, 'message' => 'Arquivo de backup nao encontrado.'], 404);
@@ -131,7 +131,7 @@ class BackupController extends Controller
     {
         try {
             $backup = Backup::findOrFail($id);
-            $path = storage_path("app/{$backup->path}");
+            $path = $this->secureBackupPath($backup);
 
             if (file_exists($path)) {
                 @unlink($path);
@@ -177,7 +177,7 @@ class BackupController extends Controller
             ]);
 
             $backup = Backup::findOrFail($validated['backup_id']);
-            $path = storage_path("app/{$backup->path}");
+            $path = $this->secureBackupPath($backup);
 
             if (!file_exists($path)) {
                 return response()->json(['status' => 'error', 'success' => false, 'message' => 'Arquivo de backup nao encontrado.'], 404);
@@ -231,9 +231,11 @@ class BackupController extends Controller
                 'bootstrap',
                 'config',
                 'database',
-                'public',
                 'resources',
                 'routes',
+                'public/build',
+                'public/assets',
+                'public/img',
             ];
 
             if ($includeMedia) {
@@ -275,11 +277,63 @@ class BackupController extends Controller
             $fullPath = $file->getPathname();
             $zipPath = str_replace('\\', '/', $relativePath . '/' . ltrim(substr($fullPath, strlen($absolutePath)), '\\/'));
 
-            if (str_contains($zipPath, '/node_modules/') || str_contains($zipPath, '/vendor/')) {
+            if ($this->shouldExcludeBackupPath($zipPath)) {
                 continue;
             }
 
             $zip->addFile($fullPath, $zipPath);
         }
+    }
+
+    protected function secureBackupPath(Backup $backup): string
+    {
+        $backupBase = storage_path('app/backups');
+
+        if (!is_dir($backupBase)) {
+            throw new \RuntimeException('Diretorio de backups nao encontrado.');
+        }
+
+        $realBase = realpath($backupBase);
+        if ($realBase === false) {
+            throw new \RuntimeException('Diretorio de backups invalido.');
+        }
+
+        $relativePath = ltrim(str_replace('\\', '/', (string) $backup->path), '/');
+        if ($relativePath === '' || str_contains($relativePath, '../') || str_contains($relativePath, '..\\')) {
+            throw new \RuntimeException('Caminho de backup invalido.');
+        }
+
+        $candidate = $realBase . DIRECTORY_SEPARATOR . basename($relativePath);
+        $realCandidate = realpath($candidate);
+        $resolved = $realCandidate !== false ? $realCandidate : $candidate;
+
+        $normalizedBase = rtrim(str_replace('\\', '/', $realBase), '/');
+        $normalizedResolved = rtrim(str_replace('\\', '/', $resolved), '/');
+
+        if (!str_starts_with($normalizedResolved, $normalizedBase . '/')
+            && $normalizedResolved !== $normalizedBase) {
+            throw new \RuntimeException('Caminho de backup fora da pasta permitida.');
+        }
+
+        return $resolved;
+    }
+
+    protected function shouldExcludeBackupPath(string $zipPath): bool
+    {
+        $zipPath = ltrim(str_replace('\\', '/', $zipPath), '/');
+
+        if (
+            str_contains($zipPath, '/node_modules/')
+            || str_contains($zipPath, '/vendor/')
+            || str_starts_with($zipPath, 'public/storage/')
+            || str_starts_with($zipPath, 'public/uploads/')
+            || str_starts_with($zipPath, 'storage/logs/')
+            || str_starts_with($zipPath, 'storage/app/backups/')
+            || $zipPath === '.env'
+        ) {
+            return true;
+        }
+
+        return preg_match('/\.zip$/i', $zipPath) === 1;
     }
 }

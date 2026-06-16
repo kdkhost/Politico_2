@@ -323,8 +323,8 @@ class UserController extends Controller
                 return response()->json(['status' => 'error', 'message' => 'Você já está autenticado como este usuário.'], 422);
             }
 
-            if ($user->is_super_admin && !$this->canImpersonateSuperAdmin($currentUser)) {
-                return response()->json(['status' => 'error', 'message' => 'Não é permitido impersonar outro super administrador sem permissão explícita.'], 403);
+            if ($user->is_super_admin) {
+                return response()->json(['status' => 'error', 'message' => 'Não é permitido impersonar outro super administrador.'], 403);
             }
 
             session()->put('impersonated_by', Auth::id());
@@ -343,17 +343,6 @@ class UserController extends Controller
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao impersonar usuário.'], 500);
         }
-    }
-
-    private function canImpersonateSuperAdmin(User $user): bool
-    {
-        foreach (['users.impersonar.super_admin', 'usuarios.impersonar.super_admin'] as $permission) {
-            if (method_exists($user, 'hasPermission') && $user->hasPermission($permission)) {
-                return true;
-            }
-        }
-
-        return (bool) config('auth.allow_super_admin_impersonation', false);
     }
 
     public function stopImpersonation()

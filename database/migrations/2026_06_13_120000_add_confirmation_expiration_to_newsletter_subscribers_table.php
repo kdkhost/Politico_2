@@ -21,7 +21,7 @@ return new class extends Migration
     {
         Schema::table('newsletter_subscribers', function (Blueprint $table): void {
             if (!Schema::hasColumn('newsletter_subscribers', 'confirmation_expires_at')) {
-                $table->timestamp('confirmation_expires_at')->nullable()->after('subscribed_at');
+                $table->timestamp('confirmation_expires_at')->nullable()->after('token');
             }
         });
     }
