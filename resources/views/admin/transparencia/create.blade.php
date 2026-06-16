@@ -9,5 +9,8 @@
 @endsection
 
 @section('content')
-    @include('admin.transparencia.form', ['item' => new \App\Models\TransparencyItem()])
+    @include('admin.transparencia.form', [
+        'item' => new \App\Models\TransparencyItem(),
+        'standalone' => true,
+    ])
 @endsection

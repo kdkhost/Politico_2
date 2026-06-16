@@ -17,6 +17,12 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-16 - corrige create e edit da transparencia vazios
+
+- corrigido `resources/views/admin/transparencia/form.blade.php` para suportar modo modal no indice e modo formulario visivel nas rotas `/criar` e `/editar`
+- ajustados `resources/views/admin/transparencia/create.blade.php` e `resources/views/admin/transparencia/edit.blade.php` para chamar o parcial em modo standalone
+- reforcado o submit AJAX da transparencia para redirecionar ou recarregar corretamente em modo pagina, sem depender do modal oculto
+
 ### 2026-06-16 - reestrutura clique e arraste do gerenciador de menus
 
 - refeito `resources/views/admin/menus/index.blade.php` para separar a alça de arraste dos botões de ação, eliminando a disputa entre clique e drag no `Nestable`
