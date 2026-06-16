@@ -29,7 +29,24 @@ class MenuController extends Controller
     public function index()
     {
         $menus = Menu::withCount('items')->orderBy('nome')->get();
-        return view('admin.menus.index', compact('menus'));
+        $selectedId = (int) request()->integer('menu', 0);
+        $selectedMenu = $selectedId > 0
+            ? Menu::with([
+                'items' => fn ($query) => $query->whereNull('parent_id')->orderBy('ordem'),
+                'items.children' => fn ($query) => $query->orderBy('ordem'),
+            ])->find($selectedId)
+            : null;
+
+        if (!$selectedMenu && $menus->isNotEmpty()) {
+            $selectedMenu = Menu::with([
+                'items' => fn ($query) => $query->whereNull('parent_id')->orderBy('ordem'),
+                'items.children' => fn ($query) => $query->orderBy('ordem'),
+            ])->find($menus->first()->id);
+        }
+
+        $menuItems = $selectedMenu?->items ?? collect();
+
+        return view('admin.menus.index', compact('menus', 'selectedMenu', 'menuItems'));
     }
 
     public function list(Request $request)
@@ -131,6 +148,7 @@ class MenuController extends Controller
                 'target' => 'nullable|string|in:_self,_blank',
                 'route' => 'nullable|string|max:255',
                 'params' => 'nullable|json',
+                'ordem' => 'nullable|integer|min:0',
                 'active' => 'boolean',
                 'permission' => 'nullable|string|max:255',
             ]);
@@ -156,12 +174,14 @@ class MenuController extends Controller
     {
         try {
             $validated = $request->validate([
+                'parent_id' => 'nullable|exists:menu_items,id',
                 'titulo' => 'required|string|max:255',
                 'url' => 'nullable|string|max:500',
                 'icone' => 'nullable|string|max:100',
                 'target' => 'nullable|string|in:_self,_blank',
                 'route' => 'nullable|string|max:255',
                 'params' => 'nullable|json',
+                'ordem' => 'nullable|integer|min:0',
                 'active' => 'boolean',
                 'permission' => 'nullable|string|max:255',
             ]);

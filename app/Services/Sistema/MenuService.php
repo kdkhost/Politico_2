@@ -49,14 +49,16 @@ class MenuService
 
     public function createItem(array $data): MenuItem
     {
-        $menu = Menu::firstOrCreate(
-            ['slug' => Str::slug($data['localizacao'] ?? 'main')],
-            [
-                'nome' => $data['menu_nome'] ?? 'Menu Principal',
-                'localizacao' => $data['localizacao'] ?? 'main',
-                'descricao' => $data['menu_descricao'] ?? '',
-            ]
-        );
+        $menu = !empty($data['menu_id'])
+            ? Menu::findOrFail((int) $data['menu_id'])
+            : Menu::firstOrCreate(
+                ['slug' => Str::slug($data['localizacao'] ?? 'main')],
+                [
+                    'nome' => $data['menu_nome'] ?? 'Menu Principal',
+                    'localizacao' => $data['localizacao'] ?? 'main',
+                    'descricao' => $data['menu_descricao'] ?? '',
+                ]
+            );
 
         $maxOrdem = MenuItem::where('menu_id', $menu->id)
             ->whereNull('parent_id')

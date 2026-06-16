@@ -24,8 +24,8 @@
                     @forelse($menus ?? [] as $menu)
                         <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center menu-item {{ ($selectedMenu->id ?? '') == $menu->id ? 'active' : '' }}" data-id="{{ $menu->id }}">
                             <div>
-                                <strong>{{ $menu->name }}</strong>
-                                <br><small class="text-muted">{{ $menu->location ?? 'Sem localização' }} | {{ $menu->items_count ?? 0 }} itens</small>
+                                <strong>{{ $menu->nome }}</strong>
+                                <br><small class="text-muted">{{ $menu->localizacao ?? 'Sem localização' }} | {{ $menu->items_count ?? 0 }} itens</small>
                             </div>
                             <div class="btn-group btn-group-sm">
                                 <button class="btn btn-info btn-edit-menu" data-id="{{ $menu->id }}"><i class="fas fa-edit"></i></button>
@@ -43,7 +43,7 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-list me-1"></i>Itens do Menu: <strong id="currentMenuName">{{ $selectedMenu->name ?? 'Nenhum' }}</strong></h3>
+                <h3 class="card-title"><i class="fas fa-list me-1"></i>Itens do Menu: <strong id="currentMenuName">{{ $selectedMenu->nome ?? 'Nenhum' }}</strong></h3>
                 <div class="card-tools">
                     @if($selectedMenu ?? false)
                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#menuItemModal">
@@ -59,7 +59,7 @@
                             @forelse($menuItems ?? [] as $item)
                                 <li class="dd-item dd-item-{{ $item->id }}" data-id="{{ $item->id }}">
                                     <div class="dd-handle d-flex justify-content-between align-items-center">
-                                        <span><i class="{{ $item->icon ?? 'fas fa-link' }} me-1"></i>{{ $item->label }}</span>
+                                        <span><i class="{{ $item->icone ?? 'fas fa-link' }} me-1"></i>{{ $item->titulo }}</span>
                                         <div class="btn-group btn-group-sm">
                                             <button class="btn btn-light btn-sm btn-edit-item" data-id="{{ $item->id }}"><i class="fas fa-edit"></i></button>
                                             <button class="btn btn-danger btn-sm btn-delete-item" data-id="{{ $item->id }}"><i class="fas fa-times"></i></button>
@@ -70,7 +70,7 @@
                                             @foreach($item->children as $child)
                                                 <li class="dd-item dd-item-{{ $child->id }}" data-id="{{ $child->id }}">
                                                     <div class="dd-handle d-flex justify-content-between align-items-center">
-                                                        <span><i class="{{ $child->icon ?? 'fas fa-link' }} me-1"></i>{{ $child->label }}</span>
+                                                        <span><i class="{{ $child->icone ?? 'fas fa-link' }} me-1"></i>{{ $child->titulo }}</span>
                                                         <div class="btn-group btn-group-sm">
                                                             <button class="btn btn-light btn-sm btn-edit-item" data-id="{{ $child->id }}"><i class="fas fa-edit"></i></button>
                                                             <button class="btn btn-danger btn-sm btn-delete-item" data-id="{{ $child->id }}"><i class="fas fa-times"></i></button>
@@ -228,13 +228,30 @@
 <script src="https://cdn.jsdelivr.net/npm/nestable2@1/dist/jquery.nestable.min.js"></script>
 <script>
     $(function() {
+        const menuModalEl = document.getElementById('menuModal');
+        const menuItemModalEl = document.getElementById('menuItemModal');
+        const menuModal = menuModalEl ? bootstrap.Modal.getOrCreateInstance(menuModalEl) : null;
+        const menuItemModal = menuItemModalEl ? bootstrap.Modal.getOrCreateInstance(menuItemModalEl) : null;
+
+        function flattenMenuOrder(nodes, result) {
+            (nodes || []).forEach(function(node) {
+                result.push(Number(node.id));
+                if (Array.isArray(node.children) && node.children.length > 0) {
+                    flattenMenuOrder(node.children, result);
+                }
+            });
+
+            return result;
+        }
+
         $('.dd').nestable({ maxDepth: 2 });
         $('#btnSaveOrder').on('click', function() {
             var order = $('.dd').nestable('serialize');
+            var items = flattenMenuOrder(order, []);
             $.ajax({
-                url: '{{ route("admin.menus.reorder", $selectedMenu->id ?? 0) }}',
+                url: '{{ route("admin.menus.reorder") }}',
                 method: 'POST',
-                data: { _token: '{{ csrf_token() }}', order: JSON.stringify(order) },
+                data: { _token: '{{ csrf_token() }}', items: items },
                 success: function(res) {
                     if (window.isSuccessfulResponse(res)) toastr.success('Ordem salva com sucesso!');
                     else toastr.error(res.message || 'Erro.');
@@ -245,7 +262,7 @@
 
         $(document).on('click', '.menu-item', function() {
             var id = $(this).data('id');
-            window.location.href = '{{ url("admin/menus") }}/' + id;
+            window.location.href = '{{ route("admin.menus.index") }}?menu=' + id;
         });
 
         $(document).on('click', '.btn-edit-menu', function(e) {
@@ -258,7 +275,7 @@
                 $('#menu_location').val(menu.localizacao || menu.location || '');
                 $('#menu_description').val(menu.descricao || menu.description || '');
                 $('#menuModalLabel').text('Editar Menu');
-                $('#menuModal').modal('show');
+                menuModal?.show();
             });
         });
 
@@ -285,7 +302,7 @@
                 success: function(res) {
                     if (window.isSuccessfulResponse(res)) {
                         toastr.success('Menu salvo!');
-                        $('#menuModal').modal('hide');
+                        menuModal?.hide();
                         location.reload();
                     } else {
                         toastr.error(res.message || 'Erro.');
@@ -309,7 +326,7 @@
                 $('#item_active').prop('checked', !!item.active);
                 $('#menuItemModalLabel').text('Editar Item');
                 $('#btnDeleteItem').removeClass('d-none').data('id', item.id);
-                $('#menuItemModal').modal('show');
+                menuItemModal?.show();
             });
         });
 
@@ -322,7 +339,7 @@
         $('#btnDeleteItem').on('click', function() {
             var id = $(this).data('id');
             confirmDelete('{{ route("admin.menus.item.destroy", ":id") }}'.replace(':id', id), 'O item será excluído.');
-            $('#menuItemModal').modal('hide');
+            menuItemModal?.hide();
         });
 
         $('#menuItemModal').on('hidden.bs.modal', function() {
@@ -343,7 +360,7 @@
                 success: function(res) {
                     if (window.isSuccessfulResponse(res)) {
                         toastr.success('Item salvo!');
-                        $('#menuItemModal').modal('hide');
+                        menuItemModal?.hide();
                         location.reload();
                     } else {
                         toastr.error(res.message || 'Erro.');
