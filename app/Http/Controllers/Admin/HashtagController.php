@@ -15,6 +15,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Hashtag;
+use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -38,30 +39,49 @@ class HashtagController extends Controller
     public function list(Request $request)
     {
         try {
+            $filters = DataTableRequest::filters($request, [
+                'nome' => 'nome',
+                'slug' => 'slug',
+                'tipo' => 'tipo',
+                'usage_count' => 'usage_count',
+            ], ['tipo']);
+
             $query = Hashtag::query();
 
-            if ($request->filled('search')) {
-                $search = $request->search;
-                $query->where(function ($q) use ($search) {
+            if (!empty($filters['search'])) {
+                $search = $filters['search'];
+                $query->where(function ($q) use ($search): void {
                     $q->where('nome', 'like', "%{$search}%")
                         ->orWhere('slug', 'like', "%{$search}%");
                 });
             }
 
-            if ($request->filled('tipo')) {
-                $query->where('tipo', $request->tipo);
+            if (!empty($filters['tipo'])) {
+                $query->where('tipo', $filters['tipo']);
             }
 
-            $sortField = in_array((string) $request->sort_by, self::SORTABLE_FIELDS, true)
-                ? (string) $request->sort_by
+            $sortField = in_array((string) ($filters['sort_by'] ?? ''), self::SORTABLE_FIELDS, true)
+                ? (string) $filters['sort_by']
                 : 'usage_count';
-            $sortOrder = strtolower((string) $request->sort_order) === 'asc' ? 'asc' : 'desc';
+            $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
             $query->orderBy($sortField, $sortOrder);
-            $hashtags = $query->paginate(config('sistema.pagination_per_page', 15));
+            $hashtags = $query->paginate(
+                min(max((int) ($filters['per_page'] ?? config('sistema.pagination_per_page', 15)), 1), 100),
+                ['*'],
+                'page',
+                max((int) ($filters['page'] ?? 1), 1)
+            );
 
             return response()->json([
                 'status' => 'success',
-                'data' => $hashtags->items(),
+                'success' => true,
+                'data' => collect($hashtags->items())->map(fn (Hashtag $hashtag): array => [
+                    'id' => $hashtag->id,
+                    'nome' => e($hashtag->nome),
+                    'slug' => e($hashtag->slug),
+                    'tipo' => e((string) $hashtag->tipo),
+                    'usage_count' => (int) $hashtag->usage_count,
+                ])->all(),
                 'draw' => (int) $request->draw,
                 'recordsTotal' => $hashtags->total(),
                 'recordsFiltered' => $hashtags->total(),

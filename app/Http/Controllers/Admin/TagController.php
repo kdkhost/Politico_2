@@ -15,6 +15,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tag;
+use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -36,26 +37,43 @@ class TagController extends Controller
     public function list(Request $request)
     {
         try {
+            $filters = DataTableRequest::filters($request, [
+                'nome' => 'nome',
+                'slug' => 'slug',
+                'posts_count' => 'posts_count',
+            ]);
+
             $query = Tag::withCount('posts');
 
-            if ($request->filled('search')) {
-                $search = $request->search;
-                $query->where(function ($q) use ($search) {
+            if (!empty($filters['search'])) {
+                $search = $filters['search'];
+                $query->where(function ($q) use ($search): void {
                     $q->where('nome', 'like', "%{$search}%")
                         ->orWhere('slug', 'like', "%{$search}%");
                 });
             }
 
-            $sortField = in_array((string) $request->sort_by, self::SORTABLE_FIELDS, true)
-                ? (string) $request->sort_by
+            $sortField = in_array((string) ($filters['sort_by'] ?? ''), self::SORTABLE_FIELDS, true)
+                ? (string) $filters['sort_by']
                 : 'nome';
-            $sortOrder = strtolower((string) $request->sort_order) === 'desc' ? 'desc' : 'asc';
+            $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'asc')) === 'desc' ? 'desc' : 'asc';
             $query->orderBy($sortField, $sortOrder);
-            $tags = $query->paginate(config('sistema.pagination_per_page', 15));
+            $tags = $query->paginate(
+                min(max((int) ($filters['per_page'] ?? config('sistema.pagination_per_page', 15)), 1), 100),
+                ['*'],
+                'page',
+                max((int) ($filters['page'] ?? 1), 1)
+            );
 
             return response()->json([
                 'status' => 'success',
-                'data' => $tags->items(),
+                'success' => true,
+                'data' => collect($tags->items())->map(fn (Tag $tag): array => [
+                    'id' => $tag->id,
+                    'nome' => e($tag->nome),
+                    'slug' => e($tag->slug),
+                    'posts_count' => (int) $tag->posts_count,
+                ])->all(),
                 'draw' => (int) $request->draw,
                 'recordsTotal' => $tags->total(),
                 'recordsFiltered' => $tags->total(),

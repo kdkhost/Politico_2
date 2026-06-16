@@ -16,6 +16,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\NewsletterSubscriber;
 use App\Services\Export\SpreadsheetExportService;
+use App\Support\DataTableRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Response;
@@ -46,37 +47,60 @@ class NewsletterController extends Controller
     public function list(Request $request)
     {
         try {
+            $filters = DataTableRequest::filters($request, [
+                'email' => 'email',
+                'nome' => 'nome',
+                'active' => 'active',
+                'subscribed_at' => 'subscribed_at',
+                'confirmation_expires_at' => 'confirmation_expires_at',
+                'created_at' => 'created_at',
+            ], ['active', 'date_from', 'date_to']);
+
             $query = NewsletterSubscriber::query();
 
-            if ($request->filled('search')) {
-                $search = $request->search;
-                $query->where(function ($q) use ($search) {
+            if (!empty($filters['search'])) {
+                $search = $filters['search'];
+                $query->where(function ($q) use ($search): void {
                     $q->where('email', 'like', "%{$search}%")
                         ->orWhere('nome', 'like', "%{$search}%");
                 });
             }
 
-            if ($request->filled('active')) {
-                $query->where('active', $request->boolean('active'));
+            if (array_key_exists('active', $filters) && $filters['active'] !== null && $filters['active'] !== '') {
+                $query->where('active', filter_var($filters['active'], FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE) ?? (bool) $filters['active']);
             }
 
-            if ($request->filled('date_from')) {
-                $query->whereDate('created_at', '>=', $request->date_from);
+            if (!empty($filters['date_from'])) {
+                $query->whereDate('created_at', '>=', $filters['date_from']);
             }
-            if ($request->filled('date_to')) {
-                $query->whereDate('created_at', '<=', $request->date_to);
+            if (!empty($filters['date_to'])) {
+                $query->whereDate('created_at', '<=', $filters['date_to']);
             }
 
-            $sortField = in_array((string) $request->sort_by, self::SORTABLE_FIELDS, true)
-                ? (string) $request->sort_by
+            $sortField = in_array((string) ($filters['sort_by'] ?? ''), self::SORTABLE_FIELDS, true)
+                ? (string) $filters['sort_by']
                 : 'created_at';
-            $sortOrder = strtolower((string) $request->sort_order) === 'asc' ? 'asc' : 'desc';
+            $sortOrder = strtolower((string) ($filters['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
             $query->orderBy($sortField, $sortOrder);
-            $subscribers = $query->paginate(config('sistema.pagination_per_page', 15));
+            $subscribers = $query->paginate(
+                min(max((int) ($filters['per_page'] ?? config('sistema.pagination_per_page', 15)), 1), 100),
+                ['*'],
+                'page',
+                max((int) ($filters['page'] ?? 1), 1)
+            );
 
             return response()->json([
                 'status' => 'success',
-                'data' => $subscribers->items(),
+                'success' => true,
+                'data' => collect($subscribers->items())->map(fn (NewsletterSubscriber $subscriber): array => [
+                    'id' => $subscriber->id,
+                    'email' => e($subscriber->email),
+                    'nome' => e((string) ($subscriber->nome ?? '')),
+                    'active' => (bool) $subscriber->active,
+                    'subscribed_at' => $subscriber->subscribed_at?->format('d/m/Y H:i') ?? '-',
+                    'confirmation_expires_at' => $subscriber->confirmation_expires_at?->format('d/m/Y H:i') ?? '-',
+                    'created_at' => $subscriber->created_at?->format('d/m/Y H:i') ?? '-',
+                ])->all(),
                 'draw' => (int) $request->draw,
                 'recordsTotal' => $subscribers->total(),
                 'recordsFiltered' => $subscribers->total(),
