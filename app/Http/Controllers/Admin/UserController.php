@@ -157,7 +157,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Usuário criado com sucesso.',
-                'data' => $user,
+                'data' => $this->formatUserForJson($user->fresh()->load('profile')),
                 'redirect' => route('admin.users.edit', $user->id),
             ]);
         } catch (ValidationException $e) {
@@ -231,7 +231,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Usuário atualizado com sucesso.',
-                'data' => $user->fresh()->load('profile'),
+                'data' => $this->formatUserForJson($user->fresh()->load('profile')),
             ]);
         } catch (ValidationException $e) {
             throw $e;
@@ -432,7 +432,13 @@ class UserController extends Controller
 
         return [
             'id' => $user->id,
-            'name' => e($user->name),
+            'name' => '<div class="d-flex align-items-center gap-2">'
+                . '<img src="' . e($user->avatar_url) . '" data-user-avatar-id="' . $user->id . '" class="rounded-circle border border-white border-opacity-25 shadow-sm" style="width: 42px; height: 42px; object-fit: cover;" alt="' . e($user->name) . '">'
+                . '<div class="d-flex flex-column">'
+                . '<span class="fw-semibold text-white">' . e($user->name) . '</span>'
+                . '<span class="small text-muted">Usuário #' . $user->id . '</span>'
+                . '</div>'
+                . '</div>',
             'email' => e($user->email),
             'profile_name' => e($user->profile?->nome ?? 'Sem perfil'),
             'status' => '<span class="badge bg-' . $statusClass . '">' . $statusText . '</span>',

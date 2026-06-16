@@ -47,7 +47,7 @@
     </style>
     @stack('styles')
 </head>
-<body class="layout-fixed fixed-header admin-premium {{ settings('dark_mode') ? 'dark-mode' : '' }}" data-bs-theme="{{ settings('dark_mode') ? 'dark' : 'light' }}" data-admin-logo="{{ $adminLogo }}" data-admin-logo-compact="{{ $adminLogoCompact }}" data-admin-has-logo="{{ $hasAdminLogo ? '1' : '0' }}">
+<body class="layout-fixed fixed-header admin-premium {{ settings('dark_mode') ? 'dark-mode' : '' }}" data-bs-theme="{{ settings('dark_mode') ? 'dark' : 'light' }}" data-admin-logo="{{ $adminLogo }}" data-admin-logo-compact="{{ $adminLogoCompact }}" data-admin-has-logo="{{ $hasAdminLogo ? '1' : '0' }}" data-auth-user-id="{{ auth()->id() ?? '' }}">
     <div class="preloader flex-column justify-content-center align-items-center">
         <i class="fas fa-spinner fa-spin text-primary" style="font-size: 3rem;"></i>
     </div>

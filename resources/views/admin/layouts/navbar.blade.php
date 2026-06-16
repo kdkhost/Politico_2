@@ -40,13 +40,13 @@
 
     <li class="nav-item dropdown user-menu">
         <button type="button" class="nav-link dropdown-toggle admin-user-toggle" id="adminUserMenuToggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-            <img src="{{ auth()->user()->avatar_url ?? asset('img/default-avatar.png') }}" class="user-image admin-avatar admin-profile-avatar-preview" alt="{{ auth()->user()->name ?? 'Usuario' }}">
+            <img src="{{ auth()->user()->avatar_url ?? asset('img/default-avatar.png') }}" class="user-image admin-avatar admin-profile-avatar-preview" data-user-avatar-id="{{ auth()->id() ?? '' }}" alt="{{ auth()->user()->name ?? 'Usuario' }}">
             <span class="d-none d-md-inline">{{ auth()->user()->name ?? 'Usuario' }}</span>
         </button>
         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end admin-dropdown admin-user-menu" aria-labelledby="adminUserMenuToggle">
             <li class="user-header text-center">
                 <div class="admin-profile-avatar-box">
-                    <img src="{{ auth()->user()->avatar_url ?? asset('img/default-avatar.png') }}" class="img-circle shadow admin-profile-avatar-preview" alt="{{ auth()->user()->name ?? 'Usuario' }}">
+                    <img src="{{ auth()->user()->avatar_url ?? asset('img/default-avatar.png') }}" class="img-circle shadow admin-profile-avatar-preview" data-user-avatar-id="{{ auth()->id() ?? '' }}" alt="{{ auth()->user()->name ?? 'Usuario' }}">
                     <button type="button" class="btn btn-sm btn-primary admin-profile-avatar-action" data-profile-avatar-trigger title="Trocar foto">
                         <i class="fas fa-camera"></i>
                     </button>

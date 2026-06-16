@@ -52,7 +52,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="avatar" class="form-label">Foto/Avatar</label>
-                                <input type="file" id="avatar" name="avatar" class="form-control" accept="image/*" data-image-size="512x512" data-upload-label="Foto do usuario">
+                                <input type="file" id="avatar" name="avatar" class="form-control" accept="image/*" data-image-size="512x512" data-upload-label="Foto do usuário" data-existing-url="">
                             </div>
                         </div>
                     </div>
@@ -77,8 +77,41 @@
 </div>
 
 <script>
-    $(function() {
-        $('#userModal').on('hidden.bs.modal', function() {
+    $(function () {
+        function syncAvatarPreview(existingUrl) {
+            var input = document.getElementById('avatar');
+
+            if (!input) {
+                return;
+            }
+
+            input.dataset.existingUrl = existingUrl || '';
+
+            if (window.renderAdminUploadPreview) {
+                var wrapper = $(input).closest('.admin-upload-enhanced');
+                if (wrapper.length) {
+                    window.renderAdminUploadPreview(wrapper, input);
+                }
+            }
+        }
+
+        function syncUserAvatarAcrossInterface(userData, fallbackId) {
+            var userId = Number(userData?.id || fallbackId || 0);
+            var avatarUrl = String(userData?.avatar_url || '').trim();
+
+            if (!userId || !avatarUrl) {
+                return;
+            }
+
+            $('[data-user-avatar-id="' + userId + '"]').attr('src', avatarUrl);
+
+            var authUserId = Number(document.body.dataset.authUserId || 0);
+            if (authUserId && authUserId === userId) {
+                $('.admin-profile-avatar-preview, .admin-avatar').attr('src', avatarUrl);
+            }
+        }
+
+        $('#userModal').on('hidden.bs.modal', function () {
             $('#userForm')[0].reset();
             $('#user_id').val('');
             $('#userModalLabel').text('Novo Usuário');
@@ -86,20 +119,22 @@
             $('#password_confirmation').prop('required', true);
             $('#passwordRequired').show();
             $('#passwordConfirmRequired').show();
+            syncAvatarPreview('');
         });
 
-        $('#userForm').on('submit', function(e) {
+        $('#userForm').on('submit', function (e) {
             e.preventDefault();
+
             var btn = $('#btnSaveUser');
             var id = $('#user_id').val();
             var url = id ? '{{ route("admin.users.update", ":id") }}'.replace(':id', id) : '{{ route("admin.users.store") }}';
-            var method = id ? 'PUT' : 'POST';
-            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Salvando...');
-
             var formData = new FormData(this);
+
             if (id) {
                 formData.append('_method', 'PUT');
             }
+
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Salvando...');
 
             $.ajax({
                 url: url,
@@ -107,29 +142,41 @@
                 data: formData,
                 processData: false,
                 contentType: false,
-                success: function(res) {
-                    if (window.isSuccessfulResponse(res)) {
-                        toastr.success(res.message || 'Usuário salvo com sucesso!');
-                        $('#userModal').modal('hide');
-                        if (typeof table !== 'undefined') window.refreshAdminDataTable(table, false);
-                    } else {
+                success: function (res) {
+                    if (!window.isSuccessfulResponse(res)) {
                         toastr.error(res.message || 'Erro ao salvar usuário.');
+                        return;
+                    }
+
+                    syncUserAvatarAcrossInterface(res.data || {}, id);
+                    toastr.success(res.message || 'Usuário salvo com sucesso!');
+                    $('#userModal').modal('hide');
+
+                    if (typeof table !== 'undefined') {
+                        window.refreshAdminDataTable(table, false);
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     var errors = xhr.responseJSON?.errors;
+
                     if (errors) {
-                        $.each(errors, function(field, msgs) {
-                            $.each(msgs, function(i, msg) { toastr.error(msg); });
+                        $.each(errors, function (field, msgs) {
+                            $.each(msgs, function (i, msg) {
+                                toastr.error(msg);
+                            });
                         });
-                    } else {
-                        toastr.error(xhr.responseJSON?.message || 'Erro ao salvar usuário.');
+                        return;
                     }
+
+                    toastr.error(xhr.responseJSON?.message || 'Erro ao salvar usuário.');
                 },
-                complete: function() {
+                complete: function () {
                     btn.prop('disabled', false).html('<i class="fas fa-save me-1"></i>Salvar');
                 }
             });
         });
+
+        window.syncUserAvatarPreviewField = syncAvatarPreview;
+        window.syncUserAvatarAcrossInterface = syncUserAvatarAcrossInterface;
     });
 </script>

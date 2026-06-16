@@ -17,6 +17,14 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-16 - sincroniza avatar do usuario no painel
+
+- corrigido `app/Models/User.php` para expor `avatar_url` de forma padronizada em serializacao e consumo AJAX
+- ajustado `app/Http/Controllers/Admin/UserController.php` para retornar payload consistente do usuario apos criar/editar e renderizar avatar junto ao nome na listagem
+- atualizado `resources/views/admin/users/form.blade.php` para manter preview do avatar atual no modal e sincronizar a foto imediatamente no navbar e nos componentes vinculados ao mesmo usuario
+- refinado `resources/views/admin/usuarios/index.blade.php` para exibir avatar na tabela, mostrar a foto no modal de visualizacao e reaproveitar a foto atual ao editar
+- ajustado `resources/views/admin/layouts/master.blade.php` e `resources/views/admin/layouts/navbar.blade.php` para identificar o usuario autenticado no DOM e permitir sincronizacao visual imediata da foto
+
 ### 2026-06-16 - padroniza o create e edit do financeiro
 
 - corrigido `resources/views/admin/financeiro/form.blade.php` para unificar o formulario do financeiro em um unico partial, funcionando tanto em modal quanto em pagina completa

@@ -61,7 +61,8 @@
 @push('scripts')
 <script>
     var table;
-    $(function() {
+
+    $(function () {
         table = $('#usersTable').DataTable({
             processing: true,
             serverSide: true,
@@ -84,9 +85,10 @@
             pageLength: 25,
         });
 
-        $(document).on('click', '.btn-edit-user', function() {
+        $(document).on('click', '.btn-edit-user', function () {
             var id = $(this).data('id');
-            $.get('{{ route("admin.users.show", ":id") }}'.replace(':id', id), function(data) {
+
+            $.get('{{ route("admin.users.show", ":id") }}'.replace(':id', id), function (data) {
                 $('#user_id').val(data.id);
                 $('#name').val(data.name);
                 $('#email').val(data.email);
@@ -94,34 +96,48 @@
                 $('#password').prop('required', false).val('');
                 $('#password_confirmation').prop('required', false).val('');
                 $('#userModalLabel').text('Editar Usuário');
+
+                if (typeof window.syncUserAvatarPreviewField === 'function') {
+                    window.syncUserAvatarPreviewField(data.avatar_url || '');
+                }
+
                 $('#userModal').modal('show');
             });
         });
 
-        $(document).on('click', '.btn-view-user', function() {
+        $(document).on('click', '.btn-view-user', function () {
             var id = $(this).data('id');
-            $.get('{{ route("admin.users.show", ":id") }}'.replace(':id', id), function(data) {
-                var html = '<table class="table table-bordered">' +
-                    '<tr><th style="width:140px">ID</th><td>' + data.id + '</td></tr>' +
-                    '<tr><th>Nome</th><td>' + data.name + '</td></tr>' +
-                    '<tr><th>E-mail</th><td>' + data.email + '</td></tr>' +
-                    '<tr><th>Perfil</th><td>' + (data.profile?.name || '-') + '</td></tr>' +
-                    '<tr><th>Status</th><td>' + (data.active ? '<span class="badge bg-success">Ativo</span>' : '<span class="badge bg-danger">Inativo</span>') + '</td></tr>' +
-                    '<tr><th>Criado em</th><td>' + formatDate(data.created_at, true) + '</td></tr>' +
-                    '<tr><th>Último Acesso</th><td>' + (data.last_login_at ? formatDate(data.last_login_at, true) : 'Nunca') + '</td></tr>' +
-                    '</table>';
+
+            $.get('{{ route("admin.users.show", ":id") }}'.replace(':id', id), function (data) {
+                var html = ''
+                    + '<div class="text-center mb-3">'
+                    + '<img src="' + (data.avatar_url || '{{ asset('img/default-avatar.png') }}') + '" data-user-avatar-id="' + data.id + '" class="rounded-circle shadow-sm mb-3" style="width: 96px; height: 96px; object-fit: cover;" alt="' + data.name + '">'
+                    + '<h5 class="mb-1">' + data.name + '</h5>'
+                    + '<span class="badge ' + (data.active ? 'bg-success' : 'bg-danger') + '">' + (data.active ? 'Ativo' : 'Inativo') + '</span>'
+                    + '</div>'
+                    + '<table class="table table-bordered">'
+                    + '<tr><th style="width:140px">ID</th><td>' + data.id + '</td></tr>'
+                    + '<tr><th>Nome</th><td>' + data.name + '</td></tr>'
+                    + '<tr><th>E-mail</th><td>' + data.email + '</td></tr>'
+                    + '<tr><th>Perfil</th><td>' + (data.profile?.name || '-') + '</td></tr>'
+                    + '<tr><th>Status</th><td>' + (data.active ? '<span class="badge bg-success">Ativo</span>' : '<span class="badge bg-danger">Inativo</span>') + '</td></tr>'
+                    + '<tr><th>Criado em</th><td>' + formatDate(data.created_at, true) + '</td></tr>'
+                    + '<tr><th>Último Acesso</th><td>' + (data.last_login_at ? formatDate(data.last_login_at, true) : 'Nunca') + '</td></tr>'
+                    + '</table>';
+
                 $('#viewUserContent').html(html);
                 $('#viewUserModal').modal('show');
             });
         });
 
-        $(document).on('click', '.btn-toggle-user', function() {
+        $(document).on('click', '.btn-toggle-user', function () {
             var id = $(this).data('id');
+
             $.ajax({
                 url: '{{ route("admin.users.toggle-status", ":id") }}'.replace(':id', id),
                 type: 'POST',
                 data: { _token: '{{ csrf_token() }}' },
-                success: function(res) {
+                success: function (res) {
                     if (window.isSuccessfulResponse(res)) {
                         toastr.success(res.message || 'Status alterado!');
                         window.refreshAdminDataTable(table, false);
@@ -129,14 +145,15 @@
                         toastr.error(res.message || 'Erro ao alterar status.');
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     toastr.error(xhr.responseJSON?.message || 'Erro ao alterar status.');
                 }
             });
         });
 
-        $(document).on('click', '.btn-block-user', function() {
+        $(document).on('click', '.btn-block-user', function () {
             var id = $(this).data('id');
+
             Swal.fire({
                 title: 'Bloquear Usuário?',
                 text: 'O usuário não poderá acessar o sistema até ser desbloqueado.',
@@ -146,13 +163,13 @@
                 cancelButtonColor: '#6c757d',
                 confirmButtonText: 'Sim, bloquear!',
                 cancelButtonText: 'Cancelar'
-            }).then(function(result) {
+            }).then(function (result) {
                 if (result.isConfirmed) {
                     $.ajax({
                         url: '{{ route("admin.users.block", ":id") }}'.replace(':id', id),
                         type: 'POST',
                         data: { _token: '{{ csrf_token() }}' },
-                        success: function(res) {
+                        success: function (res) {
                             if (window.isSuccessfulResponse(res)) {
                                 toastr.success(res.message || 'Usuário bloqueado!');
                                 window.refreshAdminDataTable(table, false);
@@ -160,7 +177,7 @@
                                 toastr.error(res.message || 'Erro ao bloquear.');
                             }
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             toastr.error(xhr.responseJSON?.message || 'Erro ao bloquear usuário.');
                         }
                     });

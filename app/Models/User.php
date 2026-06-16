@@ -48,6 +48,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = [
+        'avatar_url',
+    ];
+
     protected function casts(): array
     {
         return [
