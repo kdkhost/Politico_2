@@ -58,22 +58,36 @@
                         <ol class="dd-list" id="menuItemsList">
                             @forelse($menuItems ?? [] as $item)
                                 <li class="dd-item dd-item-{{ $item->id }}" data-id="{{ $item->id }}">
-                                    <div class="dd-handle d-flex justify-content-between align-items-center">
-                                        <span><i class="{{ $item->icone ?? 'fas fa-link' }} me-1"></i>{{ $item->titulo }}</span>
-                                        <div class="btn-group btn-group-sm dd-nodrag">
-                                            <button type="button" class="btn btn-light btn-sm btn-edit-item dd-nodrag" data-id="{{ $item->id }}"><i class="fas fa-edit"></i></button>
-                                            <button type="button" class="btn btn-danger btn-sm btn-delete-item dd-nodrag" data-id="{{ $item->id }}"><i class="fas fa-times"></i></button>
+                                    <div class="menu-dd-row">
+                                        <div class="dd-handle menu-dd-handle" title="Arrastar item">
+                                            <i class="fas fa-grip-vertical"></i>
+                                        </div>
+                                        <div class="menu-dd-card flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-center gap-3">
+                                                <span class="menu-dd-title"><i class="{{ $item->icone ?? 'fas fa-link' }} me-1"></i>{{ $item->titulo }}</span>
+                                                <div class="btn-group btn-group-sm dd-nodrag">
+                                                    <button type="button" class="btn btn-light btn-sm btn-edit-item dd-nodrag" data-id="{{ $item->id }}"><i class="fas fa-edit"></i></button>
+                                                    <button type="button" class="btn btn-danger btn-sm btn-delete-item dd-nodrag" data-id="{{ $item->id }}"><i class="fas fa-times"></i></button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     @if($item->children->count() > 0)
                                         <ol class="dd-list">
                                             @foreach($item->children as $child)
                                                 <li class="dd-item dd-item-{{ $child->id }}" data-id="{{ $child->id }}">
-                                                    <div class="dd-handle d-flex justify-content-between align-items-center">
-                                                        <span><i class="{{ $child->icone ?? 'fas fa-link' }} me-1"></i>{{ $child->titulo }}</span>
-                                                        <div class="btn-group btn-group-sm dd-nodrag">
-                                                            <button type="button" class="btn btn-light btn-sm btn-edit-item dd-nodrag" data-id="{{ $child->id }}"><i class="fas fa-edit"></i></button>
-                                                            <button type="button" class="btn btn-danger btn-sm btn-delete-item dd-nodrag" data-id="{{ $child->id }}"><i class="fas fa-times"></i></button>
+                                                    <div class="menu-dd-row">
+                                                        <div class="dd-handle menu-dd-handle" title="Arrastar item">
+                                                            <i class="fas fa-grip-vertical"></i>
+                                                        </div>
+                                                        <div class="menu-dd-card flex-grow-1">
+                                                            <div class="d-flex justify-content-between align-items-center gap-3">
+                                                                <span class="menu-dd-title"><i class="{{ $child->icone ?? 'fas fa-link' }} me-1"></i>{{ $child->titulo }}</span>
+                                                                <div class="btn-group btn-group-sm dd-nodrag">
+                                                                    <button type="button" class="btn btn-light btn-sm btn-edit-item dd-nodrag" data-id="{{ $child->id }}"><i class="fas fa-edit"></i></button>
+                                                                    <button type="button" class="btn btn-danger btn-sm btn-delete-item dd-nodrag" data-id="{{ $child->id }}"><i class="fas fa-times"></i></button>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -218,14 +232,50 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nestable2@1/dist/jquery.nestable.min.css">
 <style>
     .dd { max-width: 100%; }
-    .dd-handle { background: #f8f9fa; border: 1px solid #dee2e6; padding: 8px 15px; margin-bottom: 3px; cursor: move; }
-    .dd-handle:hover { background: #e9ecef; }
-    .dd-item > button { height: 30px; }
-    .dd-nodrag { cursor: pointer !important; }
-    .dd-handle .btn-group,
-    .dd-handle .btn {
-        position: relative;
-        z-index: 2;
+    .dd-list { margin: 0; padding: 0; }
+    .dd-item { margin-bottom: 8px; }
+    .menu-dd-row {
+        display: flex;
+        align-items: stretch;
+        gap: 8px;
+    }
+    .menu-dd-handle {
+        width: 42px;
+        min-width: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 10px;
+        color: #cbd5e1;
+        cursor: grab;
+        margin: 0;
+        padding: 0;
+    }
+    .menu-dd-handle:hover {
+        background: rgba(255, 255, 255, 0.14);
+    }
+    .menu-dd-card {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 8px 12px;
+    }
+    .menu-dd-title {
+        min-width: 0;
+        word-break: break-word;
+    }
+    .dd-placeholder,
+    .dd-empty {
+        background: rgba(13, 110, 253, 0.12);
+        border: 1px dashed rgba(13, 110, 253, 0.45);
+        border-radius: 10px;
+        min-height: 44px;
+    }
+    .dd-nodrag {
+        cursor: pointer !important;
+        pointer-events: auto !important;
     }
 </style>
 @endpush
@@ -239,25 +289,20 @@
         const menuModal = menuModalEl ? bootstrap.Modal.getOrCreateInstance(menuModalEl) : null;
         const menuItemModal = menuItemModalEl ? bootstrap.Modal.getOrCreateInstance(menuItemModalEl) : null;
 
-        function flattenMenuOrder(nodes, result) {
-            (nodes || []).forEach(function(node) {
-                result.push(Number(node.id));
-                if (Array.isArray(node.children) && node.children.length > 0) {
-                    flattenMenuOrder(node.children, result);
-                }
-            });
-
-            return result;
-        }
-
-        $('.dd').nestable({ maxDepth: 2 });
+        $('.dd').nestable({
+            maxDepth: 2,
+            noDragClass: 'dd-nodrag',
+            handleClass: 'dd-handle'
+        });
         $('#btnSaveOrder').on('click', function() {
             var order = $('.dd').nestable('serialize');
-            var items = flattenMenuOrder(order, []);
             $.ajax({
                 url: '{{ route("admin.menus.reorder") }}',
                 method: 'POST',
-                data: { _token: '{{ csrf_token() }}', items: items },
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    tree: JSON.stringify(order)
+                },
                 success: function(res) {
                     if (window.isSuccessfulResponse(res)) toastr.success('Ordem salva com sucesso!');
                     else toastr.error(res.message || 'Erro.');
@@ -272,6 +317,7 @@
         });
 
         $(document).on('click', '.btn-edit-menu', function(e) {
+            e.preventDefault();
             e.stopPropagation();
             var id = $(this).data('id');
             $.get('{{ route("admin.menus.show", ":id") }}'.replace(':id', id), function(data) {
@@ -286,6 +332,7 @@
         });
 
         $(document).on('click', '.btn-delete-menu', function(e) {
+            e.preventDefault();
             e.stopPropagation();
             var id = $(this).data('id');
             confirmDelete('{{ route("admin.menus.destroy", ":id") }}'.replace(':id', id), 'O menu e todos os itens serão excluídos.');
@@ -343,6 +390,12 @@
             e.stopPropagation();
             var id = $(this).data('id');
             confirmDelete('{{ route("admin.menus.item.destroy", ":id") }}'.replace(':id', id), 'O item será excluído.');
+        });
+
+        $(document).on('dblclick', '.menu-dd-card', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).closest('.dd-item').find('.btn-edit-item').trigger('click');
         });
 
         $('#btnDeleteItem').on('click', function() {

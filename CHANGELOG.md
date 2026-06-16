@@ -17,6 +17,12 @@ Este arquivo registra a evolução funcional e estrutural do sistema desde a cri
 
 ## Linha do tempo
 
+### 2026-06-16 - reestrutura clique e arraste do gerenciador de menus
+
+- refeito `resources/views/admin/menus/index.blade.php` para separar a alça de arraste dos botões de ação, eliminando a disputa entre clique e drag no `Nestable`
+- ajustado `resources/views/admin/menus/index.blade.php` para abrir edição também por duplo clique no card do item, além dos botões dedicados
+- corrigido `app/Http/Controllers/Admin/MenuController.php` e `app/Services/Sistema/MenuService.php` para persistir a árvore completa enviada pelo `Nestable`, salvando `parent_id` e `ordem` reais ao reordenar
+
 ### 2026-06-15 - corrige edicao de itens no gerenciador de menus
 
 - corrigido `resources/views/admin/menus/index.blade.php` para os botoes de editar e excluir dos itens deixarem de ser capturados pelo `Nestable` como arraste, com `type="button"`, `dd-nodrag` e bloqueio explicito de propagacao no clique

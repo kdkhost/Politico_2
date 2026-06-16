@@ -247,16 +247,23 @@ class MenuController extends Controller
     public function reorderItems(Request $request)
     {
         try {
-            $validated = $request->validate([
-                'items' => 'required|array',
-                'items.*' => 'required|integer|exists:menu_items,id',
-            ]);
+            $treeInput = $request->input('tree');
 
-            $this->menuService->reorderItems($validated['items']);
+            if (!is_string($treeInput) || trim($treeInput) === '') {
+                return response()->json(['status' => 'error', 'message' => 'Estrutura de ordenação inválida.'], 422);
+            }
+
+            $tree = json_decode($treeInput, true, 512, JSON_THROW_ON_ERROR);
+
+            if (!is_array($tree)) {
+                return response()->json(['status' => 'error', 'message' => 'Estrutura de ordenação inválida.'], 422);
+            }
+
+            $this->menuService->reorderItems($tree);
 
             return response()->json(['status' => 'success', 'message' => 'Ordem atualizada com sucesso.']);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao reordenar itens.'], 500);
+            return response()->json(['status' => 'error', 'message' => 'Erro ao reordenar itens: ' . $e->getMessage()], 500);
         }
     }
 }

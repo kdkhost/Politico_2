@@ -107,16 +107,17 @@ class MenuService
         return $result;
     }
 
-    public function reorderItems(array $order): void
+    public function reorderItems(array $tree): void
     {
-        foreach ($order as $position => $itemId) {
-            MenuItem::where('id', $itemId)->update(['ordem' => $position]);
-        }
+        $menuIds = [];
+        $this->applyTreeOrder($tree, null, $menuIds);
 
-        $item = MenuItem::find($order[0] ?? null);
+        foreach (array_unique($menuIds) as $menuId) {
+            $menu = Menu::find($menuId);
 
-        if ($item && $item->relationLoaded('menu')) {
-            Cache::forget("menu_tree_{$item->menu->localizacao}");
+            if ($menu) {
+                Cache::forget("menu_tree_{$menu->localizacao}");
+            }
         }
     }
 
@@ -250,5 +251,35 @@ class MenuService
         }
 
         return '#';
+    }
+
+    protected function applyTreeOrder(array $nodes, int|null $parentId, array &$menuIds): void
+    {
+        foreach (array_values($nodes) as $position => $node) {
+            $itemId = (int) ($node['id'] ?? 0);
+
+            if ($itemId <= 0) {
+                continue;
+            }
+
+            $item = MenuItem::find($itemId);
+
+            if (!$item) {
+                continue;
+            }
+
+            $item->update([
+                'parent_id' => $parentId,
+                'ordem' => $position + 1,
+            ]);
+
+            $menuIds[] = (int) $item->menu_id;
+
+            $children = $node['children'] ?? [];
+
+            if (is_array($children) && $children !== []) {
+                $this->applyTreeOrder($children, (int) $item->id, $menuIds);
+            }
+        }
     }
 }
