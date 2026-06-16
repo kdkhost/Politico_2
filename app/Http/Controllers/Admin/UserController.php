@@ -314,34 +314,34 @@ class UserController extends Controller
             $currentUser = Auth::user();
 
             if (!$currentUser?->is_super_admin) {
-                return response()->json(['status' => 'error', 'message' => 'Apenas super administradores podem impersonar usuarios.'], 403);
+                return response()->json(['status' => 'error', 'message' => 'Apenas super administradores podem impersonar usuários.'], 403);
             }
 
             $user = User::findOrFail($id);
 
             if ($user->id === Auth::id()) {
-                return response()->json(['status' => 'error', 'message' => 'Voce ja esta autenticado como este usuario.'], 422);
+                return response()->json(['status' => 'error', 'message' => 'Você já está autenticado como este usuário.'], 422);
             }
 
             if ($user->is_super_admin && !$this->canImpersonateSuperAdmin($currentUser)) {
-                return response()->json(['status' => 'error', 'message' => 'Nao e permitido impersonar outro super administrador sem permissao explicita.'], 403);
+                return response()->json(['status' => 'error', 'message' => 'Não é permitido impersonar outro super administrador sem permissão explícita.'], 403);
             }
 
             session()->put('impersonated_by', Auth::id());
             Auth::login($user);
 
-            Log::info('Impersonacao iniciada.', [
+            Log::info('Impersonação iniciada.', [
                 'admin_id' => session('impersonated_by'),
                 'target_user_id' => $user->id,
             ]);
 
             return response()->json([
                 'status' => 'success',
-                'message' => "Voce agora esta logado como {$user->name}.",
+                'message' => "Você agora está logado como {$user->name}.",
                 'redirect' => route('admin.dashboard'),
             ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'error', 'message' => 'Erro ao impersonar usuario.'], 500);
+            return response()->json(['status' => 'error', 'message' => 'Erro ao impersonar usuário.'], 500);
         }
     }
 

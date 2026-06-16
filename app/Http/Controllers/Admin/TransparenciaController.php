@@ -97,7 +97,7 @@ class TransparenciaController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Item de transparencia criado com sucesso.',
+                'message' => 'Item de transparência criado com sucesso.',
                 'data' => $item,
                 'redirect' => route('admin.transparencia.edit', $item->id),
             ]);
@@ -204,7 +204,7 @@ class TransparenciaController extends Controller
             $this->deleteAttachmentList($item->arquivos);
             $this->transparenciaService->deleteItem($id);
 
-            return response()->json(['status' => 'success', 'message' => 'Item excluido com sucesso.', 'reload' => true]);
+            return response()->json(['status' => 'success', 'message' => 'Item excluído com sucesso.', 'reload' => true]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => 'Erro ao excluir item.'], 500);
         }
